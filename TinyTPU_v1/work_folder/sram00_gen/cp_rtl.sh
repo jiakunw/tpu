@@ -1,0 +1,1 @@
+cp ./sram00.v ../rtl/sram_wrapper/

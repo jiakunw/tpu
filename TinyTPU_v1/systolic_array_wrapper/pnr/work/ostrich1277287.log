@@ -1,0 +1,42 @@
+% .signoff_RC_WORST.spef.gz
+% .preroute_RC_WORST_clkNets.spef.gz
+% ostrichCmp_RC_WORST_preroute_clock.rpt
+% 0
+% % % % % % (read_spef): Reading spef file "'.signoff_RC_WORST.spef.gz'" and placing data in setname "'ref'".
+(read_spef): 'C_UNIT' is 1.000000 'PF'
+(read_spef): Derived 'cap' scale factor is 1.000000.
+(read_spef): 'R_UNIT' is 1.000000 'OHM'
+(read_spef): Derived 'res' scale factor is 1.000000.
+(read_spef): In 'NAME_MAP' section
+(read_spef): In 'PORTS' section
+(read_spef): Processed 5000 nets.
+(read_spef): Processed 10000 nets.
+(read_spef): Processed 15000 nets.
+(read_spef): Processed 20000 nets.
+(read_spef): Processed 25000 nets.
+(read_spef): Processed 30000 nets.
+(read_spef): Processed 35000 nets.
+(read_spef): Processed 40000 nets.
+(read_spef): Registering dataset information.
+(read_spef): 0 unresolved nodes 'processed' for xcap.
+(read_spef): 0 unresolved nodes 'resolved' for xcap.
+(read_spef): Closing spef file '.signoff_RC_WORST.spef.gz'.
+(read_spef): Reading spef file "'.preroute_RC_WORST_clkNets.spef.gz'" and placing data in setname "'cmp'".
+(read_spef): 'C_UNIT' is 1.000000 'PF'
+(read_spef): Derived 'cap' scale factor is 1.000000.
+(read_spef): 'R_UNIT' is 1.000000 'OHM'
+(read_spef): Derived 'res' scale factor is 1.000000.
+(read_spef): In 'NAME_MAP' section
+(read_spef): In 'PORTS' section
+(read_spef): Registering dataset information.
+(read_spef): 0 unresolved nodes 'processed' for xcap.
+(read_spef): 0 unresolved nodes 'resolved' for xcap.
+(read_spef): Closing spef file '.preroute_RC_WORST_clkNets.spef.gz'.
+(build_plot):Building "'tcap'" plot "'plot1'".
+(build_plot): Processing axis limits for 'tcap' plot "'plot1'".
+(build_plot): Processing exclusion thresholds for 'tcap' plot "'plot1'".
+(build_plot_data): Updating 'tcap' plot data for plot "'plot1'".
+(build_plot):Building "'res'" plot "'plot1'".
+(build_plot): Processing axis limits for 'res' plot "'plot1'".
+(build_plot): Processing exclusion thresholds for 'res' plot "'plot1'".
+(build_plot_data): Updating 'res' plot data for plot "'plot1'".

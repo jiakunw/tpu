@@ -1,0 +1,126 @@
+@(#)$CDS: ihdl version 6.1.8-64b 08/09/2022 19:13 (cpgsrv11) $  Sun Mar 22 14:17:40 2026
+
+WARNING (VERILOGIN-567): The value of the max_net_name_length parameter is exceeding 8000 bytes, which
+may crash VerilogIn due to limitation of underlying tools. To prevent this,
+specify the value of the max_net_name_length parameter as less than or equal to
+8000 bytes in the parameter file and import the design again.
+INFO (VERILOGIN-589): Using xmvlog binary for compilation.
+INFO (VERILOGIN-126): Unable to find the Verilog definition for module BUFFD12. Therefore using library
+tcbn65gplus, cell BUFFD12, and view symbol as the symbol.
+INFO (VERILOGIN-126): Unable to find the Verilog definition for module DEL01. Therefore using library
+tcbn65gplus, cell DEL01, and view symbol as the symbol.
+INFO (VERILOGIN-126): Unable to find the Verilog definition for module DEL015. Therefore using library
+tcbn65gplus, cell DEL015, and view symbol as the symbol.
+INFO (VERILOGIN-126): Unable to find the Verilog definition for module DEL0. Therefore using library
+tcbn65gplus, cell DEL0, and view symbol as the symbol.
+INFO (VERILOGIN-126): Unable to find the Verilog definition for module CKBD0. Therefore using library
+tcbn65gplus, cell CKBD0, and view symbol as the symbol.
+INFO (VERILOGIN-126): Unable to find the Verilog definition for module BUFFD1. Therefore using library
+tcbn65gplus, cell BUFFD1, and view symbol as the symbol.
+INFO (VERILOGIN-126): Unable to find the Verilog definition for module CKND2. Therefore using library
+tcbn65gplus, cell CKND2, and view symbol as the symbol.
+INFO (VERILOGIN-126): Unable to find the Verilog definition for module CKND1. Therefore using library
+tcbn65gplus, cell CKND1, and view symbol as the symbol.
+INFO (VERILOGIN-126): Unable to find the Verilog definition for module TIEL. Therefore using library
+tcbn65gplus, cell TIEL, and view symbol as the symbol.
+INFO (VERILOGIN-126): Unable to find the Verilog definition for module CKBD1. Therefore using library
+tcbn65gplus, cell CKBD1, and view symbol as the symbol.
+INFO (VERILOGIN-126): Unable to find the Verilog definition for module CKND12. Therefore using library
+tcbn65gplus, cell CKND12, and view symbol as the symbol.
+INFO (VERILOGIN-126): Unable to find the Verilog definition for module INVD1. Therefore using library
+tcbn65gplus, cell INVD1, and view symbol as the symbol.
+INFO (VERILOGIN-126): Unable to find the Verilog definition for module EDFKCNQD1. Therefore using library
+tcbn65gplus, cell EDFKCNQD1, and view symbol as the symbol.
+INFO (VERILOGIN-126): Unable to find the Verilog definition for module MOAI22D0. Therefore using library
+tcbn65gplus, cell MOAI22D0, and view symbol as the symbol.
+INFO (VERILOGIN-126): Unable to find the Verilog definition for module DFKCNQD1. Therefore using library
+tcbn65gplus, cell DFKCNQD1, and view symbol as the symbol.
+INFO (VERILOGIN-126): Unable to find the Verilog definition for module FA1D0. Therefore using library
+tcbn65gplus, cell FA1D0, and view symbol as the symbol.
+INFO (VERILOGIN-126): Unable to find the Verilog definition for module IOA21D0. Therefore using library
+tcbn65gplus, cell IOA21D0, and view symbol as the symbol.
+INFO (VERILOGIN-126): Unable to find the Verilog definition for module MUX2ND0. Therefore using library
+tcbn65gplus, cell MUX2ND0, and view symbol as the symbol.
+INFO (VERILOGIN-126): Unable to find the Verilog definition for module AO22D0. Therefore using library
+tcbn65gplus, cell AO22D0, and view symbol as the symbol.
+INFO (VERILOGIN-126): Unable to find the Verilog definition for module OAI211D0. Therefore using library
+tcbn65gplus, cell OAI211D0, and view symbol as the symbol.
+INFO (VERILOGIN-126): Unable to find the Verilog definition for module CKND0. Therefore using library
+tcbn65gplus, cell CKND0, and view symbol as the symbol.
+INFO (VERILOGIN-126): Unable to find the Verilog definition for module OAI31D0. Therefore using library
+tcbn65gplus, cell OAI31D0, and view symbol as the symbol.
+INFO (VERILOGIN-126): Unable to find the Verilog definition for module IND3D0. Therefore using library
+tcbn65gplus, cell IND3D0, and view symbol as the symbol.
+INFO (VERILOGIN-126): Unable to find the Verilog definition for module NR2D0. Therefore using library
+tcbn65gplus, cell NR2D0, and view symbol as the symbol.
+INFO (VERILOGIN-126): Unable to find the Verilog definition for module INR3D0. Therefore using library
+tcbn65gplus, cell INR3D0, and view symbol as the symbol.
+INFO (VERILOGIN-126): Unable to find the Verilog definition for module CKND2D0. Therefore using library
+tcbn65gplus, cell CKND2D0, and view symbol as the symbol.
+INFO (VERILOGIN-126): Unable to find the Verilog definition for module OR2XD1. Therefore using library
+tcbn65gplus, cell OR2XD1, and view symbol as the symbol.
+INFO (VERILOGIN-126): Unable to find the Verilog definition for module ND4D0. Therefore using library
+tcbn65gplus, cell ND4D0, and view symbol as the symbol.
+INFO (VERILOGIN-126): Unable to find the Verilog definition for module CKAN2D0. Therefore using library
+tcbn65gplus, cell CKAN2D0, and view symbol as the symbol.
+INFO (VERILOGIN-126): Unable to find the Verilog definition for module AOI221D0. Therefore using library
+tcbn65gplus, cell AOI221D0, and view symbol as the symbol.
+INFO (VERILOGIN-126): Unable to find the Verilog definition for module AN4D0. Therefore using library
+tcbn65gplus, cell AN4D0, and view symbol as the symbol.
+INFO (VERILOGIN-126): Unable to find the Verilog definition for module MAOI22D0. Therefore using library
+tcbn65gplus, cell MAOI22D0, and view symbol as the symbol.
+INFO (VERILOGIN-126): Unable to find the Verilog definition for module AOI211D0. Therefore using library
+tcbn65gplus, cell AOI211D0, and view symbol as the symbol.
+INFO (VERILOGIN-126): Unable to find the Verilog definition for module XNR3D0. Therefore using library
+tcbn65gplus, cell XNR3D0, and view symbol as the symbol.
+INFO (VERILOGIN-126): Unable to find the Verilog definition for module OA221D0. Therefore using library
+tcbn65gplus, cell OA221D0, and view symbol as the symbol.
+INFO (VERILOGIN-126): Unable to find the Verilog definition for module AOI21D0. Therefore using library
+tcbn65gplus, cell AOI21D0, and view symbol as the symbol.
+INFO (VERILOGIN-126): Unable to find the Verilog definition for module OAI21D0. Therefore using library
+tcbn65gplus, cell OAI21D0, and view symbol as the symbol.
+INFO (VERILOGIN-126): Unable to find the Verilog definition for module OAI221D0. Therefore using library
+tcbn65gplus, cell OAI221D0, and view symbol as the symbol.
+INFO (VERILOGIN-126): Unable to find the Verilog definition for module IND2D0. Therefore using library
+tcbn65gplus, cell IND2D0, and view symbol as the symbol.
+INFO (VERILOGIN-126): Unable to find the Verilog definition for module OA21D0. Therefore using library
+tcbn65gplus, cell OA21D0, and view symbol as the symbol.
+INFO (VERILOGIN-126): Unable to find the Verilog definition for module INR2D0. Therefore using library
+tcbn65gplus, cell INR2D0, and view symbol as the symbol.
+INFO (VERILOGIN-126): Unable to find the Verilog definition for module AN2XD1. Therefore using library
+tcbn65gplus, cell AN2XD1, and view symbol as the symbol.
+INFO (VERILOGIN-126): Unable to find the Verilog definition for module AO21D0. Therefore using library
+tcbn65gplus, cell AO21D0, and view symbol as the symbol.
+INFO (VERILOGIN-126): Unable to find the Verilog definition for module NR3D0. Therefore using library
+tcbn65gplus, cell NR3D0, and view symbol as the symbol.
+INFO (VERILOGIN-126): Unable to find the Verilog definition for module CKXOR2D0. Therefore using library
+tcbn65gplus, cell CKXOR2D0, and view symbol as the symbol.
+INFO (VERILOGIN-126): Unable to find the Verilog definition for module XNR2D0. Therefore using library
+tcbn65gplus, cell XNR2D0, and view symbol as the symbol.
+INFO (VERILOGIN-126): Unable to find the Verilog definition for module INVD12. Therefore using library
+tcbn65gplus, cell INVD12, and view symbol as the symbol.
+INFO (VERILOGIN-126): Unable to find the Verilog definition for module EDFKCND1. Therefore using library
+tcbn65gplus, cell EDFKCND1, and view symbol as the symbol.
+INFO (VERILOGIN-126): Unable to find the Verilog definition for module DFD1. Therefore using library
+tcbn65gplus, cell DFD1, and view symbol as the symbol.
+INFO (VERILOGIN-126): Unable to find the Verilog definition for module DFXD1. Therefore using library
+tcbn65gplus, cell DFXD1, and view symbol as the symbol.
+INFO (VERILOGIN-126): Unable to find the Verilog definition for module DCAP4. Therefore using library
+tcbn65gplus, cell DCAP4, and view symbol as the symbol.
+INFO (VERILOGIN-126): Unable to find the Verilog definition for module DCAP16. Therefore using library
+tcbn65gplus, cell DCAP16, and view symbol as the symbol.
+INFO (VERILOGIN-126): Unable to find the Verilog definition for module DCAP64. Therefore using library
+tcbn65gplus, cell DCAP64, and view symbol as the symbol.
+INFO (VERILOGIN-126): Unable to find the Verilog definition for module DCAP8. Therefore using library
+tcbn65gplus, cell DCAP8, and view symbol as the symbol.
+INFO (VERILOGIN-126): Unable to find the Verilog definition for module DCAP32. Therefore using library
+tcbn65gplus, cell DCAP32, and view symbol as the symbol.
+WARNING (VERILOGIN-113): Unable to find the cds_thru symbol or there is a pin mismatch. Therefore the
+default cell view, basic:cds_thru:symbol, is being used.
+WARNING (VERILOGIN-113): Unable to find the cds_thru symbol or there is a pin mismatch. Therefore the
+default cell view, basic:cds_thru:symbol, is being used.
+WARNING (VERILOGIN-113): Unable to find the cds_thru symbol or there is a pin mismatch. Therefore the
+default cell view, basic:cds_thru:symbol, is being used.
+INFO (VERILOGIN-357): Checked in symbol output_idx_controller.
+INFO (VERILOGIN-412): Checked-in connect by name schematic output_idx_controller.
+INFO (VERILOGIN-206): End of Logfile.

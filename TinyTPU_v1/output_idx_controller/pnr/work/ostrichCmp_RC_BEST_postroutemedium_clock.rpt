@@ -1,0 +1,68 @@
+#Refrence Spef File Name                                 .signoff_RC_BEST.spef.gz
+#Compare Spef File Name                                  .postroutemedium_RC_BEST_clkNets.spef.gz
+#Suggested Resistance Scale Factor                       0.949208
+#Suggested Capacitance Scale Factor                      0.941295
+#Suggested Cross Coupling Cap. Scale Factor              1.000000
+
+Cap stats
+=========
+total_nets 4
+total_nets_in_calc 4
+num_nets_not_found_golden 0
+num_nets_not_found_target 326
+num_nets_too_small 0
+num_nets_too_small_fanout 0
+num_nets_too_high_fanout 0
+num_outliers 0
+num_nets_too_big 0
+appl_scale_factor 1.000000
+rec_scale_factor 0.941295
+diff_mean 0.0004
+diff_sigma 0.0003
+diff_max 0.0010
+diff_min 0.0000
+ratio_mean 1.0655
+ratio_sigma 0.0394
+ratio_max 1.1280
+ratio_min 1.0265
+num_wi_1_perc { 0}
+num_wi_2_perc { 0}
+num_wi_5_perc 50
+num_wi_10_perc 75
+num_wi_20_perc 100
+num_wi_30_perc 100
+num_wi_40_perc 100
+num_wi_50_perc 100
+
+Res stats
+=========
+total_nets 29
+total_nets_in_calc 29
+num_nets_not_found_golden 0
+num_nets_not_found_target 604
+num_nets_too_small 0
+num_nets_too_small_fanout 0
+num_nets_too_high_fanout 0
+num_outliers 0
+num_nets_too_big 0
+appl_scale_factor 1.000000
+rec_scale_factor 0.949208
+diff_mean 0.9506
+diff_sigma 0.3040
+diff_max 1.3704
+diff_min 0.0949
+ratio_mean 1.0793
+ratio_sigma 0.0929
+ratio_max 1.4777
+ratio_min 1.0041
+num_wi_1_perc { 3}
+num_wi_2_perc { 3}
+num_wi_5_perc 48
+num_wi_10_perc 89
+num_wi_20_perc 93
+num_wi_30_perc 93
+num_wi_40_perc 96
+num_wi_50_perc 100
+
+Coupling Cap stats
+=========

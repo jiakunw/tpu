@@ -1,0 +1,7 @@
+CTS_6
+CTS_5
+CTS_2
+CTS_1
+CTS_4
+CTS_3
+clk

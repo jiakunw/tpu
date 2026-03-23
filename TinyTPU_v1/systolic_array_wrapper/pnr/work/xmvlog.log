@@ -1,0 +1,19 @@
+xmvlog: *W,DLNOHV: Unable to find an 'hdl.var' file to load in.
+TOOL:	xmvlog(64)	21.09-s013: Started on Mar 22, 2026 at 11:07:19 EDT
+xmvlog
+    -work __nclib
+    -view module
+    -logfile xmvlog.log
+    -cdslib /tmp/ihdl_cdslibc5989_1355989
+    -messages
+    -nostdout
+    -nocopyright
+    -ESCAPEDNAME
+    ../output/systolic_array_wrapper.lvs.v
+
+file: ../output/systolic_array_wrapper.lvs.v
+	module __nclib.systolic_array_wrapper:module
+		errors: 0, warnings: 0
+	Total errors/warnings found outside modules and primitives:
+		errors: 0, warnings: 1
+TOOL:	xmvlog(64)	21.09-s013: Exiting on Mar 22, 2026 at 11:07:19 EDT  (total: 00:00:00)

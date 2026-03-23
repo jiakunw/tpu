@@ -1,0 +1,41 @@
+ 
+                             Library Compiler (TM)
+                                 DesignWare (R)
+
+             Version U-2022.12-SP6 for linux64 - Aug 08, 2023 -SLE
+
+                    Copyright (c) 1988 - 2023 Synopsys, Inc.
+   This software and the associated documentation are proprietary to Synopsys,
+ Inc. This software may only be used in accordance with the terms and conditions
+ of a written license agreement with Synopsys, Inc. All other use, reproduction,
+   or distribution of this software is strictly prohibited.  Licensed Products
+     communicate with Synopsys servers for the purpose of providing software
+    updates, detecting software piracy and verifying that customers are using
+    Licensed Products in conformity with the applicable License Key for such
+  Licensed Products. Synopsys will use information gathered in connection with
+    this process to deliver software updates and pursue software pirates and
+                                   infringers.
+
+ Inclusivity & Diversity - Visit SolvNetPlus to read the "Synopsys Statement on
+            Inclusivity and Diversity" (Refer to article 000036315 at
+                        https://solvnetplus.synopsys.com)
+
+Initializing...
+read_lib ./sram00_nldm_tt_1p00v_1p00v_25c_syn.lib
+Reading '/homes/user/stud/fall25/cm4648/ee6350/6350_draft_folder/TinyTPU_v1/work_folder/sram00_gen/sram00_nldm_tt_1p00v_1p00v_25c_syn.lib' ...
+Warning: Line 64, The 'internal_power_calculation' attribute in char_config group is required for NLPM library. 
+        No default can be applied to this attribute. (LBDB-366)
+Warning: Line 1453, Cell 'sram00', pin 'EMA[2]', The pin 'EMA[2]' does not have a internal_power group. (LBDB-607)
+Warning: Line 1520, Cell 'sram00', pin 'RETN', The pin 'RETN' does not have a internal_power group. (LBDB-607)
+Information: Line 263, Cell 'sram00', The cell 'sram00' contiains memory/memory_read/memory_write groups which are deprecated, use the is_memory_cell attribute instead. (LIBG-280)
+Technology library 'USERLIB_nldm_tt_1p00v_1p00v_25c' read successfully
+1
+write_lib USERLIB_nldm_tt_1p00v_1p00v_25c -format db -output ./sram00_nldm_tt_1p00v_1p00v_25c_syn.db
+Wrote the 'USERLIB_nldm_tt_1p00v_1p00v_25c' library to '/homes/user/stud/fall25/cm4648/ee6350/6350_draft_folder/TinyTPU_v1/work_folder/sram00_gen/./sram00_nldm_tt_1p00v_1p00v_25c_syn.db' successfully
+1
+exit
+Maximum memory usage for this session: 109.30 MB
+CPU usage for this session:      0 seconds (  0.00 hours)
+Elapsed time for this session:      1 seconds (  0.00 hours)
+Thank you for using Library Compiler.
+

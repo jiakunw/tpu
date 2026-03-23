@@ -1,0 +1,7 @@
+Total numbers of exceptions: 5
+
+exception:tpu_core/default_mode/clk
+exception:tpu_core/default_mode/C2O
+exception:tpu_core/default_mode/I2C
+exception:tpu_core/default_mode/I2O
+exception:tpu_core/default_mode/C2C

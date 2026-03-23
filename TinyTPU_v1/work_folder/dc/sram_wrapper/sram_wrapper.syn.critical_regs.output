@@ -1,0 +1,83 @@
+ 
+****************************************
+Report : timing
+        -path end
+        -delay max
+        -max_paths 10000
+        -sort_by slack
+Design : sram_wrapper
+Version: U-2022.12-SP7
+Date   : Mon Mar 16 20:39:20 2026
+****************************************
+
+Operating Conditions: NCCOM   Library: tcbn65gplustc_ccs
+Wire Load Model Mode: segmented
+
+Endpoint                         Path Delay     Path Required     Slack
+------------------------------------------------------------------------
+rdata[63] (out)                     0.93 r           19.88        18.95
+rdata[62] (out)                     0.93 r           19.88        18.95
+rdata[61] (out)                     0.93 r           19.88        18.95
+rdata[60] (out)                     0.93 r           19.88        18.95
+rdata[59] (out)                     0.93 r           19.88        18.95
+rdata[58] (out)                     0.93 r           19.88        18.95
+rdata[57] (out)                     0.93 r           19.88        18.95
+rdata[56] (out)                     0.93 r           19.88        18.95
+rdata[55] (out)                     0.93 r           19.88        18.95
+rdata[54] (out)                     0.93 r           19.88        18.95
+rdata[53] (out)                     0.93 r           19.88        18.95
+rdata[52] (out)                     0.93 r           19.88        18.95
+rdata[51] (out)                     0.93 r           19.88        18.95
+rdata[50] (out)                     0.93 r           19.88        18.95
+rdata[49] (out)                     0.93 r           19.88        18.95
+rdata[48] (out)                     0.93 r           19.88        18.95
+rdata[47] (out)                     0.93 r           19.88        18.95
+rdata[46] (out)                     0.93 r           19.88        18.95
+rdata[45] (out)                     0.93 r           19.88        18.95
+rdata[44] (out)                     0.93 r           19.88        18.95
+rdata[43] (out)                     0.93 r           19.88        18.95
+rdata[42] (out)                     0.93 r           19.88        18.95
+rdata[41] (out)                     0.93 r           19.88        18.95
+rdata[40] (out)                     0.93 r           19.88        18.95
+rdata[39] (out)                     0.93 r           19.88        18.95
+rdata[38] (out)                     0.93 r           19.88        18.95
+rdata[37] (out)                     0.93 r           19.88        18.95
+rdata[36] (out)                     0.93 r           19.88        18.95
+rdata[35] (out)                     0.93 r           19.88        18.95
+rdata[34] (out)                     0.93 r           19.88        18.95
+rdata[33] (out)                     0.93 r           19.88        18.95
+rdata[32] (out)                     0.93 r           19.88        18.95
+rdata[31] (out)                     0.93 r           19.88        18.95
+rdata[30] (out)                     0.93 r           19.88        18.95
+rdata[29] (out)                     0.93 r           19.88        18.95
+rdata[28] (out)                     0.93 r           19.88        18.95
+rdata[27] (out)                     0.93 r           19.88        18.95
+rdata[26] (out)                     0.93 r           19.88        18.95
+rdata[25] (out)                     0.93 r           19.88        18.95
+rdata[24] (out)                     0.93 r           19.88        18.95
+rdata[23] (out)                     0.93 r           19.88        18.95
+rdata[22] (out)                     0.93 r           19.88        18.95
+rdata[21] (out)                     0.93 r           19.88        18.95
+rdata[20] (out)                     0.93 r           19.88        18.95
+rdata[19] (out)                     0.93 r           19.88        18.95
+rdata[18] (out)                     0.93 r           19.88        18.95
+rdata[17] (out)                     0.93 r           19.88        18.95
+rdata[16] (out)                     0.93 r           19.88        18.95
+rdata[15] (out)                     0.93 r           19.88        18.95
+rdata[14] (out)                     0.93 r           19.88        18.95
+rdata[13] (out)                     0.93 r           19.88        18.95
+rdata[12] (out)                     0.93 r           19.88        18.95
+rdata[11] (out)                     0.93 r           19.88        18.95
+rdata[10] (out)                     0.93 r           19.88        18.95
+rdata[9] (out)                      0.93 r           19.88        18.95
+rdata[8] (out)                      0.93 r           19.88        18.95
+rdata[7] (out)                      0.93 r           19.88        18.95
+rdata[6] (out)                      0.93 r           19.88        18.95
+rdata[5] (out)                      0.93 r           19.88        18.95
+rdata[4] (out)                      0.93 r           19.88        18.95
+rdata[3] (out)                      0.93 r           19.88        18.95
+rdata[2] (out)                      0.93 r           19.88        18.95
+rdata[1] (out)                      0.93 r           19.88        18.95
+rdata[0] (out)                      0.93 r           19.88        18.95
+
+1

@@ -1,0 +1,137 @@
+//  v2lvs v2024.3_25.13    Thu Aug 1 18:56:55 PDT 2024
+//
+//  Copyright (c) 1992, 1993 Regents of the University of California
+//         All rights reserved.
+//
+//                   Copyright Siemens 1996-2024
+//                       All Rights Reserved.
+//   THIS WORK CONTAINS TRADE SECRET AND PROPRIETARY INFORMATION
+//      WHICH IS THE PROPERTY OF MENTOR GRAPHICS CORPORATION
+//        OR ITS LICENSORS AND IS SUBJECT TO LICENSE TERMS.
+//
+//  The registered trademark Linux is used pursuant to a sublicense from LMI, the
+//  exclusive licensee of Linus Torvalds, owner of the mark on a world-wide basis.
+//
+//  Mentor Graphics software executing under x86-64 Linux
+//
+//  Running on Linux cadpc19 (128.59.64.209) 4.18.0-553.111.1.el8_10.x86_64 #1 SMP Sat Feb 28 00:49:56 EST 2026 x86_64 glibc 2.28/NPTL 2.28
+//  OS: Red Hat Enterprise Linux release 8.10 (Ootpa)[4.18.0-553.111.1.el8_10.x86_64]
+//
+//  Entries in /proc/meminfo:
+//
+//  MemTotal:       65401516 kB
+//  MemFree:        39631616 kB
+//  MemAvailable:   48622472 kB
+//  Buffers:            5240 kB
+//  Cached:         10116044 kB
+//  SwapCached:            0 kB
+//  Active:          6492860 kB
+//  Inactive:       17929604 kB
+//  Active(anon):       9352 kB
+//  Inactive(anon): 15044984 kB
+//  Active(file):    6483508 kB
+//  Inactive(file):  2884620 kB
+//  Unevictable:      189420 kB
+//  Mlocked:              64 kB
+//  SwapTotal:      33472508 kB
+//  SwapFree:       33472508 kB
+//  Dirty:               100 kB
+//  Writeback:            20 kB
+//  AnonPages:      13789144 kB
+//  Mapped:          1903936 kB
+//  Shmem:            753156 kB
+//  KReclaimable:     352732 kB
+//  Slab:             606928 kB
+//  SReclaimable:     352732 kB
+//  SUnreclaim:       254196 kB
+//  KernelStack:       32936 kB
+//  PageTables:       161000 kB
+//  NFS_Unstable:          0 kB
+//  Bounce:                0 kB
+//  WritebackTmp:          0 kB
+//  CommitLimit:    66173264 kB
+//  Committed_AS:   42528732 kB
+//  VmallocTotal:   34359738367 kB
+//  VmallocUsed:      172080 kB
+//  VmallocChunk:          0 kB
+//  Percpu:            10688 kB
+//  HardwareCorrupted:     0 kB
+//  AnonHugePages:   6014976 kB
+//  ShmemHugePages:   178176 kB
+//  ShmemPmdMapped:        0 kB
+//  FileHugePages:         0 kB
+//  FilePmdMapped:         0 kB
+//  HugePages_Total:       0
+//  HugePages_Free:        0
+//  HugePages_Rsvd:        0
+//  HugePages_Surp:        0
+//  Hugepagesize:       2048 kB
+//  Hugetlb:               0 kB
+//  DirectMap4k:      654796 kB
+//  DirectMap2M:    37861376 kB
+//  DirectMap1G:    29360128 kB
+//
+//  User limits:
+//
+//  Data size: unlimited
+//  RSS: unlimited
+//  Stack size: 130048 kB
+//  Max user processes: 255232
+//  VM: unlimited
+//  Current active profile: throughput-performance
+//  net.netfilter.nf_conntrack_max: 262144
+//  vm.max_map_count: 65530
+//  vm.overcommit_memory: 0
+//  kernel.pid_max: 4194304
+//
+WARNING: Please increase descriptors limit for best performance (1024)
+//
+//  Processor 11th Gen Intel(R) Core(TM) i9-11900 @ 2.50GHz [061671] (4th generation)
+//  CPU Info: Cores = 8, SMT enabled with 8 additional virtual processors
+//  Max file descriptors: 1024
+//  64 bit virtual addressing enabled
+//  Running aok_cal_2024.3_25.13/pkgs/icv/pvt/v2lvs -v ../output/output_idx_controller.lvs.v -o ../output/output_idx_controller.lvs.spi -l /courses/ee6350/pdk2023/T-N65-CM-SP-018-K3_MOM/digital/Front_End/verilog/tcbn65gplus_200a/tcbn65gplus_pwr.v -s /courses/ee6350/pdk2023/T-N65-CM-SP-018-K3_MOM/digital/Back_End/spice/tcbn65gplus_200a/tcbn65gplus_200a.spi -s0 DVSS -s1 DVDD -w 2 -a<>
+//  Process ID: 1596617
+//
+//  Starting time: Sun Mar 22 14:17:39 2026
+//
+
+--- CALIBRE_* ENVIRONMENT VARIABLES:
+
+CALIBRE_ATOMIC_LVHEAP=0
+CALIBRE_HOME=/tools/mentor/aok_cal_2024.3_25.13
+CALIBRE_READDB_LD_LIBRARY_PATH=/tools/mentor/aok_cal_2024.3_25.13/pkgs/icv/julia/1.5/lib/julia:/tools/mentor/aok_cal_2024.3_25.13/pkgs/icv/julia/1.5/lib:/tools/mentor/aok_cal_2024.3_25.13/shared/pkgs/icv/tools/calibre_client/lib/64:/tools/mentor/aok_cal_2024.3_25.13/pkgs/calibre_base/lib64:/tools/mentor/aok_cal_2024.3_25.13/pkgs/icv_lib/lib64:/tools/mentor/aok_cal_2024.3_25.13/pkgs/icv_qt5_comp/plugins:/tools/mentor/aok_cal_2024.3_25.13/pkgs/icv_oa/22.41p004/lib/linux_rhel68_gcc44x_64/opt
+CALIBRE_RUNDIR=/user/stud/fall25/cm4648/calibre_rundir/
+CALIBRE_SKIP_DYNAMIC_LIBRARY_CHECK=1
+
+--- V2LVS_* ENVIRONMENT VARIABLES:
+
+
+--- Verilog-to-LVS - Sun Mar 22 14:17:39 2026
+
+//  Applying licensing policy...
+//  calibrelvs license acquired.
+
+//  Licensed Products
+//  -----------------
+//  Other products:
+//  - v2lvs
+
+
+Info: Creating Verilog Library Database ...
+Info: Verilog Library Database Creation completed. CPU TIME = 0  REAL TIME = 0  LVHEAP = 0/0/0  MALLOC = 16/16/16  ELAPSED TIME = 0
+
+Info: Creating Design Database of Module Interfaces ...
+Info: Design Database of Module Interfaces Creation completed. CPU TIME = 0  REAL TIME = 0  LVHEAP = 0/0/0  MALLOC = 16/16/16  ELAPSED TIME = 0
+
+Info: Creating Design Database of Module Instantiations ...
+Info: Design Database of Module Instantiations Creation completed. CPU TIME = 0  REAL TIME = 0  LVHEAP = 0/0/0  MALLOC = 16/16/16  ELAPSED TIME = 0
+Info: 1 modules parsed, containing 387 module instantiations and 0 gate instance calls 
+
+Info: Converting Design ...
+Info: Design Conversion completed. CPU TIME = 0  REAL TIME = 0  LVHEAP = 0/0/0  MALLOC = 17/17/17  ELAPSED TIME = 0
+
+--- Verilog-to-LVS COMPLETED - Sun Mar 22 14:17:39 2026
+--- TOTAL CPU TIME = 0  REAL TIME = 0  LVHEAP = 0/0/0  MALLOC = 17/17/17  ELAPSED TIME = 0
+--- LOG FILE = v2lvs.log
+

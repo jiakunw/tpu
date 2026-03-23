@@ -1,0 +1,141 @@
+\# Program start time:     UTC 2026.03.22 18:17:47.964
+\# Local time: EDT (UTC-04:00) 2026.03.22 14:17:47.964
+\o Program:		@(#)$CDS: virtuoso version 6.1.8-64b 08/09/2022 19:25 (cpgsrv11) $
+\o Hierarchy:		/tools/cadence/IC618.270/tools.lnx86/dfII/
+\o Sub version:		sub-version  IC6.1.8-64b.500.27  (64-bit addresses)
+\# Command line:	/tools/cadence/IC618.270/tools.lnx86/dfII/bin/64bit/virtuoso -nographE -log fixlayout_runtime.log -replay fixlayout_runtime.il
+\# Host name (type):	cadpc19 (x86_64)
+\# Operating system:	Linux 4.18.0-553.111.1.el8_10.x86_64 #1 SMP Sat Feb 28 00:49:56 EST 2026
+\# Linux /etc/issue:	\S
+\# Linux /etc/issue:	Kernel \r on an \m
+\# X display name (WxH):	:1940 (1024x868)
+\# Available geometry:			TL(0:0) BR(1023:867)
+\# X server:			The X.Org Foundation
+\# Depth of Visual (Root):	24 (24)
+\# Number of Planes Used:	24
+\# X version:		11.0 (vendor release 12011000)
+\# X resource pool:	base 0x400000, mask 0x1fffff (2097151), shift 0
+\# 			current id 0x0, current max 0x1ffffa (2097146)
+\# Max data seg size:	     unlimited
+\# Max process size:	     unlimited
+\# Initial sbrk value:	        632 MB
+\# Available memory:	     88,893 MB
+\# System memory:	     96,557 MB
+\# Maximum memory size:	     96,160 MB
+\# Max mem available:	     89,129 MB
+\# Initial memory used:	        236 MB
+\#        process size:	      1,798 MB
+\# Thread usage limits (effective/default):	maxthreads 255232/255232 maxload 16.00/16.00
+\# Qt version:		5.9.1
+\# Window Manager:	other
+\# User Name:		cm4648
+\o Working Directory:	cadpc19:/homes/user/stud/fall25/cm4648/ee6350/6350_draft_folder/TinyTPU_v1/output_idx_controller/pnr/work
+\# Process Id:		1597119
+\o 
+\o COPYRIGHT (C) 1992-2022  CADENCE DESIGN SYSTEMS INC.  ALL RIGHTS RESERVED.
+\o           (C) 1992-2022  UNIX SYSTEMS Laboratories INC.,
+\o                          Reproduced with permission.
+\o 
+\o This Cadence Design Systems program and online documentation are
+\o proprietary/confidential information and may be disclosed/used only
+\o as authorized in a license agreement controlling such use and disclosure.
+\o 
+\o           RESTRICTED RIGHTS NOTICE (SHORT FORM)
+\o Use/reproduction/disclosure is subject to restriction
+\o set forth at FAR 1252.227-19 or its equivalent.
+\o Loading geView.cxt 
+\o Loading menuBuilder.cxt 
+\o Loading schView.cxt 
+\o Loading selectSv.cxt 
+\# Memory report: using         422 MB, process size 2,055 MB at UTC 2026.03.22 18:17:49.143
+\o Loading wireEdit.cxt 
+\o Loading pte2.cxt 
+\o Loading xlUI.cxt 
+\o Loading auCore.cxt 
+\o Loading vhdl.cxt 
+\o Loading seismic.cxt 
+\o Loading ci.cxt 
+\o Loading ams.cxt 
+\o Loading adexlDM.cxt 
+\o Loading cpf.cxt 
+\o Loading cli.cxt 
+\o Loading lp.cxt 
+\# [14:17:47.022465] Configured Lic search path (21.01-s002): 5280@bioeelincad.ee.columbia.edu
+\o Virtuoso Framework License (111) was checked out successfully. Total checkout time was 0.01s.
+\p > 
+\i load("../scripts/virtuoso_postprocess.il")
+\t t
+\p > 
+\i drawDMEXCL("output_idx_controller" "output_idx_controller" "layout")
+\# [14:17:54.427209] Periodic Lic check successful
+\# [14:17:54.427210] Feature usage summary:
+\# [14:17:54.427211] 111
+\o Initializing from libInit.il for library tsmcN65...
+\o    --  /courses/ee6350/pdk2023/T-N65-CM-SP-018-K3_MOM/Base_PDK/PDK_CRN65GP_v1.0c_official_IC61_20101010/tsmcN65/../skill/pcode1.cxt
+\o    --  /courses/ee6350/pdk2023/T-N65-CM-SP-018-K3_MOM/Base_PDK/PDK_CRN65GP_v1.0c_official_IC61_20101010/tsmcN65/../skill/pcode2.cxt
+\o    --  tsmcPdkParamTable.il
+\o    --  tsmcN65_updateCDFs.il
+\o    --  tsmc_esti.ile
+\o    --  /courses/ee6350/pdk2023/T-N65-CM-SP-018-K3_MOM/Base_PDK/PDK_CRN65GP_v1.0c_official_IC61_20101010/tsmcN65/../skill/tsmcN65gp_v1d0c.cxt
+\o    --  /courses/ee6350/pdk2023/T-N65-CM-SP-018-K3_MOM/Base_PDK/PDK_CRN65GP_v1.0c_official_IC61_20101010/tsmcN65/../skill/tsmcN65_newAMS.cxt
+\o    --  /courses/ee6350/pdk2023/T-N65-CM-SP-018-K3_MOM/Base_PDK/PDK_CRN65GP_v1.0c_official_IC61_20101010/tsmcN65/../skill/tsmcN65_newRTMOM.cxt
+\o    --  /courses/ee6350/pdk2023/T-N65-CM-SP-018-K3_MOM/Base_PDK/PDK_CRN65GP_v1.0c_official_IC61_20101010/tsmcN65/../skill/tsmcN65GP_v1d0.cxt
+\o    --  tsmcN65Tool.cxt
+\o    --  tsmcN65.cxt
+\o    --  tif_tcf_crn65gp_v1.0a.cxt
+\o    --  /courses/ee6350/pdk2023/T-N65-CM-SP-018-K3_MOM/Base_PDK/PDK_CRN65GP_v1.0c_official_IC61_20101010/tsmcN65/../skill/tsmcN65GP_v1d0.cxt
+\w *WARNING* (loadContext): context //courses/ee6350/pdk2023/T-N65-CM-SP-018-K3_MOM/Base_PDK/PDK_CRN65GP_v1.0c_official_IC61_20101010/tsmcN65/../skill/64bit/tsmcN65GP_v1d0.cxt already loaded
+\o    --  /courses/ee6350/pdk2023/T-N65-CM-SP-018-K3_MOM/Base_PDK/PDK_CRN65GP_v1.0c_official_IC61_20101010/tsmcN65/../skill/tsmcN65_newRTMOM.cxt
+\w *WARNING* (loadContext): context //courses/ee6350/pdk2023/T-N65-CM-SP-018-K3_MOM/Base_PDK/PDK_CRN65GP_v1.0c_official_IC61_20101010/tsmcN65/../skill/64bit/tsmcN65_newRTMOM.cxt already loaded
+\o    --  /courses/ee6350/pdk2023/T-N65-CM-SP-018-K3_MOM/Base_PDK/PDK_CRN65GP_v1.0c_official_IC61_20101010/tsmcN65/../skill/tsmcN65_newAMS.cxt
+\w *WARNING* (loadContext): context //courses/ee6350/pdk2023/T-N65-CM-SP-018-K3_MOM/Base_PDK/PDK_CRN65GP_v1.0c_official_IC61_20101010/tsmcN65/../skill/64bit/tsmcN65_newAMS.cxt already loaded
+\o Loading PDK Display File '/courses/ee6350/pdk2023/T-N65-CM-SP-018-K3_MOM/Base_PDK/PDK_CRN65GP_v1.0c_official_IC61_20101010/tsmcN65/../display.drf'
+\o Loading oasis.cxt 
+\o Loading analog.cxt 
+\o Loading asimenv.cxt 
+\o Loading spectrei.cxt 
+\# Memory report: using         741 MB, process size 2,380 MB at UTC 2026.03.22 18:17:55.166
+\o Loading dal.cxt 
+\o Loading awv.cxt 
+\o Loading socket.cxt 
+\o Loading par.cxt 
+\o Loading alvs.cxt 
+\o Loading caa.cxt 
+\o Loading amps.cxt 
+\o Loading adexlCore.cxt 
+\o Loading adexl.cxt 
+\o Loading vdsil.cxt 
+\o Loading lx.cxt 
+\o Loading lce.cxt 
+\o Loading le.cxt 
+\o Loading drdEdit.cxt 
+\o Loading rte.cxt 
+\o Loading te.cxt 
+\o Loading schHDL.cxt 
+\o Loading devCheck.cxt 
+\o Loading relXpert.cxt 
+\o Loading hspiceD.cxt 
+\o Loading spectreinl.cxt 
+\o Loading msgHandler.cxt 
+\o Loading UltraSim.cxt 
+\o Loading AMSOSS.cxt 
+\o Loading AMS.cxt 
+\o Loading soi.cxt 
+\t t
+\p > 
+\i changeLabelPurposeToPin("output_idx_controller" "output_idx_controller" "layout")
+\t t
+\p > 
+\i exit
+\p > 
+\a exit
+\w *WARNING* hiDeleteForm: Cannot delete a form that is mapped or from within the form's callback (techSaveDrmForm)
+\w *WARNING* hiCreateAppForm: Could not delete already created form techSaveDrmForm
+\o 
+\# Memory report: using         948 MB, process size 2,702 MB at UTC 2026.03.22 18:17:57.594
+\# Lic Summary:
+\# [14:17:57.070363] Cdslmd servers: bioeelincad
+\# [14:17:57.070368] Feature usage summary:
+\# [14:17:57.070369] 111
+\# Memory report: on exit            948 MB, process size 2,702 MB at UTC 2026.03.22 18:17:57.594
+\# Memory report: peak usage         948 MB, process size 2,702 MB

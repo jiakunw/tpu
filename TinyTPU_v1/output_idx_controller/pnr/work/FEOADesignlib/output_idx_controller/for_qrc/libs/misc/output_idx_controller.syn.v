@@ -1,0 +1,1 @@
+/homes/user/stud/fall25/cm4648/ee6350/6350_draft_folder/TinyTPU_v1/output_idx_controller/syn/output/output_idx_controller.syn.v

@@ -1,0 +1,10 @@
+dest_sch_lib := systolic_array_wrapper 
+ref_lib_list := basic, US_8ths, tcbn65gplus
+schematic_view_name := schematic
+symbol_view_name := symbol
+log_file_name := verilogIn.log
+map_file_name := verilogIn.map.table
+power_net := \DVDD!
+ground_net := \DVSS!
+import_if_exists := 1
+max_net_name_length := 100000

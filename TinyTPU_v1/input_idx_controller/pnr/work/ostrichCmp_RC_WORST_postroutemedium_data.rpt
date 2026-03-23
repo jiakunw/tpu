@@ -1,0 +1,95 @@
+#Refrence Spef File Name                                 .signoff_RC_WORST.spef.gz
+#Compare Spef File Name                                  .postroutemedium_RC_WORST_dataNets.spef.gz
+#Suggested Resistance Scale Factor                       0.969229
+#Suggested Capacitance Scale Factor                      1.002412
+#Suggested Cross Coupling Cap. Scale Factor              0.992139
+
+Cap stats
+=========
+total_nets 525
+total_nets_in_calc 525
+num_nets_not_found_golden 0
+num_nets_not_found_target 7
+num_nets_too_small 0
+num_nets_too_small_fanout 0
+num_nets_too_high_fanout 0
+num_outliers 0
+num_nets_too_big 0
+appl_scale_factor 1.000000
+rec_scale_factor 1.002412
+diff_mean -0.0000
+diff_sigma 0.0001
+diff_max 0.0006
+diff_min -0.0005
+ratio_mean 0.9821
+ratio_sigma 0.1362
+ratio_max 2.2178
+ratio_min 0.6528
+num_wi_1_perc 13
+num_wi_2_perc 26
+num_wi_5_perc 55
+num_wi_10_perc 80
+num_wi_20_perc 95
+num_wi_30_perc 97
+num_wi_40_perc 98
+num_wi_50_perc 98
+
+Res stats
+=========
+total_nets 989
+total_nets_in_calc 989
+num_nets_not_found_golden 0
+num_nets_not_found_target 49
+num_nets_too_small 0
+num_nets_too_small_fanout 0
+num_nets_too_high_fanout 0
+num_outliers 0
+num_nets_too_big 0
+appl_scale_factor 1.000000
+rec_scale_factor 0.969229
+diff_mean 0.8390
+diff_sigma 0.7390
+diff_max 4.6585
+diff_min -0.7981
+ratio_mean 1.0415
+ratio_sigma 0.0671
+ratio_max 2.5222
+ratio_min 0.7607
+num_wi_1_perc { 8}
+num_wi_2_perc 24
+num_wi_5_perc 71
+num_wi_10_perc 96
+num_wi_20_perc 99
+num_wi_30_perc 99
+num_wi_40_perc 99
+num_wi_50_perc 99
+
+Coupling Cap stats
+=========
+total_nets 132
+total_nets_in_calc 132
+num_nets_not_found_golden 98
+num_nets_not_found_target 18
+num_nets_too_small 0
+num_nets_too_small_fanout 0
+num_nets_too_high_fanout 0
+num_outliers 0
+num_nets_too_big 0
+appl_scale_factor 1.000000
+rec_scale_factor 0.992139
+diff_mean 0.0000
+diff_sigma 0.0000
+diff_max 0.0001
+diff_min -0.0001
+ratio_mean 0.9830
+ratio_sigma 0.1252
+ratio_max 1.3022
+ratio_min 0.6564
+num_wi_1_perc { 4}
+num_wi_2_perc 15
+num_wi_5_perc 30
+num_wi_10_perc 56
+num_wi_20_perc 90
+num_wi_30_perc 96
+num_wi_40_perc 100
+num_wi_50_perc 100

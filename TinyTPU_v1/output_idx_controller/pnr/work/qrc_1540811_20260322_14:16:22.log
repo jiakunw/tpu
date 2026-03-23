@@ -1,0 +1,1775 @@
+
+
+  Cadence Quantus Extraction - 64-bit Parasitic Extractor - Version
+21.2.2-p045 Fri Sep 23 10:56:50 PDT 2022
+---------------------------------------------------------------------------------------------------------------
+                                  Copyright 2022 Cadence Design Systems,
+Inc.
+
+
+
+INFO (EXTQRCXLOG-103) : The Command File Options for the current Quantus run are as follows:
+
+distributed_processing \
+	 -multi_cpu 8
+extract \
+	 -selection "all" \
+	 -type "rc_coupled"
+extraction_setup \
+	 -promote_pin_pad "LOGICAL" \
+	 -technology_layer_map \
+		"PO  poly  " \
+		"CO  polyCont  " \
+		"M1  metal1  " \
+		"VIA1  VIA1  " \
+		"M2  metal2  " \
+		"VIA2  VIA2  " \
+		"M3  metal3  " \
+		"VIA3  VIA3  " \
+		"M4  metal4  " \
+		"VIA4  VIA4  " \
+		"M5  metal5  " \
+		"VIA5  VIA5  " \
+		"M6  metal6  " \
+		"VIA6  VIA6  " \
+		"M7  metal7  " \
+		"VIA7  VIA7  " \
+		"M8  metal8  " \
+		"VIA8  VIA8  " \
+		"M9  metal9  " \
+		"RV  VIA9  " \
+		"AP  metal10  "
+filter_coupling_cap \
+	 -cap_filtering_mode "absolute_and_relative" \
+	 -coupling_cap_threshold_absolute 3.0 \
+	 -coupling_cap_threshold_relative 0.03 \
+	 -total_cap_threshold 5.0
+input_db -type oa \
+	 -design_cell_name "output_idx_controller for_qrc FEOADesignlib" \
+	 -library_cell_name \
+		"SDFQD2  abstract  tcbn65gplus_oalib  " \
+		"DEL1  abstract  tcbn65gplus_oalib  " \
+		"LNCSNDQD1  abstract  tcbn65gplus_oalib  " \
+		"NR4D3  abstract  tcbn65gplus_oalib  " \
+		"SEDFCND4  abstract  tcbn65gplus_oalib  " \
+		"MAOI22D2  abstract  tcbn65gplus_oalib  " \
+		"GOR2D1  abstract  tcbn65gplus_oalib  " \
+		"OA31D4  abstract  tcbn65gplus_oalib  " \
+		"SDFSNQD4  abstract  tcbn65gplus_oalib  " \
+		"SDFQND2  abstract  tcbn65gplus_oalib  " \
+		"BUFFD8  abstract  tcbn65gplus_oalib  " \
+		"LHCSND2  abstract  tcbn65gplus_oalib  " \
+		"XNR4D0  abstract  tcbn65gplus_oalib  " \
+		"NR3D1  abstract  tcbn65gplus_oalib  " \
+		"EDFKCNQD1  abstract  tcbn65gplus_oalib  " \
+		"AOI221D4  abstract  tcbn65gplus_oalib  " \
+		"AN3XD1  abstract  tcbn65gplus_oalib  " \
+		"IND4D1  abstract  tcbn65gplus_oalib  " \
+		"CKND0  abstract  tcbn65gplus_oalib  " \
+		"MOAI22D4  abstract  tcbn65gplus_oalib  " \
+		"DFKSND1  abstract  tcbn65gplus_oalib  " \
+		"AOI32XD4  abstract  tcbn65gplus_oalib  " \
+		"LNCNDD1  abstract  tcbn65gplus_oalib  " \
+		"LHQD2  abstract  tcbn65gplus_oalib  " \
+		"AOI31D1  abstract  tcbn65gplus_oalib  " \
+		"LHCNDD4  abstract  tcbn65gplus_oalib  " \
+		"SDFCND1  abstract  tcbn65gplus_oalib  " \
+		"BUFFD16  abstract  tcbn65gplus_oalib  " \
+		"DEL02  abstract  tcbn65gplus_oalib  " \
+		"EDFKCNQD4  abstract  tcbn65gplus_oalib  " \
+		"LNCSNDQD4  abstract  tcbn65gplus_oalib  " \
+		"LVLLHFAD2  abstract  tcbn65gplus_oalib  " \
+		"IOA21D1  abstract  tcbn65gplus_oalib  " \
+		"CKLNQD20  abstract  tcbn65gplus_oalib  " \
+		"SDFQND4  abstract  tcbn65gplus_oalib  " \
+		"LNCSND1  abstract  tcbn65gplus_oalib  " \
+		"HICOND1  abstract  tcbn65gplus_oalib  " \
+		"LHCSND4  abstract  tcbn65gplus_oalib  " \
+		"DEL0  abstract  tcbn65gplus_oalib  " \
+		"SDFSNQD1  abstract  tcbn65gplus_oalib  " \
+		"OR4D2  abstract  tcbn65gplus_oalib  " \
+		"SDFQD4  abstract  tcbn65gplus_oalib  " \
+		"ISOLOD2  abstract  tcbn65gplus_oalib  " \
+		"INVD6  abstract  tcbn65gplus_oalib  " \
+		"AN3D1  abstract  tcbn65gplus_oalib  " \
+		"LHSNDD1  abstract  tcbn65gplus_oalib  " \
+		"AO221D1  abstract  tcbn65gplus_oalib  " \
+		"DFNSND1  abstract  tcbn65gplus_oalib  " \
+		"CKND2D4  abstract  tcbn65gplus_oalib  " \
+		"XNR3D0  abstract  tcbn65gplus_oalib  " \
+		"OR3D0  abstract  tcbn65gplus_oalib  " \
+		"IND3D1  abstract  tcbn65gplus_oalib  " \
+		"SEDFKCNQD2  abstract  tcbn65gplus_oalib  " \
+		"LVLLHD2  abstract  tcbn65gplus_oalib  " \
+		"OAI33XD4  abstract  tcbn65gplus_oalib  " \
+		"GAN2D1  abstract  tcbn65gplus_oalib  " \
+		"LHCNDQD1  abstract  tcbn65gplus_oalib  " \
+		"CKLHQD12  abstract  tcbn65gplus_oalib  " \
+		"AOI21D1  abstract  tcbn65gplus_oalib  " \
+		"MOAI22D1  abstract  tcbn65gplus_oalib  " \
+		"ISOLOD4  abstract  tcbn65gplus_oalib  " \
+		"MUX4ND0  abstract  tcbn65gplus_oalib  " \
+		"LVLLHFACD4  abstract  tcbn65gplus_oalib  " \
+		"XNR4D4  abstract  tcbn65gplus_oalib  " \
+		"TIEL  abstract  tcbn65gplus_oalib  " \
+		"SDFNCSND0  abstract  tcbn65gplus_oalib  " \
+		"SEDFCNQD1  abstract  tcbn65gplus_oalib  " \
+		"AOI221D1  abstract  tcbn65gplus_oalib  " \
+		"LVLLHFAD8  abstract  tcbn65gplus_oalib  " \
+		"CKMUX2D2  abstract  tcbn65gplus_oalib  " \
+		"OAI32D1  abstract  tcbn65gplus_oalib  " \
+		"LHCNDQD4  abstract  tcbn65gplus_oalib  " \
+		"XNR3D2  abstract  tcbn65gplus_oalib  " \
+		"MUX4D0  abstract  tcbn65gplus_oalib  " \
+		"MUX2ND0  abstract  tcbn65gplus_oalib  " \
+		"LVLLHD4  abstract  tcbn65gplus_oalib  " \
+		"OA22D1  abstract  tcbn65gplus_oalib  " \
+		"SEDFCNQD4  abstract  tcbn65gplus_oalib  " \
+		"FICIND2  abstract  tcbn65gplus_oalib  " \
+		"SDFND0  abstract  tcbn65gplus_oalib  " \
+		"SDFD2  abstract  tcbn65gplus_oalib  " \
+		"LHCSNQD4  abstract  tcbn65gplus_oalib  " \
+		"XNR2D0  abstract  tcbn65gplus_oalib  " \
+		"LNSNDD2  abstract  tcbn65gplus_oalib  " \
+		"OA21D1  abstract  tcbn65gplus_oalib  " \
+		"SDFKCND0  abstract  tcbn65gplus_oalib  " \
+		"IND2D1  abstract  tcbn65gplus_oalib  " \
+		"GTIEH  abstract  tcbn65gplus_oalib  " \
+		"ND3D3  abstract  tcbn65gplus_oalib  " \
+		"CKND2D0  abstract  tcbn65gplus_oalib  " \
+		"SEDFQNXD1  abstract  tcbn65gplus_oalib  " \
+		"XNR2D4  abstract  tcbn65gplus_oalib  " \
+		"XNR2D2  abstract  tcbn65gplus_oalib  " \
+		"LHCSNDD2  abstract  tcbn65gplus_oalib  " \
+		"CMPE42D1  abstract  tcbn65gplus_oalib  " \
+		"XNR3D4  abstract  tcbn65gplus_oalib  " \
+		"DCAP4  abstract  tcbn65gplus_oalib  " \
+		"SEDFKCND2  abstract  tcbn65gplus_oalib  " \
+		"ND2D1  abstract  tcbn65gplus_oalib  " \
+		"ISOLOD8  abstract  tcbn65gplus_oalib  " \
+		"MUX4ND4  abstract  tcbn65gplus_oalib  " \
+		"DFXQD2  abstract  tcbn65gplus_oalib  " \
+		"LVLLHFACD1  abstract  tcbn65gplus_oalib  " \
+		"LNSNDD4  abstract  tcbn65gplus_oalib  " \
+		"OAI22D1  abstract  tcbn65gplus_oalib  " \
+		"LHCSNQD1  abstract  tcbn65gplus_oalib  " \
+		"AO211D1  abstract  tcbn65gplus_oalib  " \
+		"NR4D8  abstract  tcbn65gplus_oalib  " \
+		"MUX3ND0  abstract  tcbn65gplus_oalib  " \
+		"CKND2D2  abstract  tcbn65gplus_oalib  " \
+		"DFKCND2  abstract  tcbn65gplus_oalib  " \
+		"LHD4  abstract  tcbn65gplus_oalib  " \
+		"INVD0  abstract  tcbn65gplus_oalib  " \
+		"LVLLHD8  abstract  tcbn65gplus_oalib  " \
+		"CKBD20  abstract  tcbn65gplus_oalib  " \
+		"SDFND2  abstract  tcbn65gplus_oalib  " \
+		"SDFNSND0  abstract  tcbn65gplus_oalib  " \
+		"OA222D1  abstract  tcbn65gplus_oalib  " \
+		"GXOR2D2  abstract  tcbn65gplus_oalib  " \
+		"AN4D8  abstract  tcbn65gplus_oalib  " \
+		"MUX4ND2  abstract  tcbn65gplus_oalib  " \
+		"CKBD4  abstract  tcbn65gplus_oalib  " \
+		"MUX4D2  abstract  tcbn65gplus_oalib  " \
+		"IAO22D1  abstract  tcbn65gplus_oalib  " \
+		"SDFND4  abstract  tcbn65gplus_oalib  " \
+		"LHCND4  abstract  tcbn65gplus_oalib  " \
+		"NR2XD0  abstract  tcbn65gplus_oalib  " \
+		"SEDFQNXD4  abstract  tcbn65gplus_oalib  " \
+		"OAI211D2  abstract  tcbn65gplus_oalib  " \
+		"NR2D4  abstract  tcbn65gplus_oalib  " \
+		"DFKCND4  abstract  tcbn65gplus_oalib  " \
+		"MUX3D0  abstract  tcbn65gplus_oalib  " \
+		"FILL32  abstract  tcbn65gplus_oalib  " \
+		"GOAI21D2  abstract  tcbn65gplus_oalib  " \
+		"LHCNQD1  abstract  tcbn65gplus_oalib  " \
+		"SDFKCNQD0  abstract  tcbn65gplus_oalib  " \
+		"INR2XD1  abstract  tcbn65gplus_oalib  " \
+		"DFXQD4  abstract  tcbn65gplus_oalib  " \
+		"AOI33D0  abstract  tcbn65gplus_oalib  " \
+		"SDFXQD0  abstract  tcbn65gplus_oalib  " \
+		"LHCSNDQD2  abstract  tcbn65gplus_oalib  " \
+		"MUX3D2  abstract  tcbn65gplus_oalib  " \
+		"AN2D4  abstract  tcbn65gplus_oalib  " \
+		"OAI222D0  abstract  tcbn65gplus_oalib  " \
+		"SDFD1  abstract  tcbn65gplus_oalib  " \
+		"MUX4D4  abstract  tcbn65gplus_oalib  " \
+		"SDFXQD2  abstract  tcbn65gplus_oalib  " \
+		"AOI211D1  abstract  tcbn65gplus_oalib  " \
+		"AO33D1  abstract  tcbn65gplus_oalib  " \
+		"LNSNDQD4  abstract  tcbn65gplus_oalib  " \
+		"SEDFQND2  abstract  tcbn65gplus_oalib  " \
+		"NR2XD2  abstract  tcbn65gplus_oalib  " \
+		"SDFKCSNQD0  abstract  tcbn65gplus_oalib  " \
+		"GMUX2D1  abstract  tcbn65gplus_oalib  " \
+		"MUX2D0  abstract  tcbn65gplus_oalib  " \
+		"MUX3ND2  abstract  tcbn65gplus_oalib  " \
+		"SDFCSND4  abstract  tcbn65gplus_oalib  " \
+		"SEDFXD1  abstract  tcbn65gplus_oalib  " \
+		"AOI33D2  abstract  tcbn65gplus_oalib  " \
+		"CKLHQD1  abstract  tcbn65gplus_oalib  " \
+		"DFNCND2  abstract  tcbn65gplus_oalib  " \
+		"MUX3ND4  abstract  tcbn65gplus_oalib  " \
+		"LNCNQD2  abstract  tcbn65gplus_oalib  " \
+		"ND3D8  abstract  tcbn65gplus_oalib  " \
+		"CKBD24  abstract  tcbn65gplus_oalib  " \
+		"LHD2  abstract  tcbn65gplus_oalib  " \
+		"SDFKCSND0  abstract  tcbn65gplus_oalib  " \
+		"SDFCSND1  abstract  tcbn65gplus_oalib  " \
+		"DFNCND4  abstract  tcbn65gplus_oalib  " \
+		"CKND2D8  abstract  tcbn65gplus_oalib  " \
+		"HCOSCIND2  abstract  tcbn65gplus_oalib  " \
+		"LHQD1  abstract  tcbn65gplus_oalib  " \
+		"OR4XD1  abstract  tcbn65gplus_oalib  " \
+		"LNSNDQD1  abstract  tcbn65gplus_oalib  " \
+		"FA1D4  abstract  tcbn65gplus_oalib  " \
+		"NR2XD4  abstract  tcbn65gplus_oalib  " \
+		"EDFQD2  abstract  tcbn65gplus_oalib  " \
+		"GFILL2  abstract  tcbn65gplus_oalib  " \
+		"DFKCNQD4  abstract  tcbn65gplus_oalib  " \
+		"LNQD4  abstract  tcbn65gplus_oalib  " \
+		"NR4D2  abstract  tcbn65gplus_oalib  " \
+		"DFXD2  abstract  tcbn65gplus_oalib  " \
+		"AOI33D4  abstract  tcbn65gplus_oalib  " \
+		"CKLHQD3  abstract  tcbn65gplus_oalib  " \
+		"MUX3D4  abstract  tcbn65gplus_oalib  " \
+		"MUX2ND4  abstract  tcbn65gplus_oalib  " \
+		"LNCNQD4  abstract  tcbn65gplus_oalib  " \
+		"AO32D1  abstract  tcbn65gplus_oalib  " \
+		"AOI211XD0  abstract  tcbn65gplus_oalib  " \
+		"LHCND2  abstract  tcbn65gplus_oalib  " \
+		"GFILL10  abstract  tcbn65gplus_oalib  " \
+		"GFILL4  abstract  tcbn65gplus_oalib  " \
+		"CKAN2D0  abstract  tcbn65gplus_oalib  " \
+		"GNR2D1  abstract  tcbn65gplus_oalib  " \
+		"MUX2ND2  abstract  tcbn65gplus_oalib  " \
+		"OAI32XD4  abstract  tcbn65gplus_oalib  " \
+		"DEL01  abstract  tcbn65gplus_oalib  " \
+		"NR3D0  abstract  tcbn65gplus_oalib  " \
+		"MUX2D2  abstract  tcbn65gplus_oalib  " \
+		"MAOI222D2  abstract  tcbn65gplus_oalib  " \
+		"AN4D2  abstract  tcbn65gplus_oalib  " \
+		"LHSNQD2  abstract  tcbn65gplus_oalib  " \
+		"TIEH  abstract  tcbn65gplus_oalib  " \
+		"AOI222XD4  abstract  tcbn65gplus_oalib  " \
+		"OR4D1  abstract  tcbn65gplus_oalib  " \
+		"EDFCND1  abstract  tcbn65gplus_oalib  " \
+		"DFKCNQD1  abstract  tcbn65gplus_oalib  " \
+		"LHSNQD4  abstract  tcbn65gplus_oalib  " \
+		"LNCND1  abstract  tcbn65gplus_oalib  " \
+		"HA1D2  abstract  tcbn65gplus_oalib  " \
+		"BENCD1  abstract  tcbn65gplus_oalib  " \
+		"AN3D0  abstract  tcbn65gplus_oalib  " \
+		"AOI211D4  abstract  tcbn65gplus_oalib  " \
+		"CKAN2D2  abstract  tcbn65gplus_oalib  " \
+		"GNR3D1  abstract  tcbn65gplus_oalib  " \
+		"SDFXQD4  abstract  tcbn65gplus_oalib  " \
+		"NR2XD8  abstract  tcbn65gplus_oalib  " \
+		"LHD1  abstract  tcbn65gplus_oalib  " \
+		"EDFQD4  abstract  tcbn65gplus_oalib  " \
+		"LNSNQD1  abstract  tcbn65gplus_oalib  " \
+		"MUX2D4  abstract  tcbn65gplus_oalib  " \
+		"SDFXD1  abstract  tcbn65gplus_oalib  " \
+		"AO31D1  abstract  tcbn65gplus_oalib  " \
+		"SDFCSNQD1  abstract  tcbn65gplus_oalib  " \
+		"SDFKSND0  abstract  tcbn65gplus_oalib  " \
+		"GMUX2ND1  abstract  tcbn65gplus_oalib  " \
+		"ISOHID2  abstract  tcbn65gplus_oalib  " \
+		"FCICOND1  abstract  tcbn65gplus_oalib  " \
+		"AOI222D2  abstract  tcbn65gplus_oalib  " \
+		"DFCSND1  abstract  tcbn65gplus_oalib  " \
+		"LHSND1  abstract  tcbn65gplus_oalib  " \
+		"GINVD2  abstract  tcbn65gplus_oalib  " \
+		"OAI21D1  abstract  tcbn65gplus_oalib  " \
+		"OR2D8  abstract  tcbn65gplus_oalib  " \
+		"CKAN2D4  abstract  tcbn65gplus_oalib  " \
+		"SDFCSNQD4  abstract  tcbn65gplus_oalib  " \
+		"OAI31D1  abstract  tcbn65gplus_oalib  " \
+		"ND2D0  abstract  tcbn65gplus_oalib  " \
+		"CKLHQD20  abstract  tcbn65gplus_oalib  " \
+		"HICIND1  abstract  tcbn65gplus_oalib  " \
+		"CKXOR2D2  abstract  tcbn65gplus_oalib  " \
+		"ND4D4  abstract  tcbn65gplus_oalib  " \
+		"FCSICIND2  abstract  tcbn65gplus_oalib  " \
+		"HCOSCOND2  abstract  tcbn65gplus_oalib  " \
+		"SDFKSNQD0  abstract  tcbn65gplus_oalib  " \
+		"IINR4D1  abstract  tcbn65gplus_oalib  " \
+		"BMLD4  abstract  tcbn65gplus_oalib  " \
+		"GXNR2D1  abstract  tcbn65gplus_oalib  " \
+		"ND3D2  abstract  tcbn65gplus_oalib  " \
+		"OAI221D4  abstract  tcbn65gplus_oalib  " \
+		"GDCAP2  abstract  tcbn65gplus_oalib  " \
+		"EDFD2  abstract  tcbn65gplus_oalib  " \
+		"SEDFQXD2  abstract  tcbn65gplus_oalib  " \
+		"XOR4D1  abstract  tcbn65gplus_oalib  " \
+		"IIND4D0  abstract  tcbn65gplus_oalib  " \
+		"GINVD4  abstract  tcbn65gplus_oalib  " \
+		"GAOI22D1  abstract  tcbn65gplus_oalib  " \
+		"LNSND2  abstract  tcbn65gplus_oalib  " \
+		"CKND20  abstract  tcbn65gplus_oalib  " \
+		"OA221D1  abstract  tcbn65gplus_oalib  " \
+		"LNCNDQD2  abstract  tcbn65gplus_oalib  " \
+		"AO22D0  abstract  tcbn65gplus_oalib  " \
+		"ISOHID4  abstract  tcbn65gplus_oalib  " \
+		"CKAN2D8  abstract  tcbn65gplus_oalib  " \
+		"SDFCNQD2  abstract  tcbn65gplus_oalib  " \
+		"CKND4  abstract  tcbn65gplus_oalib  " \
+		"AOI32D0  abstract  tcbn65gplus_oalib  " \
+		"OAI221D1  abstract  tcbn65gplus_oalib  " \
+		"LNCSNQD2  abstract  tcbn65gplus_oalib  " \
+		"IIND4D2  abstract  tcbn65gplus_oalib  " \
+		"CKBD3  abstract  tcbn65gplus_oalib  " \
+		"IAO21D1  abstract  tcbn65gplus_oalib  " \
+		"LHSNDQD2  abstract  tcbn65gplus_oalib  " \
+		"LNSND4  abstract  tcbn65gplus_oalib  " \
+		"MAOI22D1  abstract  tcbn65gplus_oalib  " \
+		"GDCAP10  abstract  tcbn65gplus_oalib  " \
+		"GDCAP4  abstract  tcbn65gplus_oalib  " \
+		"XOR3D1  abstract  tcbn65gplus_oalib  " \
+		"MAOI22D4  abstract  tcbn65gplus_oalib  " \
+		"NR2D3  abstract  tcbn65gplus_oalib  " \
+		"FILL4  abstract  tcbn65gplus_oalib  " \
+		"FCICIND1  abstract  tcbn65gplus_oalib  " \
+		"ISOHID8  abstract  tcbn65gplus_oalib  " \
+		"SDFNCND2  abstract  tcbn65gplus_oalib  " \
+		"FCSICOND2  abstract  tcbn65gplus_oalib  " \
+		"IIND4D4  abstract  tcbn65gplus_oalib  " \
+		"OR2D2  abstract  tcbn65gplus_oalib  " \
+		"OR3D4  abstract  tcbn65gplus_oalib  " \
+		"CKBD12  abstract  tcbn65gplus_oalib  " \
+		"IOA22D0  abstract  tcbn65gplus_oalib  " \
+		"GINVD8  abstract  tcbn65gplus_oalib  " \
+		"XOR2D1  abstract  tcbn65gplus_oalib  " \
+		"CKND24  abstract  tcbn65gplus_oalib  " \
+		"OA211D1  abstract  tcbn65gplus_oalib  " \
+		"AN4D1  abstract  tcbn65gplus_oalib  " \
+		"FICOND1  abstract  tcbn65gplus_oalib  " \
+		"SEDFKCNQD4  abstract  tcbn65gplus_oalib  " \
+		"AOI32D2  abstract  tcbn65gplus_oalib  " \
+		"FIICOND2  abstract  tcbn65gplus_oalib  " \
+		"DFQD4  abstract  tcbn65gplus_oalib  " \
+		"IOA22D2  abstract  tcbn65gplus_oalib  " \
+		"AO21D0  abstract  tcbn65gplus_oalib  " \
+		"AOI32D4  abstract  tcbn65gplus_oalib  " \
+		"AN4XD1  abstract  tcbn65gplus_oalib  " \
+		"INR4D0  abstract  tcbn65gplus_oalib  " \
+		"DFND4  abstract  tcbn65gplus_oalib  " \
+		"AO22D2  abstract  tcbn65gplus_oalib  " \
+		"GND3D1  abstract  tcbn65gplus_oalib  " \
+		"AOI22D0  abstract  tcbn65gplus_oalib  " \
+		"SEDFCND0  abstract  tcbn65gplus_oalib  " \
+		"FILL_NW_FA_LL  abstract  tcbn65gplus_oalib  " \
+		"GTIEL  abstract  tcbn65gplus_oalib  " \
+		"LVLLHFAD1  abstract  tcbn65gplus_oalib  " \
+		"NR4D1  abstract  tcbn65gplus_oalib  " \
+		"DFXD1  abstract  tcbn65gplus_oalib  " \
+		"OA33D1  abstract  tcbn65gplus_oalib  " \
+		"SDFSNQD0  abstract  tcbn65gplus_oalib  " \
+		"BUFTD0  abstract  tcbn65gplus_oalib  " \
+		"GDFQD1  abstract  tcbn65gplus_oalib  " \
+		"OAI33D0  abstract  tcbn65gplus_oalib  " \
+		"IOA22D4  abstract  tcbn65gplus_oalib  " \
+		"AOI221D0  abstract  tcbn65gplus_oalib  " \
+		"CKBD16  abstract  tcbn65gplus_oalib  " \
+		"AO222D0  abstract  tcbn65gplus_oalib  " \
+		"OD18DCAP32  abstract  tcbn65gplus_oalib  " \
+		"DCAP16  abstract  tcbn65gplus_oalib  " \
+		"LVLLHFAD4  abstract  tcbn65gplus_oalib  " \
+		"INR4D2  abstract  tcbn65gplus_oalib  " \
+		"DEL015  abstract  tcbn65gplus_oalib  " \
+		"AO22D4  abstract  tcbn65gplus_oalib  " \
+		"AOI22D2  abstract  tcbn65gplus_oalib  " \
+		"INVD20  abstract  tcbn65gplus_oalib  " \
+		"SEDFCNQD0  abstract  tcbn65gplus_oalib  " \
+		"OR4D0  abstract  tcbn65gplus_oalib  " \
+		"AOI22D4  abstract  tcbn65gplus_oalib  " \
+		"INVD4  abstract  tcbn65gplus_oalib  " \
+		"INR3D0  abstract  tcbn65gplus_oalib  " \
+		"DFCNQD2  abstract  tcbn65gplus_oalib  " \
+		"AO21D2  abstract  tcbn65gplus_oalib  " \
+		"MAOI222D1  abstract  tcbn65gplus_oalib  " \
+		"MOAI22D0  abstract  tcbn65gplus_oalib  " \
+		"OAI33D2  abstract  tcbn65gplus_oalib  " \
+		"GND2D1  abstract  tcbn65gplus_oalib  " \
+		"BUFTD2  abstract  tcbn65gplus_oalib  " \
+		"AO222D2  abstract  tcbn65gplus_oalib  " \
+		"SEDFKCNQD1  abstract  tcbn65gplus_oalib  " \
+		"SDFNCSND2  abstract  tcbn65gplus_oalib  " \
+		"CKBD8  abstract  tcbn65gplus_oalib  " \
+		"DCAP8  abstract  tcbn65gplus_oalib  " \
+		"FILL_NW_HH  abstract  tcbn65gplus_oalib  " \
+		"OA32D1  abstract  tcbn65gplus_oalib  " \
+		"LHCSNDD4  abstract  tcbn65gplus_oalib  " \
+		"SEDFD0  abstract  tcbn65gplus_oalib  " \
+		"INR4D4  abstract  tcbn65gplus_oalib  " \
+		"BUFTD4  abstract  tcbn65gplus_oalib  " \
+		"SEDFQD1  abstract  tcbn65gplus_oalib  " \
+		"OAI222XD4  abstract  tcbn65gplus_oalib  " \
+		"BUFFD1  abstract  tcbn65gplus_oalib  " \
+		"NR2D8  abstract  tcbn65gplus_oalib  " \
+		"SDFSND1  abstract  tcbn65gplus_oalib  " \
+		"INR3D4  abstract  tcbn65gplus_oalib  " \
+		"DFCNQD4  abstract  tcbn65gplus_oalib  " \
+		"OAI33D4  abstract  tcbn65gplus_oalib  " \
+		"INR3D2  abstract  tcbn65gplus_oalib  " \
+		"AO21D4  abstract  tcbn65gplus_oalib  " \
+		"AO222D4  abstract  tcbn65gplus_oalib  " \
+		"BUFFD3  abstract  tcbn65gplus_oalib  " \
+		"DFSNQD1  abstract  tcbn65gplus_oalib  " \
+		"GND2D3  abstract  tcbn65gplus_oalib  " \
+		"GAOI21D2  abstract  tcbn65gplus_oalib  " \
+		"DFCND1  abstract  tcbn65gplus_oalib  " \
+		"HA1D1  abstract  tcbn65gplus_oalib  " \
+		"DFNCSND2  abstract  tcbn65gplus_oalib  " \
+		"AN2D8  abstract  tcbn65gplus_oalib  " \
+		"SDFKCND2  abstract  tcbn65gplus_oalib  " \
+		"ND3D1  abstract  tcbn65gplus_oalib  " \
+		"INR2D0  abstract  tcbn65gplus_oalib  " \
+		"ND4D3  abstract  tcbn65gplus_oalib  " \
+		"SDFNSND2  abstract  tcbn65gplus_oalib  " \
+		"LHCSNDD1  abstract  tcbn65gplus_oalib  " \
+		"GBUFFD2  abstract  tcbn65gplus_oalib  " \
+		"BUFTD6  abstract  tcbn65gplus_oalib  " \
+		"SDFD0  abstract  tcbn65gplus_oalib  " \
+		"INVD24  abstract  tcbn65gplus_oalib  " \
+		"SEDFKCND1  abstract  tcbn65gplus_oalib  " \
+		"CKMUX2D4  abstract  tcbn65gplus_oalib  " \
+		"CKLNQD16  abstract  tcbn65gplus_oalib  " \
+		"OA31D1  abstract  tcbn65gplus_oalib  " \
+		"DFKCSND2  abstract  tcbn65gplus_oalib  " \
+		"SDFCND0  abstract  tcbn65gplus_oalib  " \
+		"SEDFQNXD0  abstract  tcbn65gplus_oalib  " \
+		"BUFTD12  abstract  tcbn65gplus_oalib  " \
+		"FILL1_LL  abstract  tcbn65gplus_oalib  " \
+		"OAI211D4  abstract  tcbn65gplus_oalib  " \
+		"SDFKCSNQD2  abstract  tcbn65gplus_oalib  " \
+		"DCAP64  abstract  tcbn65gplus_oalib  " \
+		"EDFD1  abstract  tcbn65gplus_oalib  " \
+		"CKLNQD2  abstract  tcbn65gplus_oalib  " \
+		"SEDFKCND4  abstract  tcbn65gplus_oalib  " \
+		"SEDFQND4  abstract  tcbn65gplus_oalib  " \
+		"GBUFFD4  abstract  tcbn65gplus_oalib  " \
+		"INR2D2  abstract  tcbn65gplus_oalib  " \
+		"OAI211D1  abstract  tcbn65gplus_oalib  " \
+		"DFSND2  abstract  tcbn65gplus_oalib  " \
+		"BUFFD20  abstract  tcbn65gplus_oalib  " \
+		"OAI222D2  abstract  tcbn65gplus_oalib  " \
+		"CKMUX2D1  abstract  tcbn65gplus_oalib  " \
+		"CKND3  abstract  tcbn65gplus_oalib  " \
+		"IOA21D2  abstract  tcbn65gplus_oalib  " \
+		"LHCSNDQD4  abstract  tcbn65gplus_oalib  " \
+		"LHCSNDQD1  abstract  tcbn65gplus_oalib  " \
+		"CKLNQD4  abstract  tcbn65gplus_oalib  " \
+		"SEDFD4  abstract  tcbn65gplus_oalib  " \
+		"BUFTD8  abstract  tcbn65gplus_oalib  " \
+		"LVLHLD2  abstract  tcbn65gplus_oalib  " \
+		"SEDFD2  abstract  tcbn65gplus_oalib  " \
+		"NR3D4  abstract  tcbn65gplus_oalib  " \
+		"GDFCNQD1  abstract  tcbn65gplus_oalib  " \
+		"GOAI21D1  abstract  tcbn65gplus_oalib  " \
+		"EDFCNQD2  abstract  tcbn65gplus_oalib  " \
+		"LHCNDD1  abstract  tcbn65gplus_oalib  " \
+		"SDFKCNQD2  abstract  tcbn65gplus_oalib  " \
+		"INR2D4  abstract  tcbn65gplus_oalib  " \
+		"CKBD2  abstract  tcbn65gplus_oalib  " \
+		"OR2XD1  abstract  tcbn65gplus_oalib  " \
+		"XNR4D1  abstract  tcbn65gplus_oalib  " \
+		"ANTENNA  abstract  tcbn65gplus_oalib  " \
+		"CKND12  abstract  tcbn65gplus_oalib  " \
+		"SDFQND1  abstract  tcbn65gplus_oalib  " \
+		"BUFTD16  abstract  tcbn65gplus_oalib  " \
+		"SDFQD1  abstract  tcbn65gplus_oalib  " \
+		"LHCSND1  abstract  tcbn65gplus_oalib  " \
+		"NR2D2  abstract  tcbn65gplus_oalib  " \
+		"DCAP  abstract  tcbn65gplus_oalib  " \
+		"IND4D0  abstract  tcbn65gplus_oalib  " \
+		"AN3D4  abstract  tcbn65gplus_oalib  " \
+		"CKLNQD6  abstract  tcbn65gplus_oalib  " \
+		"SEDFQND1  abstract  tcbn65gplus_oalib  " \
+		"LVLHLD4  abstract  tcbn65gplus_oalib  " \
+		"OR2D1  abstract  tcbn65gplus_oalib  " \
+		"GBUFFD8  abstract  tcbn65gplus_oalib  " \
+		"LNCNDD4  abstract  tcbn65gplus_oalib  " \
+		"DFSND4  abstract  tcbn65gplus_oalib  " \
+		"AOI31D0  abstract  tcbn65gplus_oalib  " \
+		"HCOSCIND1  abstract  tcbn65gplus_oalib  " \
+		"DFCSNQD2  abstract  tcbn65gplus_oalib  " \
+		"BUFFD24  abstract  tcbn65gplus_oalib  " \
+		"AN2D2  abstract  tcbn65gplus_oalib  " \
+		"LHSNDD4  abstract  tcbn65gplus_oalib  " \
+		"IOA21D0  abstract  tcbn65gplus_oalib  " \
+		"FA1D2  abstract  tcbn65gplus_oalib  " \
+		"SDFKCSND2  abstract  tcbn65gplus_oalib  " \
+		"GSDFCNQD1  abstract  tcbn65gplus_oalib  " \
+		"IND3D0  abstract  tcbn65gplus_oalib  " \
+		"AOI31D4  abstract  tcbn65gplus_oalib  " \
+		"CKLNQD8  abstract  tcbn65gplus_oalib  " \
+		"ISOLOD1  abstract  tcbn65gplus_oalib  " \
+		"LVLLHD1  abstract  tcbn65gplus_oalib  " \
+		"IND4D2  abstract  tcbn65gplus_oalib  " \
+		"LNSNDD1  abstract  tcbn65gplus_oalib  " \
+		"DFKSND2  abstract  tcbn65gplus_oalib  " \
+		"GFILL  abstract  tcbn65gplus_oalib  " \
+		"LNCNDD2  abstract  tcbn65gplus_oalib  " \
+		"GOR2D2  abstract  tcbn65gplus_oalib  " \
+		"AOI31D2  abstract  tcbn65gplus_oalib  " \
+		"OA22D2  abstract  tcbn65gplus_oalib  " \
+		"SDFCND2  abstract  tcbn65gplus_oalib  " \
+		"ND4D8  abstract  tcbn65gplus_oalib  " \
+		"SDFCSND0  abstract  tcbn65gplus_oalib  " \
+		"NR4D0  abstract  tcbn65gplus_oalib  " \
+		"LHSNDD2  abstract  tcbn65gplus_oalib  " \
+		"FICIND1  abstract  tcbn65gplus_oalib  " \
+		"AOI211XD2  abstract  tcbn65gplus_oalib  " \
+		"LNCSND2  abstract  tcbn65gplus_oalib  " \
+		"HICOND2  abstract  tcbn65gplus_oalib  " \
+		"OAI22D2  abstract  tcbn65gplus_oalib  " \
+		"IOA21D4  abstract  tcbn65gplus_oalib  " \
+		"AOI21D0  abstract  tcbn65gplus_oalib  " \
+		"CKND16  abstract  tcbn65gplus_oalib  " \
+		"LNCSND4  abstract  tcbn65gplus_oalib  " \
+		"LVLHLD8  abstract  tcbn65gplus_oalib  " \
+		"MAOI222D4  abstract  tcbn65gplus_oalib  " \
+		"SDFKSND2  abstract  tcbn65gplus_oalib  " \
+		"DFKSND4  abstract  tcbn65gplus_oalib  " \
+		"LNQD2  abstract  tcbn65gplus_oalib  " \
+		"IND2D4  abstract  tcbn65gplus_oalib  " \
+		"IND4D4  abstract  tcbn65gplus_oalib  " \
+		"AOI222D4  abstract  tcbn65gplus_oalib  " \
+		"SDFCND4  abstract  tcbn65gplus_oalib  " \
+		"FILL16  abstract  tcbn65gplus_oalib  " \
+		"SEDFQXD1  abstract  tcbn65gplus_oalib  " \
+		"OAI32D0  abstract  tcbn65gplus_oalib  " \
+		"XNR3D1  abstract  tcbn65gplus_oalib  " \
+		"AO221D0  abstract  tcbn65gplus_oalib  " \
+		"ND2D4  abstract  tcbn65gplus_oalib  " \
+		"SDFCSNQD0  abstract  tcbn65gplus_oalib  " \
+		"IND3D2  abstract  tcbn65gplus_oalib  " \
+		"OA22D0  abstract  tcbn65gplus_oalib  " \
+		"OAI32D2  abstract  tcbn65gplus_oalib  " \
+		"GAN2D2  abstract  tcbn65gplus_oalib  " \
+		"XNR2D1  abstract  tcbn65gplus_oalib  " \
+		"AN4D0  abstract  tcbn65gplus_oalib  " \
+		"AOI21D2  abstract  tcbn65gplus_oalib  " \
+		"DFNSND2  abstract  tcbn65gplus_oalib  " \
+		"CKXOR2D4  abstract  tcbn65gplus_oalib  " \
+		"LVLLHCD8  abstract  tcbn65gplus_oalib  " \
+		"CKND8  abstract  tcbn65gplus_oalib  " \
+		"IND2D0  abstract  tcbn65gplus_oalib  " \
+		"SDFCNQD4  abstract  tcbn65gplus_oalib  " \
+		"INVD3  abstract  tcbn65gplus_oalib  " \
+		"AOI222D1  abstract  tcbn65gplus_oalib  " \
+		"DEL005  abstract  tcbn65gplus_oalib  " \
+		"AO221D2  abstract  tcbn65gplus_oalib  " \
+		"CKND2D1  abstract  tcbn65gplus_oalib  " \
+		"FCSICIND1  abstract  tcbn65gplus_oalib  " \
+		"HCOSCOND1  abstract  tcbn65gplus_oalib  " \
+		"OAI32D4  abstract  tcbn65gplus_oalib  " \
+		"LNCNDQD4  abstract  tcbn65gplus_oalib  " \
+		"IND3D4  abstract  tcbn65gplus_oalib  " \
+		"AOI211D0  abstract  tcbn65gplus_oalib  " \
+		"AOI21D4  abstract  tcbn65gplus_oalib  " \
+		"OR3D8  abstract  tcbn65gplus_oalib  " \
+		"DFNSND4  abstract  tcbn65gplus_oalib  " \
+		"LHSNDQD1  abstract  tcbn65gplus_oalib  " \
+		"OAI22D0  abstract  tcbn65gplus_oalib  " \
+		"INVD12  abstract  tcbn65gplus_oalib  " \
+		"FILL8  abstract  tcbn65gplus_oalib  " \
+		"CKXOR2D1  abstract  tcbn65gplus_oalib  " \
+		"AO211D0  abstract  tcbn65gplus_oalib  " \
+		"LNCSNQD4  abstract  tcbn65gplus_oalib  " \
+		"IND2D2  abstract  tcbn65gplus_oalib  " \
+		"OA21D0  abstract  tcbn65gplus_oalib  " \
+		"SDFCNQD1  abstract  tcbn65gplus_oalib  " \
+		"SDFKSNQD2  abstract  tcbn65gplus_oalib  " \
+		"AO221D4  abstract  tcbn65gplus_oalib  " \
+		"DFXQD1  abstract  tcbn65gplus_oalib  " \
+		"SEDFQXD4  abstract  tcbn65gplus_oalib  " \
+		"SDFND1  abstract  tcbn65gplus_oalib  " \
+		"HA1D0  abstract  tcbn65gplus_oalib  " \
+		"OA222D0  abstract  tcbn65gplus_oalib  " \
+		"BMLD2  abstract  tcbn65gplus_oalib  " \
+		"GDCAP  abstract  tcbn65gplus_oalib  " \
+		"OR4D4  abstract  tcbn65gplus_oalib  " \
+		"OA21D2  abstract  tcbn65gplus_oalib  " \
+		"GXOR2D1  abstract  tcbn65gplus_oalib  " \
+		"MUX4ND1  abstract  tcbn65gplus_oalib  " \
+		"ND4D2  abstract  tcbn65gplus_oalib  " \
+		"MUX4D1  abstract  tcbn65gplus_oalib  " \
+		"OA22D4  abstract  tcbn65gplus_oalib  " \
+		"DFKCND1  abstract  tcbn65gplus_oalib  " \
+		"IAO22D4  abstract  tcbn65gplus_oalib  " \
+		"IAO22D0  abstract  tcbn65gplus_oalib  " \
+		"AO211D2  abstract  tcbn65gplus_oalib  " \
+		"AO32D0  abstract  tcbn65gplus_oalib  " \
+		"CKND2D3  abstract  tcbn65gplus_oalib  " \
+		"OA222D4  abstract  tcbn65gplus_oalib  " \
+		"LVLLHCD2  abstract  tcbn65gplus_oalib  " \
+		"LHSNDQD4  abstract  tcbn65gplus_oalib  " \
+		"EDFKCND2  abstract  tcbn65gplus_oalib  " \
+		"LNCSNDD2  abstract  tcbn65gplus_oalib  " \
+		"AO211D4  abstract  tcbn65gplus_oalib  " \
+		"GMUX2D2  abstract  tcbn65gplus_oalib  " \
+		"ND3D0  abstract  tcbn65gplus_oalib  " \
+		"LNCNDQD1  abstract  tcbn65gplus_oalib  " \
+		"OA222D2  abstract  tcbn65gplus_oalib  " \
+		"INR2XD0  abstract  tcbn65gplus_oalib  " \
+		"SDFNCND4  abstract  tcbn65gplus_oalib  " \
+		"OD18DCAP16  abstract  tcbn65gplus_oalib  " \
+		"BHD  abstract  tcbn65gplus_oalib  " \
+		"MUX3D1  abstract  tcbn65gplus_oalib  " \
+		"LHCNQD2  abstract  tcbn65gplus_oalib  " \
+		"OAI221D0  abstract  tcbn65gplus_oalib  " \
+		"OAI22D4  abstract  tcbn65gplus_oalib  " \
+		"LNCSNQD1  abstract  tcbn65gplus_oalib  " \
+		"IAO22D2  abstract  tcbn65gplus_oalib  " \
+		"FILL64  abstract  tcbn65gplus_oalib  " \
+		"LVLLHFACD8  abstract  tcbn65gplus_oalib  " \
+		"AO33D0  abstract  tcbn65gplus_oalib  " \
+		"NR2XD1  abstract  tcbn65gplus_oalib  " \
+		"LND4  abstract  tcbn65gplus_oalib  " \
+		"AN2XD1  abstract  tcbn65gplus_oalib  " \
+		"INVD16  abstract  tcbn65gplus_oalib  " \
+		"LNCSNDQD2  abstract  tcbn65gplus_oalib  " \
+		"MUX3ND1  abstract  tcbn65gplus_oalib  " \
+		"CKND2  abstract  tcbn65gplus_oalib  " \
+		"OAI31D2  abstract  tcbn65gplus_oalib  " \
+		"OA21D4  abstract  tcbn65gplus_oalib  " \
+		"SEDFXD0  abstract  tcbn65gplus_oalib  " \
+		"INR2XD2  abstract  tcbn65gplus_oalib  " \
+		"CKLNQD24  abstract  tcbn65gplus_oalib  " \
+		"LHQD4  abstract  tcbn65gplus_oalib  " \
+		"AOI33D1  abstract  tcbn65gplus_oalib  " \
+		"DFNCND1  abstract  tcbn65gplus_oalib  " \
+		"INVD8  abstract  tcbn65gplus_oalib  " \
+		"SDFNCND1  abstract  tcbn65gplus_oalib  " \
+		"AN2D1  abstract  tcbn65gplus_oalib  " \
+		"NR3D3  abstract  tcbn65gplus_oalib  " \
+		"FCSICOND1  abstract  tcbn65gplus_oalib  " \
+		"INVD2  abstract  tcbn65gplus_oalib  " \
+		"SEDFCND2  abstract  tcbn65gplus_oalib  " \
+		"CKBD1  abstract  tcbn65gplus_oalib  " \
+		"LHCND1  abstract  tcbn65gplus_oalib  " \
+		"AO33D2  abstract  tcbn65gplus_oalib  " \
+		"OR3D2  abstract  tcbn65gplus_oalib  " \
+		"NR2XD3  abstract  tcbn65gplus_oalib  " \
+		"EDFQD1  abstract  tcbn65gplus_oalib  " \
+		"SDFXQD1  abstract  tcbn65gplus_oalib  " \
+		"LNCNQD1  abstract  tcbn65gplus_oalib  " \
+		"NR2D1  abstract  tcbn65gplus_oalib  " \
+		"LHCNQD4  abstract  tcbn65gplus_oalib  " \
+		"FILL2  abstract  tcbn65gplus_oalib  " \
+		"SEDFXD2  abstract  tcbn65gplus_oalib  " \
+		"INR2XD4  abstract  tcbn65gplus_oalib  " \
+		"FILL_NW_LL  abstract  tcbn65gplus_oalib  " \
+		"EDFKCNQD2  abstract  tcbn65gplus_oalib  " \
+		"CKLHQD2  abstract  tcbn65gplus_oalib  " \
+		"MAOI22D0  abstract  tcbn65gplus_oalib  " \
+		"AOI221XD4  abstract  tcbn65gplus_oalib  " \
+		"CKLHQD16  abstract  tcbn65gplus_oalib  " \
+		"SDFSNQD2  abstract  tcbn65gplus_oalib  " \
+		"MUX2ND1  abstract  tcbn65gplus_oalib  " \
+		"MUX2D1  abstract  tcbn65gplus_oalib  " \
+		"AO32D2  abstract  tcbn65gplus_oalib  " \
+		"CKAN2D1  abstract  tcbn65gplus_oalib  " \
+		"AO33D4  abstract  tcbn65gplus_oalib  " \
+		"LHSNQD1  abstract  tcbn65gplus_oalib  " \
+		"OR2D0  abstract  tcbn65gplus_oalib  " \
+		"SEDFXD4  abstract  tcbn65gplus_oalib  " \
+		"GFILL3  abstract  tcbn65gplus_oalib  " \
+		"OD18DCAP64  abstract  tcbn65gplus_oalib  " \
+		"LHSND4  abstract  tcbn65gplus_oalib  " \
+		"CKLHQD4  abstract  tcbn65gplus_oalib  " \
+		"LNCND4  abstract  tcbn65gplus_oalib  " \
+		"MOAI22D2  abstract  tcbn65gplus_oalib  " \
+		"SDFXD0  abstract  tcbn65gplus_oalib  " \
+		"AO31D0  abstract  tcbn65gplus_oalib  " \
+		"DFND2  abstract  tcbn65gplus_oalib  " \
+		"SDFD4  abstract  tcbn65gplus_oalib  " \
+		"OAI21D2  abstract  tcbn65gplus_oalib  " \
+		"LND2  abstract  tcbn65gplus_oalib  " \
+		"AOI221D2  abstract  tcbn65gplus_oalib  " \
+		"EDFCND2  abstract  tcbn65gplus_oalib  " \
+		"CKLHQD6  abstract  tcbn65gplus_oalib  " \
+		"FA1D1  abstract  tcbn65gplus_oalib  " \
+		"LNCND2  abstract  tcbn65gplus_oalib  " \
+		"LNQD1  abstract  tcbn65gplus_oalib  " \
+		"BENCD2  abstract  tcbn65gplus_oalib  " \
+		"EDFCND4  abstract  tcbn65gplus_oalib  " \
+		"SDFNCSND4  abstract  tcbn65gplus_oalib  " \
+		"AO32D4  abstract  tcbn65gplus_oalib  " \
+		"SDFNCSND1  abstract  tcbn65gplus_oalib  " \
+		"SEDFCNQD2  abstract  tcbn65gplus_oalib  " \
+		"GNR3D2  abstract  tcbn65gplus_oalib  " \
+		"OAI31D0  abstract  tcbn65gplus_oalib  " \
+		"ND2D3  abstract  tcbn65gplus_oalib  " \
+		"LNSNQD2  abstract  tcbn65gplus_oalib  " \
+		"GINVD1  abstract  tcbn65gplus_oalib  " \
+		"SDFXD2  abstract  tcbn65gplus_oalib  " \
+		"AO31D2  abstract  tcbn65gplus_oalib  " \
+		"SDFKCSNQD4  abstract  tcbn65gplus_oalib  " \
+		"SDFKCND4  abstract  tcbn65gplus_oalib  " \
+		"XOR4D0  abstract  tcbn65gplus_oalib  " \
+		"CKLHQD8  abstract  tcbn65gplus_oalib  " \
+		"DFCSND2  abstract  tcbn65gplus_oalib  " \
+		"IINR4D0  abstract  tcbn65gplus_oalib  " \
+		"CKBD6  abstract  tcbn65gplus_oalib  " \
+		"SDFNSND4  abstract  tcbn65gplus_oalib  " \
+		"LHSND2  abstract  tcbn65gplus_oalib  " \
+		"FIICOND1  abstract  tcbn65gplus_oalib  " \
+		"ISOHID1  abstract  tcbn65gplus_oalib  " \
+		"LHCNDQD2  abstract  tcbn65gplus_oalib  " \
+		"AO31D4  abstract  tcbn65gplus_oalib  " \
+		"DFCSND4  abstract  tcbn65gplus_oalib  " \
+		"BENCD4  abstract  tcbn65gplus_oalib  " \
+		"SEDFKCNQD0  abstract  tcbn65gplus_oalib  " \
+		"LND1  abstract  tcbn65gplus_oalib  " \
+		"DFQD2  abstract  tcbn65gplus_oalib  " \
+		"NR3D8  abstract  tcbn65gplus_oalib  " \
+		"DFKCSND4  abstract  tcbn65gplus_oalib  " \
+		"LNSNQD4  abstract  tcbn65gplus_oalib  " \
+		"HICIND2  abstract  tcbn65gplus_oalib  " \
+		"LHCSNQD2  abstract  tcbn65gplus_oalib  " \
+		"LVLLHFACD2  abstract  tcbn65gplus_oalib  " \
+		"GINVD3  abstract  tcbn65gplus_oalib  " \
+		"CMPE42D2  abstract  tcbn65gplus_oalib  " \
+		"GAOI21D1  abstract  tcbn65gplus_oalib  " \
+		"SDFXD4  abstract  tcbn65gplus_oalib  " \
+		"LNSND1  abstract  tcbn65gplus_oalib  " \
+		"SEDFKCND0  abstract  tcbn65gplus_oalib  " \
+		"IINR4D2  abstract  tcbn65gplus_oalib  " \
+		"GNR2D2  abstract  tcbn65gplus_oalib  " \
+		"SDFKCND1  abstract  tcbn65gplus_oalib  " \
+		"OAI21D0  abstract  tcbn65gplus_oalib  " \
+		"GXNR2D2  abstract  tcbn65gplus_oalib  " \
+		"AN3D8  abstract  tcbn65gplus_oalib  " \
+		"SDFNSND1  abstract  tcbn65gplus_oalib  " \
+		"OAI31D4  abstract  tcbn65gplus_oalib  " \
+		"OAI222D4  abstract  tcbn65gplus_oalib  " \
+		"NR4D4  abstract  tcbn65gplus_oalib  " \
+		"IIND4D1  abstract  tcbn65gplus_oalib  " \
+		"XOR4D2  abstract  tcbn65gplus_oalib  " \
+		"DFKCSND1  abstract  tcbn65gplus_oalib  " \
+		"OA221D0  abstract  tcbn65gplus_oalib  " \
+		"SEDFQNXD2  abstract  tcbn65gplus_oalib  " \
+		"ND4D1  abstract  tcbn65gplus_oalib  " \
+		"IINR4D4  abstract  tcbn65gplus_oalib  " \
+		"EDFCNQD1  abstract  tcbn65gplus_oalib  " \
+		"OA211D0  abstract  tcbn65gplus_oalib  " \
+		"IAO21D0  abstract  tcbn65gplus_oalib  " \
+		"GDCAP3  abstract  tcbn65gplus_oalib  " \
+		"EDFCNQD4  abstract  tcbn65gplus_oalib  " \
+		"XOR3D0  abstract  tcbn65gplus_oalib  " \
+		"DFNCSND4  abstract  tcbn65gplus_oalib  " \
+		"BMLD1  abstract  tcbn65gplus_oalib  " \
+		"SDFKCSNQD1  abstract  tcbn65gplus_oalib  " \
+		"OAI222D1  abstract  tcbn65gplus_oalib  " \
+		"OA221D2  abstract  tcbn65gplus_oalib  " \
+		"CKMUX2D0  abstract  tcbn65gplus_oalib  " \
+		"SDFKCNQD1  abstract  tcbn65gplus_oalib  " \
+		"XOR4D4  abstract  tcbn65gplus_oalib  " \
+		"OAI211D0  abstract  tcbn65gplus_oalib  " \
+		"OAI21D4  abstract  tcbn65gplus_oalib  " \
+		"IAO21D2  abstract  tcbn65gplus_oalib  " \
+		"XOR2D0  abstract  tcbn65gplus_oalib  " \
+		"DFCSNQD4  abstract  tcbn65gplus_oalib  " \
+		"XOR3D2  abstract  tcbn65gplus_oalib  " \
+		"NR3D2  abstract  tcbn65gplus_oalib  " \
+		"SDFKCNQD4  abstract  tcbn65gplus_oalib  " \
+		"CKLNQD12  abstract  tcbn65gplus_oalib  " \
+		"DFXD4  abstract  tcbn65gplus_oalib  " \
+		"DFNCSND1  abstract  tcbn65gplus_oalib  " \
+		"SDFKCSND1  abstract  tcbn65gplus_oalib  " \
+		"CKND1  abstract  tcbn65gplus_oalib  " \
+		"OA221D4  abstract  tcbn65gplus_oalib  " \
+		"AOI33XD4  abstract  tcbn65gplus_oalib  " \
+		"OR3XD1  abstract  tcbn65gplus_oalib  " \
+		"AOI32D1  abstract  tcbn65gplus_oalib  " \
+		"ND2D8  abstract  tcbn65gplus_oalib  " \
+		"AN2D0  abstract  tcbn65gplus_oalib  " \
+		"LNSNDQD2  abstract  tcbn65gplus_oalib  " \
+		"SEDFQND0  abstract  tcbn65gplus_oalib  " \
+		"IAO21D4  abstract  tcbn65gplus_oalib  " \
+		"IOA22D1  abstract  tcbn65gplus_oalib  " \
+		"AO222D1  abstract  tcbn65gplus_oalib  " \
+		"AN4D4  abstract  tcbn65gplus_oalib  " \
+		"AO22D1  abstract  tcbn65gplus_oalib  " \
+		"CKBD0  abstract  tcbn65gplus_oalib  " \
+		"SDFKSND4  abstract  tcbn65gplus_oalib  " \
+		"SDFCSND2  abstract  tcbn65gplus_oalib  " \
+		"OA211D2  abstract  tcbn65gplus_oalib  " \
+		"AOI211XD1  abstract  tcbn65gplus_oalib  " \
+		"DFCSNQD1  abstract  tcbn65gplus_oalib  " \
+		"FICOND2  abstract  tcbn65gplus_oalib  " \
+		"XOR3D4  abstract  tcbn65gplus_oalib  " \
+		"NR2D0  abstract  tcbn65gplus_oalib  " \
+		"FILL1  abstract  tcbn65gplus_oalib  " \
+		"DFD4  abstract  tcbn65gplus_oalib  " \
+		"AN3D2  abstract  tcbn65gplus_oalib  " \
+		"GND3D2  abstract  tcbn65gplus_oalib  " \
+		"SDFKCSND4  abstract  tcbn65gplus_oalib  " \
+		"MAOI222D0  abstract  tcbn65gplus_oalib  " \
+		"XOR2D2  abstract  tcbn65gplus_oalib  " \
+		"DEL4  abstract  tcbn65gplus_oalib  " \
+		"OR3D1  abstract  tcbn65gplus_oalib  " \
+		"INR4D1  abstract  tcbn65gplus_oalib  " \
+		"BUFTD1  abstract  tcbn65gplus_oalib  " \
+		"OA211D4  abstract  tcbn65gplus_oalib  " \
+		"OA33D0  abstract  tcbn65gplus_oalib  " \
+		"AOI22D1  abstract  tcbn65gplus_oalib  " \
+		"SDFSND4  abstract  tcbn65gplus_oalib  " \
+		"BUFTD20  abstract  tcbn65gplus_oalib  " \
+		"AOI211XD4  abstract  tcbn65gplus_oalib  " \
+		"CKLHQD24  abstract  tcbn65gplus_oalib  " \
+		"AO21D1  abstract  tcbn65gplus_oalib  " \
+		"DFCNQD1  abstract  tcbn65gplus_oalib  " \
+		"HA1D4  abstract  tcbn65gplus_oalib  " \
+		"DFKCNQD2  abstract  tcbn65gplus_oalib  " \
+		"OAI33D1  abstract  tcbn65gplus_oalib  " \
+		"XOR2D4  abstract  tcbn65gplus_oalib  " \
+		"SDFKSND1  abstract  tcbn65gplus_oalib  " \
+		"GMUX2ND2  abstract  tcbn65gplus_oalib  " \
+		"FCICOND2  abstract  tcbn65gplus_oalib  " \
+		"DFND1  abstract  tcbn65gplus_oalib  " \
+		"OA33D2  abstract  tcbn65gplus_oalib  " \
+		"BUFFD0  abstract  tcbn65gplus_oalib  " \
+		"SDFCSNQD2  abstract  tcbn65gplus_oalib  " \
+		"AOI211D2  abstract  tcbn65gplus_oalib  " \
+		"SDFSND0  abstract  tcbn65gplus_oalib  " \
+		"ND3D4  abstract  tcbn65gplus_oalib  " \
+		"LNCSNDD1  abstract  tcbn65gplus_oalib  " \
+		"INR3D1  abstract  tcbn65gplus_oalib  " \
+		"GBUFFD1  abstract  tcbn65gplus_oalib  " \
+		"OA32D0  abstract  tcbn65gplus_oalib  " \
+		"GND2D2  abstract  tcbn65gplus_oalib  " \
+		"BUFTD3  abstract  tcbn65gplus_oalib  " \
+		"EDFD4  abstract  tcbn65gplus_oalib  " \
+		"SEDFQD0  abstract  tcbn65gplus_oalib  " \
+		"DEL3  abstract  tcbn65gplus_oalib  " \
+		"ND2D2  abstract  tcbn65gplus_oalib  " \
+		"FA1D0  abstract  tcbn65gplus_oalib  " \
+		"AOI222D0  abstract  tcbn65gplus_oalib  " \
+		"CKXOR2D0  abstract  tcbn65gplus_oalib  " \
+		"OAI221D2  abstract  tcbn65gplus_oalib  " \
+		"LVLLHCD4  abstract  tcbn65gplus_oalib  " \
+		"OA33D4  abstract  tcbn65gplus_oalib  " \
+		"BUFFD2  abstract  tcbn65gplus_oalib  " \
+		"SDFSND2  abstract  tcbn65gplus_oalib  " \
+		"ND4D0  abstract  tcbn65gplus_oalib  " \
+		"OAI221XD4  abstract  tcbn65gplus_oalib  " \
+		"SDFKSNQD4  abstract  tcbn65gplus_oalib  " \
+		"SDFKSNQD1  abstract  tcbn65gplus_oalib  " \
+		"CKND6  abstract  tcbn65gplus_oalib  " \
+		"DFD2  abstract  tcbn65gplus_oalib  " \
+		"INVD1  abstract  tcbn65gplus_oalib  " \
+		"SDFQND0  abstract  tcbn65gplus_oalib  " \
+		"OA32D2  abstract  tcbn65gplus_oalib  " \
+		"SEDFQD2  abstract  tcbn65gplus_oalib  " \
+		"GND2D4  abstract  tcbn65gplus_oalib  " \
+		"DFCND2  abstract  tcbn65gplus_oalib  " \
+		"DFQD1  abstract  tcbn65gplus_oalib  " \
+		"EDFKCND4  abstract  tcbn65gplus_oalib  " \
+		"LNCSNDD4  abstract  tcbn65gplus_oalib  " \
+		"CKLNQD1  abstract  tcbn65gplus_oalib  " \
+		"BUFFD12  abstract  tcbn65gplus_oalib  " \
+		"INR2D1  abstract  tcbn65gplus_oalib  " \
+		"GBUFFD3  abstract  tcbn65gplus_oalib  " \
+		"OA31D0  abstract  tcbn65gplus_oalib  " \
+		"DFSNQD2  abstract  tcbn65gplus_oalib  " \
+		"OR4D8  abstract  tcbn65gplus_oalib  " \
+		"BUFFD4  abstract  tcbn65gplus_oalib  " \
+		"SEDFD1  abstract  tcbn65gplus_oalib  " \
+		"DEL2  abstract  tcbn65gplus_oalib  " \
+		"XNR4D2  abstract  tcbn65gplus_oalib  " \
+		"SDFCNQD0  abstract  tcbn65gplus_oalib  " \
+		"OA31D2  abstract  tcbn65gplus_oalib  " \
+		"SEDFQD4  abstract  tcbn65gplus_oalib  " \
+		"OA32D4  abstract  tcbn65gplus_oalib  " \
+		"LHCNDD2  abstract  tcbn65gplus_oalib  " \
+		"CKLNQD3  abstract  tcbn65gplus_oalib  " \
+		"DFCND4  abstract  tcbn65gplus_oalib  " \
+		"LVLLHCD1  abstract  tcbn65gplus_oalib  " \
+		"DCAP32  abstract  tcbn65gplus_oalib  " \
+		"EDFKCND1  abstract  tcbn65gplus_oalib  " \
+		"LVLHLD1  abstract  tcbn65gplus_oalib  " \
+		"DFD1  abstract  tcbn65gplus_oalib  " \
+		"SDFNCND0  abstract  tcbn65gplus_oalib  " \
+		"DFSNQD4  abstract  tcbn65gplus_oalib  " \
+		"SEDFQXD0  abstract  tcbn65gplus_oalib  " \
+		"FCICIND2  abstract  tcbn65gplus_oalib  " \
+		"SEDFCND1  abstract  tcbn65gplus_oalib  " \
+		"OR2D4  abstract  tcbn65gplus_oalib  " \
+		"BUFFD6  abstract  tcbn65gplus_oalib  " \
+		"SDFQD0  abstract  tcbn65gplus_oalib  " \
+		"DFSND1  abstract  tcbn65gplus_oalib  " \
+		"BUFTD24  abstract  tcbn65gplus_oalib  " \
+	 -library_definitions_file "/homes/user/stud/fall25/cm4648/ee6350/6350_draft_folder/TinyTPU_v1/output_idx_controller/pnr/work/cds.lib"
+log_file \
+	 -dump_options true \
+	 -file_name "qrc_1540811_20260322_14:16:22.log"
+output_db -type spef \
+	 -short_incomplete_net_pins true \
+	 -subtype "STANDARD"
+output_setup \
+	 -compressed true \
+	 -directory_name "/tmp/innovus_temp_1540811_cadpc19_cm4648_9LIfAV/tmp_qrc_CAIxxJ" \
+	 -file_name "output_idx_controller" \
+	 -temporary_directory_name "/tmp/innovus_temp_1540811_cadpc19_cm4648_9LIfAV/tmp_qrc_CAIxxJ"
+process_technology \
+	 -technology_corner \
+		"RC_BEST" \
+		"RC_TYP" \
+		"RC_WORST" \
+	 -technology_library_file "/tmp/innovus_temp_1540811_cadpc19_cm4648_9LIfAV/tmp_qrc_CAIxxJ/_qrc_techlib.defs" \
+	 -technology_name "_qrc_tech_" \
+	 -temperature \
+		"25" \
+		"25" \
+		"25"
+
+
+
+
+INFO (EXTGRMP-102) : Starting at 2026-Mar-22 14:16:28 (2026-Mar-22 18:16:28 GMT) on host cadpc19
+with pid 1573646.
+Running binary as: 
+ /tools/cadence/QUANTUS/21.22/tools.lnx86/extraction/bin/64bit/qrc -cmd
+/tmp/innovus_temp_1540811_cadpc19_cm4648_9LIfAV/tmp_qrc_CAIxxJ/__qrc.qrc.cmd
+-multi_cpu 8 -oa
+/homes/user/stud/fall25/cm4648/ee6350/6350_draft_folder/TinyTPU_v1/output_idx_controller/pnr/work/cds.lib
+FEOADesignlib output_idx_controller for_qrc  
+
+INFO (EXTGRMP-142) : Command line arguments:
+"-cmd"
+"/tmp/innovus_temp_1540811_cadpc19_cm4648_9LIfAV/tmp_qrc_CAIxxJ/__qrc.qrc.cmd"
+"-multi_cpu"
+"8"
+"-oa"
+"/homes/user/stud/fall25/cm4648/ee6350/6350_draft_folder/TinyTPU_v1/output_idx_controller/pnr/work/cds.lib"
+"FEOADesignlib"
+"output_idx_controller"
+"for_qrc"
+
+INFO (EXTGRMP-143) : Option extraction_setup -copy_port_to_obs = "true"
+
+INFO (EXTGRMP-143) : Option log_file = "qrc_1540811_20260322_14:16:22.log"
+
+INFO (EXTGRMP-143) : Option log_file -message_config_file = ""
+
+INFO (EXTGRMP-143) : Option log_file -max_error_messages = "100"
+
+INFO (EXTGRMP-143) : Option log_file -max_warning_messages = "10"
+
+INFO (EXTGRMP-143) : Option log_file -max_info_messages = "1000"
+
+INFO (EXTGRMP-143) : Option process_technology -technology_name = ""
+
+INFO (EXTGRMP-143) : Option EM_techname = ""
+
+INFO (EXTGRMP-143) : Option process_technology -EM_WEE_clamping_factor = "0.7"
+
+INFO (EXTGRMP-143) : Option input_db -libgen_library_name = ""
+
+INFO (EXTGRMP-143) : Option oa_default_rule_name = ""
+
+INFO (EXTGRMP-143) : Option graybox -type = "obs"
+
+INFO (EXTGRMP-143) : Option graybox -use_macro_density = "false"
+
+INFO (EXTGRMP-143) : Option comp_prealloc = "0"
+
+INFO (EXTGRMP-143) : Option net_prealloc = "0"
+
+INFO (EXTGRMP-143) : Option output_setup -directory_name =
+"/tmp/innovus_temp_1540811_cadpc19_cm4648_9LIfAV/tmp_qrc_CAIxxJ"
+
+INFO (EXTGRMP-143) : Option output_db -units = "micron"
+
+INFO (EXTGRMP-143) : Option user_comment = ""
+
+INFO (EXTGRMP-143) : Option output_cache_directory_name =
+"/tmp/innovus_temp_1540811_cadpc19_cm4648_9LIfAV/tmp_qrc_CAIxxJ/.qrctemp"
+
+INFO (EXTGRMP-143) : Option keep_temporary_files = "false"
+
+INFO (EXTGRMP-143) : Option output_density_tiles = "false"
+
+INFO (EXTGRMP-143) : Option output_setup -file_name = "output_idx_controller"
+
+INFO (EXTGRMP-143) : Option output_db -type spef -predefined_spef_cells_file = ""
+
+INFO (EXTGRMP-143) : Option parasitic_reduction -enable_reduction = "false"
+
+INFO (EXTGRMP-143) : Option debug_log = "false"
+
+INFO (EXTGRMP-143) : Option output_db -type spef -subtype = "generic"
+
+INFO (EXTGRMP-143) : Option output_db -type dspf -subtype = "none"
+
+INFO (EXTGRMP-143) : Option output_sstorm_db_name = ""
+
+INFO (EXTGRMP-143) : Option netlist_output = "none"
+
+INFO (EXTGRMP-143) : Option output_db -type coupling_cap_reports = "false"
+
+INFO (EXTGRMP-143) : Option output_db -type rcdb = "false"
+
+INFO (EXTGRMP-143) : Option output_db -hierarchy_delimiter = "/"
+
+INFO (EXTGRMP-143) : Option output_db -busbit_delimiter = "[]"
+
+INFO (EXTGRMP-143) : Option output_db -pin_delimiter = ":"
+
+INFO (EXTGRMP-143) : Option output_db -output_incomplete_nets_type = "no_pin one_pin
+disconnected_pin multiple_partitions floating_resistors"
+
+INFO (EXTGRMP-143) : Option truncate_regular_wires = "false"
+
+INFO (EXTGRMP-143) : Option extraction_setup -layout_scale = "1.0"
+
+INFO (EXTGRMP-143) : Option output_setup -file_max_size = "9223372036854775807"
+
+INFO (EXTGRMP-143) : Option log_file -dump_options = "true"
+
+INFO (EXTGRMP-143) : Option short_incomplete_net_pins = "true"
+
+INFO (EXTGRMP-143) : Option promote_incomplete_net_pins = "true"
+
+INFO (EXTGRMP-143) : Option output_db -output_incomplete_nets = "true"
+
+INFO (EXTGRMP-143) : Option output_db -output_unrouted_nets = "false"
+
+INFO (EXTGRMP-143) : Option output_db -escape_special_characters = "true"
+
+INFO (EXTGRMP-143) : Option lumped_cc_threshold = "0.0"
+
+INFO (EXTGRMP-143) : Option parasitic_reduction -max_frequency = "1.0e+08"
+
+INFO (EXTGRMP-143) : Option output_setup -compressed = "true"
+
+INFO (EXTGRMP-143) : Option max_resistor_length = "100.0"
+
+INFO (EXTGRMP-143) : Option promote_feedthru_ports = "none"
+
+INFO (EXTGRMP-143) : Option promote_instance_ports = "none"
+
+INFO (EXTGRMP-143) : Option output_promoted_feedthrus = "false"
+
+INFO (EXTGRMP-143) : Option output_unconnected_pins = "false"
+
+INFO (EXTGRMP-143) : Option remove_floating_metals = "false"
+
+INFO (EXTGRMP-143) : Option promote_pin_pad = "logical"
+
+INFO (EXTGRMP-143) : Option eco_compatible_mode = "false"
+
+INFO (EXTGRMP-143) : Option output setup   -max_message_in_shorts_file = "100"
+
+INFO (EXTGRMP-143) : Option cap_mode_2915 = "true"
+
+INFO (EXTGRMP-143) : Option quickcap_file = "false"
+
+INFO (EXTGRMP-143) : Option ict_file = "process.ict"
+
+INFO (EXTGRMP-143) : Option quickcap_netfile = "qapi.net"
+
+INFO (EXTGRMP-143) : Option lefcap_output = "false"
+
+INFO (EXTGRMP-143) : Option lefcap_scale = "1.25"
+
+INFO (EXTGRMP-143) : Option lefres_output = "false"
+
+INFO (EXTGRMP-143) : Option kfactor_file = ""
+
+INFO (EXTGRMP-143) : Option total_c_threshold = "5"
+
+INFO (EXTGRMP-143) : Option relative_c_threshold = "0.03"
+
+INFO (EXTGRMP-143) : Option output_cap_filtering_mode = "relative_and_coupling"
+
+INFO (EXTGRMP-143) : Option cap_mode = "default"
+
+INFO (EXTGRMP-143) : Option parallel_options = ""
+
+INFO (EXTGRMP-143) : Option load_optimized_views = "true"
+
+INFO (EXTGRMP-143) : Option enable_metal_fill_effects = "true"
+
+INFO (EXTGRMP-143) : Option metal_fill -enable_advanced_virtual_fill = "false"
+
+INFO (EXTGRMP-143) : Option metal_fill -type = "floating"
+
+INFO (EXTGRMP-143) : Option vmf_metal_scheme_file = ""
+
+INFO (EXTGRMP-143) : Option vmf_rule_file = ""
+
+INFO (EXTGRMP-143) : Option extraction_setup -ignore_conn_to_bump = "true"
+
+INFO (EXTGRMP-143) : Option extraction_setup -lic_queue = "0"
+
+INFO (EXTGRMP-143) : Option input_db -type metal_fill -gds_file = ""
+
+INFO (EXTGRMP-143) : Option density_check_method = "none"
+
+INFO (EXTGRMP-143) : Option process_technology -technology_corner = "RC_BEST RC_TYP RC_WORST"
+
+INFO (EXTGRMP-143) : Option process_technology -EM_technology_corner = ""
+
+INFO (EXTGRMP-143) : Option process_technology -temperature = "25 25 25"
+
+INFO (EXTGRMP-143) : Option promote_gray_data_pins = "false"
+
+INFO (EXTGRMP-143) : Option extraction_setup -enable_layer_bias = "false"
+
+INFO (EXTGRMP-143) : Option output_db -map_eeq_to_master = "false"
+
+INFO (EXTGRMP-143) : Option output_db -match_res_cap = "false"
+
+INFO (EXTGRMP-143) : Option merge_tile_boundary_data = "true"
+
+INFO (EXTGRMP-143) : Option coupling_c_threshold = "3"
+
+INFO (EXTGRMP-143) : Option use_icecaps_models_only = "false"
+
+INFO (EXTGRMP-143) : Option output_db -type spef -use_name_map = "true"
+
+INFO (EXTGRMP-143) : Option output_db -type spef -name_map_start_index = "0"
+
+INFO (EXTGRMP-143) : Option distributed_processing -timeout = "300"
+
+INFO (EXTGRMP-143) : Option distributed_processing -num_of_trials = "0"
+
+INFO (EXTGRMP-143) : Option output_db -type dspf -add_cap_prefix = "false"
+
+INFO (EXTGRMP-143) : Option output_db -type oa = "false"
+
+INFO (EXTGRMP-143) : Option oa_analysis_point = "default"
+
+INFO (EXTGRMP-143) : Option extraction_setup -enable_sensitivity_extraction = "false"
+
+INFO (EXTGRMP-143) : Option report_details = "false"
+
+INFO (EXTGRMP-143) : Option input_db -type metal_fill -offset_x = "0.0"
+
+INFO (EXTGRMP-143) : Option input_db -type metal_fill -offset_y = "0.0"
+
+INFO (EXTGRMP-143) : Option extraction_setup -ignore_pushdown_blockages = "false"
+
+INFO (EXTGRMP-143) : Option output_setup -compress_temporary_files = "true"
+
+INFO (EXTGRMP-143) : Option strong_gray_debug = "false"
+
+INFO (EXTGRMP-143) : Option output_db -disable_instances = "true"
+
+INFO (EXTGRMP-143) : Option output_db -disable_subnodes = "true"
+
+INFO (EXTGRMP-143) : Option output_db -type coupling_cap_reports -dump_erosion_info = ""
+
+INFO (EXTGRMP-143) : Option output_db -include_parasitic_res_width_drawn = "true"
+
+INFO (EXTGRMP-143) : Option output_db -include_parasitic_res_parameters_unscaled = "false"
+
+INFO (EXTGRMP-143) : Option enable_active_fill_via_processing = "false"
+
+INFO (EXTGRMP-143) : Option output_db -add_explicit_vias = "false"
+
+INFO (EXTGRMP-143) : Option output_db -include_parasitic_cap_layers = "false"
+
+INFO (EXTGRMP-143) : Option capacitance -ground_net = "0"
+
+INFO (EXTGRMP-143) : Option output_db -include_parasitic_res_temp_coeff = "false"
+
+INFO (EXTGRMP-143) : Option output_setup -write_coupled_decoupled_files = "false"
+
+INFO (EXTGRMP-143) : Option capacitance_coupling = "default"
+
+INFO (EXTGRMP-143) : Option extraction_setup -gds_top_cell = ""
+
+INFO (EXTGRMP-143) : Option input_db -directory_name = ""
+
+INFO (EXTGRMP-143) : Option binary_input = "false"
+
+INFO (EXTGRMP-143) : Option binary_output = "false"
+
+INFO (EXTGRMP-143) : Option output_setup -enable_ieee_sensitivity = "false"
+
+INFO (EXTGRMP-143) : Option input_db -bump_map_file = ""
+
+INFO (EXTGRMP-143) : Option extraction_setup -enable_bump_instance = "false"
+
+INFO (EXTGRMP-143) : Option extraction_setup -enable_tsv_instance = "false"
+
+INFO (EXTGRMP-143) : Option extraction_setup -enable_TSV_STA_Cc_model = "false"
+
+INFO (EXTGRMP-143) : Option extraction_setup -stitch_bump_model = "false"
+
+INFO (EXTGRMP-143) : Option extraction_setup -stitch_tsv_model = "none"
+
+INFO (EXTGRMP-143) : Option enable_eco_mode = "false"
+
+INFO (EXTGRMP-143) : Option eco_file = ""
+
+INFO (EXTGRMP-143) : Option override_eco_reference = "true"
+
+INFO (EXTGRMP-143) : Option analysis_mode = "timing"
+
+INFO (EXTGRMP-143) : Option use_lef_for_hierarchical_def = "false"
+
+INFO (EXTGRMP-143) : Option enable_ws_r_scaling = "false"
+
+INFO (EXTGRMP-143) : Option include_gate_forming_layers = "false"
+
+INFO (EXTGRMP-143) : Option log_file -strict_error_reporting = "false"
+
+INFO (EXTGRMP-143) : Option log_file -report_outside_die_area_object = "false"
+
+INFO (EXTGRMP-143) : Option report_outside_diearea_object_error_limit = "1"
+
+INFO (EXTGRMP-143) : Option change_overhang_direction = "false"
+
+INFO (EXTGRMP-143) : Option ubump_subckt_file = ""
+
+INFO (EXTGRMP-143) : Option tsv_subckt_file = ""
+
+INFO (EXTGRMP-143) : Option output_setup -write_drc_violations = "false"
+
+INFO (EXTGRMP-143) : Option log_file -max_drc_messages = "1000"
+
+INFO (EXTGRMP-143) : Option LEF files = ""
+
+INFO (EXTGRMP-143) : Option OA Cells = "FEOADesignlib/output_idx_controller/for_qrc"
+
+INFO (EXTGRMP-143) : Option GDSII files = ""
+
+INFO (EXTGRMP-143) : Option GDSII/RDL files = ""
+
+INFO (EXTGRMP-143) : Option SPICE files = ""
+
+INFO (EXTGRMP-143) : Option DENSITY cells = ""
+
+INFO (EXTGRMP-143) : Option stitch bump cells = ""
+
+INFO (EXTGRMP-143) : Option ignored macros = ""
+
+INFO (EXTGRMP-143) : Option black macros = ""
+
+INFO (EXTGRMP-156) : Layer mappings from the command file.
+PO --> poly
+CO --> polyCont
+M1 --> metal1
+VIA1 --> VIA1
+M2 --> metal2
+VIA2 --> VIA2
+M3 --> metal3
+VIA3 --> VIA3
+M4 --> metal4
+VIA4 --> VIA4
+M5 --> metal5
+VIA5 --> VIA5
+M6 --> metal6
+VIA6 --> VIA6
+M7 --> metal7
+VIA7 --> VIA7
+M8 --> metal8
+VIA8 --> VIA8
+M9 --> metal9
+RV --> VIA9
+AP --> metal10
+
+INFO (EXTGRMP-276) : Gds/Oasis Layer Map settings were not specified.
+
+INFO (EXTGRMP-548) : Gds/Oasis Fill layer Map settings were not specified.
+
+INFO (EXTGRMP-550) : Gds/Oasis Active Fill layer Map settings were not specified.
+
+INFO (EXTGRMP-562) : HPB layer settings were not specified.
+
+INFO (EXTGRMP-623) : Background density layer mappings were not specified.
+
+INFO (EXTGRMP-144) : There were no layer bias commands for R values.
+
+INFO (EXTGRMP-147) : Layer bias settings for C values were not specified.
+
+INFO (EXTGRMP-149) : Lefcap area scale settings were not specified.
+
+INFO (EXTGRMP-153) : Lefcap edge scale settings were not specified.
+
+INFO (EXTGRMP-151) : Parameter name settings were not specified.
+
+INFO (EXTGRMP-260) : Layer cluster settings were not specified.
+
+INFO (EXTHPY-232) : Preprocessing stage started at Sun Mar 22 14:16:28 2026.
+
+INFO (EXTGRMP-103) : Local job on cadpc19 obtained for resource 0 at 2026-Mar-22 14:16:28
+(2026-Mar-22 18:16:28 GMT); 
+
+WARNING (EXTGRMP-103) : Maximum size of the process stack (stacksize) on host cadpc19 is 133169152 bytes. Set it to a large value, preferably unlimited, to avoid any unexpected issues.
+
+
+INFO (EXTOA2ZX-101) : OA package used while compiling: 22.60.072 
+and Dynamic OA Package being used: 22.60.072
+
+INFO (EXTOA2ZX-110) : Loading OA design library FEOADesignlib cell output_idx_controller view for_qrc.
+
+INFO (EXTGRMP-161) : Reading technology data from OA database.
+
+WARNING (EXTOA2ZX-145) : Layer "PO" will not be extracted and will be ignored.
+
+INFO (EXTGRMP-206) : Preprocessing data and organizing memory based on OA database.
+
+INFO (EXTGRMP-196) : Reading VIAS section. Expecting 30.
+
+INFO (EXTGRMP-196) : Reading COMPONENTS section. Expecting 646.
+
+INFO (EXTGRMP-209) : Reading cell definitions from OA database.
+
+INFO (EXTOA2ZX-110) : Loading OA design library tcbn65gplus_oalib cell BUFFD12 view abstract.
+
+INFO (EXTOA2ZX-110) : Loading OA design library tcbn65gplus_oalib cell DEL01 view abstract.
+
+INFO (EXTOA2ZX-110) : Loading OA design library tcbn65gplus_oalib cell DEL015 view abstract.
+
+INFO (EXTOA2ZX-110) : Loading OA design library tcbn65gplus_oalib cell DEL0 view abstract.
+
+INFO (EXTOA2ZX-110) : Loading OA design library tcbn65gplus_oalib cell CKBD0 view abstract.
+
+INFO (EXTOA2ZX-110) : Loading OA design library tcbn65gplus_oalib cell BUFFD1 view abstract.
+
+INFO (EXTOA2ZX-110) : Loading OA design library tcbn65gplus_oalib cell CKND2 view abstract.
+
+INFO (EXTOA2ZX-110) : Loading OA design library tcbn65gplus_oalib cell CKND1 view abstract.
+
+INFO (EXTOA2ZX-110) : Loading OA design library tcbn65gplus_oalib cell TIEL view abstract.
+
+INFO (EXTOA2ZX-110) : Loading OA design library tcbn65gplus_oalib cell CKBD1 view abstract.
+
+INFO (EXTOA2ZX-110) : Loading OA design library tcbn65gplus_oalib cell CKND12 view abstract.
+
+INFO (EXTOA2ZX-110) : Loading OA design library tcbn65gplus_oalib cell INVD1 view abstract.
+
+INFO (EXTOA2ZX-110) : Loading OA design library tcbn65gplus_oalib cell EDFKCNQD1 view abstract.
+
+INFO (EXTOA2ZX-110) : Loading OA design library tcbn65gplus_oalib cell MOAI22D0 view abstract.
+
+INFO (EXTOA2ZX-110) : Loading OA design library tcbn65gplus_oalib cell DFKCNQD1 view abstract.
+
+INFO (EXTOA2ZX-110) : Loading OA design library tcbn65gplus_oalib cell FA1D0 view abstract.
+
+INFO (EXTOA2ZX-110) : Loading OA design library tcbn65gplus_oalib cell IOA21D0 view abstract.
+
+INFO (EXTOA2ZX-110) : Loading OA design library tcbn65gplus_oalib cell MUX2ND0 view abstract.
+
+INFO (EXTOA2ZX-110) : Loading OA design library tcbn65gplus_oalib cell AO22D0 view abstract.
+
+INFO (EXTOA2ZX-110) : Loading OA design library tcbn65gplus_oalib cell OAI211D0 view abstract.
+
+INFO (EXTOA2ZX-110) : Loading OA design library tcbn65gplus_oalib cell CKND0 view abstract.
+
+INFO (EXTOA2ZX-110) : Loading OA design library tcbn65gplus_oalib cell OAI31D0 view abstract.
+
+INFO (EXTOA2ZX-110) : Loading OA design library tcbn65gplus_oalib cell IND3D0 view abstract.
+
+INFO (EXTOA2ZX-110) : Loading OA design library tcbn65gplus_oalib cell NR2D0 view abstract.
+
+INFO (EXTOA2ZX-110) : Loading OA design library tcbn65gplus_oalib cell INR3D0 view abstract.
+
+INFO (EXTOA2ZX-110) : Loading OA design library tcbn65gplus_oalib cell CKND2D0 view abstract.
+
+INFO (EXTOA2ZX-110) : Loading OA design library tcbn65gplus_oalib cell OR2XD1 view abstract.
+
+INFO (EXTOA2ZX-110) : Loading OA design library tcbn65gplus_oalib cell ND4D0 view abstract.
+
+INFO (EXTOA2ZX-110) : Loading OA design library tcbn65gplus_oalib cell CKAN2D0 view abstract.
+
+INFO (EXTOA2ZX-110) : Loading OA design library tcbn65gplus_oalib cell AOI221D0 view abstract.
+
+INFO (EXTOA2ZX-110) : Loading OA design library tcbn65gplus_oalib cell AN4D0 view abstract.
+
+INFO (EXTOA2ZX-110) : Loading OA design library tcbn65gplus_oalib cell MAOI22D0 view abstract.
+
+INFO (EXTOA2ZX-110) : Loading OA design library tcbn65gplus_oalib cell AOI211D0 view abstract.
+
+INFO (EXTOA2ZX-110) : Loading OA design library tcbn65gplus_oalib cell XNR3D0 view abstract.
+
+INFO (EXTOA2ZX-110) : Loading OA design library tcbn65gplus_oalib cell OA221D0 view abstract.
+
+INFO (EXTOA2ZX-110) : Loading OA design library tcbn65gplus_oalib cell AOI21D0 view abstract.
+
+INFO (EXTOA2ZX-110) : Loading OA design library tcbn65gplus_oalib cell OAI21D0 view abstract.
+
+INFO (EXTOA2ZX-110) : Loading OA design library tcbn65gplus_oalib cell OAI221D0 view abstract.
+
+INFO (EXTOA2ZX-110) : Loading OA design library tcbn65gplus_oalib cell IND2D0 view abstract.
+
+INFO (EXTOA2ZX-110) : Loading OA design library tcbn65gplus_oalib cell OA21D0 view abstract.
+
+INFO (EXTOA2ZX-110) : Loading OA design library tcbn65gplus_oalib cell INR2D0 view abstract.
+
+INFO (EXTOA2ZX-110) : Loading OA design library tcbn65gplus_oalib cell AN2XD1 view abstract.
+
+INFO (EXTOA2ZX-110) : Loading OA design library tcbn65gplus_oalib cell AO21D0 view abstract.
+
+INFO (EXTOA2ZX-110) : Loading OA design library tcbn65gplus_oalib cell NR3D0 view abstract.
+
+INFO (EXTOA2ZX-110) : Loading OA design library tcbn65gplus_oalib cell CKXOR2D0 view abstract.
+
+INFO (EXTOA2ZX-110) : Loading OA design library tcbn65gplus_oalib cell XNR2D0 view abstract.
+
+INFO (EXTOA2ZX-110) : Loading OA design library tcbn65gplus_oalib cell INVD12 view abstract.
+
+INFO (EXTOA2ZX-110) : Loading OA design library tcbn65gplus_oalib cell EDFKCND1 view abstract.
+
+INFO (EXTOA2ZX-110) : Loading OA design library tcbn65gplus_oalib cell DFD1 view abstract.
+
+INFO (EXTOA2ZX-110) : Loading OA design library tcbn65gplus_oalib cell DFXD1 view abstract.
+
+INFO (EXTOA2ZX-110) : Loading OA design library tcbn65gplus_oalib cell FILL4 view abstract.
+
+INFO (EXTOA2ZX-110) : Loading OA design library tcbn65gplus_oalib cell FILL1 view abstract.
+
+INFO (EXTOA2ZX-110) : Loading OA design library tcbn65gplus_oalib cell FILL2 view abstract.
+
+INFO (EXTOA2ZX-110) : Loading OA design library tcbn65gplus_oalib cell FILL8 view abstract.
+
+INFO (EXTOA2ZX-110) : Loading OA design library tcbn65gplus_oalib cell FILL16 view abstract.
+
+INFO (EXTOA2ZX-110) : Loading OA design library tcbn65gplus_oalib cell DCAP32 view abstract.
+
+INFO (EXTOA2ZX-110) : Loading OA design library tcbn65gplus_oalib cell DCAP4 view abstract.
+
+INFO (EXTOA2ZX-110) : Loading OA design library tcbn65gplus_oalib cell DCAP8 view abstract.
+
+INFO (EXTOA2ZX-110) : Loading OA design library tcbn65gplus_oalib cell FILL32 view abstract.
+
+INFO (EXTOA2ZX-110) : Loading OA design library tcbn65gplus_oalib cell DCAP16 view abstract.
+
+INFO (EXTOA2ZX-110) : Loading OA design library tcbn65gplus_oalib cell DCAP64 view abstract.
+
+INFO (EXTOA2ZX-110) : Loading OA design library tcbn65gplus_oalib cell FILL64 view abstract.
+
+WARNING (EXTOA2ZX-124) : Gray-box mode was selected for extraction,but 15 macro definitions did not include any obstruction data.  The first 10 were:
+CKND2 CKND1 INVD1 CKND0 NR2D0 CKND2D0 ND4D0 NR3D0 FILL4 FILL1
+Check the library inputs and log files from library setup to determine whether there is a problem.
+
+INFO (EXTGRMP-196) : Reading PINS section. Expecting 47.
+
+INFO (EXTGRMP-196) : Reading FILLS section. Expecting 10.
+
+INFO (EXTGRMP-2481) : METAL FILL data is  available in OA database.
+
+INFO (EXTGRMP-2071) : Reading OA database completed successfully.
+
+INFO (EXTGRMP-292) : Checking Command/Tech/License Files.
+
+INFO (EXTGRMP-281) : Manufacturing Data Information :- 
+  OA Database 
+    does     contain MetalFill data. 
+  Techfile  
+    does     contain WEE data.     
+    does     contain Erosion data t=f( density ,width) 
+    does     contain R(w) data.    
+    does     contain R(w, s) data.  
+    does NOT contain TC(w) data.    
+    does     contain T/B enlargement data. 
+    does     contain Floating Metal Fill models. 
+    does NOT contain WBE data.
+
+INFO (EXTGRMP-613) : Turbo Reduction is now turned on by default.
+
+INFO (EXTGRMP-294) : RCs effects computed for this session include :- 
+ MetalFill        : floating 
+ WEE Effects      : rc 
+ Erosion Effects  : Rule-Based Erosion Table: rc t=f(density,width) 
+ T/B Enlargements : ON 
+ R(w) Effects     : ON 
+ R(w,s) Effects   : ON 
+ TC(w) Effects    : n/a 
+Some effects indicate n/a because of non-availability of relevant input data (or) requested to be off.
+
+
+INFO (EXTGRMP-802) : Summary of license(s) checkout :
+	4 of QTS300, 1 of QTS310
+
+INFO (EXTHPY-169) : 8 process(es) started.
+
+INFO (EXTGRMP-103) : Local job on cadpc19 obtained for resource 1 at 2026-Mar-22 14:16:32
+(2026-Mar-22 18:16:32 GMT); 
+
+INFO (EXTGRMP-103) : Local job on cadpc19 obtained for resource 2 at 2026-Mar-22 14:16:32
+(2026-Mar-22 18:16:32 GMT); 
+
+INFO (EXTGRMP-103) : Local job on cadpc19 obtained for resource 3 at 2026-Mar-22 14:16:32
+(2026-Mar-22 18:16:32 GMT); 
+
+INFO (EXTGRMP-103) : Local job on cadpc19 obtained for resource 4 at 2026-Mar-22 14:16:32
+(2026-Mar-22 18:16:32 GMT); 
+
+INFO (EXTGRMP-103) : Local job on cadpc19 obtained for resource 5 at 2026-Mar-22 14:16:32
+(2026-Mar-22 18:16:32 GMT); 
+
+INFO (EXTGRMP-103) : Local job on cadpc19 obtained for resource 6 at 2026-Mar-22 14:16:32
+(2026-Mar-22 18:16:32 GMT); 
+
+INFO (EXTGRMP-103) : Local job on cadpc19 obtained for resource 7 at 2026-Mar-22 14:16:32
+(2026-Mar-22 18:16:32 GMT); 
+
+INFO (EXTSNZ-156) :    2%
+
+INFO (EXTSNZ-156) :    5%
+
+INFO (EXTSNZ-156) :    7%
+
+INFO (EXTSNZ-156) :    10%
+
+INFO (EXTSNZ-156) :    12%
+
+INFO (EXTSNZ-156) :    14%
+
+INFO (EXTSNZ-156) :    17%
+
+INFO (EXTSNZ-156) :    19%
+
+INFO (EXTSNZ-156) :    21%
+
+INFO (EXTSNZ-156) :    24%
+
+INFO (EXTSNZ-156) :    26%
+
+INFO (EXTSNZ-156) :    29%
+
+INFO (EXTSNZ-156) :    31%
+
+INFO (EXTSNZ-156) :    33%
+
+INFO (EXTSNZ-156) :    36%
+
+INFO (EXTSNZ-156) :    38%
+
+INFO (EXTSNZ-156) :    40%
+
+INFO (EXTSNZ-156) :    43%
+
+INFO (EXTSNZ-156) :    45%
+
+INFO (EXTSNZ-156) :    48%
+
+INFO (EXTSNZ-156) :    50%
+
+INFO (EXTSNZ-156) :    52%
+
+INFO (EXTSNZ-156) :    55%
+
+INFO (EXTSNZ-156) :    57%
+
+INFO (EXTSNZ-156) :    60%
+
+INFO (EXTSNZ-156) :    62%
+
+INFO (EXTSNZ-156) :    64%
+
+INFO (EXTSNZ-156) :    67%
+
+INFO (EXTSNZ-156) :    69%
+
+INFO (EXTSNZ-156) :    71%
+
+INFO (EXTSNZ-156) :    74%
+
+INFO (EXTSNZ-156) :    76%
+
+INFO (EXTSNZ-156) :    79%
+
+INFO (EXTSNZ-156) :    81%
+
+INFO (EXTSNZ-156) :    83%
+
+INFO (EXTSNZ-156) :    86%
+
+INFO (EXTSNZ-156) :    88%
+
+INFO (EXTSNZ-156) :    90%
+
+INFO (EXTSNZ-156) :    93%
+
+INFO (EXTSNZ-156) :    95%
+
+INFO (EXTSNZ-156) :    98%
+
+INFO (EXTGRMP-368) : The extracted temperature is 25, the reference temperature is 25 for the process RC_BEST!
+
+INFO (EXTGRMP-368) : The extracted temperature is 25, the reference temperature is 25 for the process RC_TYP!
+
+INFO (EXTGRMP-368) : The extracted temperature is 25, the reference temperature is 25 for the process RC_WORST!
+
+INFO (EXTGRMP-212) : Reading geometric data from OA database.
+
+INFO (EXTGRMP-2131) : Reading geometric data from OA database completed successfully.
+
+
+INFO (EXTHPY-169) : 8 process(es) started.
+
+
+INFO (EXTHPY-169) : 8 process(es) started.
+
+INFO (EXTHPY-101) : Initializing gray data from all cell instances for capacitance extraction.
+
+INFO (EXTHPY-102) : Processing of gray data completed successfully.
+
+INFO (EXTHPY-156) : Gray pins that are touching or overlapping extracted nets will be treated as gray data during extraction.
+
+
+INFO (EXTHPY-233) : Preprocessing stage completed successfully at Sun Mar 22 14:16:39 2026 with
+8 CPU(s).
+
+INFO (EXTHPY-247) : Preprocessing stage:
+ Duration: 00:00:11, Max (Total) memory: 953 MB
+ Max (CPU) memory: 757 MB, Max (CPU) time: 00:00:00
+
+INFO (EXTHPY-173) : Capacitance extraction started at Sun Mar 22 14:16:39 2026.
+
+INFO (EXTHPY-169) : 8 process(es) started.
+
+INFO (EXTHPY-103) : Extracting capacitance values.
+
+INFO (EXTSNZ-168) : Total number of OA Metal FILL shapes: 2040
+
+Layer Name                    Fill Type           Fill Count          
+metal1                        Passive             11                  
+metal2                        Passive             313                 
+metal3                        Passive             325                 
+metal4                        Passive             343                 
+metal5                        Passive             326                 
+metal6                        Passive             289                 
+metal7                        Passive             304                 
+metal8                        Passive             28                  
+metal9                        Passive             52                  
+metal10                       Passive             49
+
+INFO (EXTHPY-267) :  
+ DESIGN                       : output_idx_controller
+ DEF/OA DIEAREA BBOX          : 0 0 200000 200000
+ DEF/OA UNITS                 : 2000
+ FINAL SCALE FACTOR           : 1
+ 
+ ESTIMATED COMPRESSED DEF SIZE: 0
+ TILE SIZE                    : 50x50 squm
+ TILE COUNT                   : 9
+ CLUSTER SIZE                 : 257
+ CAPDB PARTITIONS             : 64
+
+INFO (EXTHPY-104) :    0%
+
+INFO (EXTHPY-104) :    100%
+
+
+INFO (EXTHPY-174) : Capacitance extraction completed successfully at Sun Mar 22 14:16:46 2026
+with 8 CPU(s).
+
+INFO (EXTHPY-248) : Capacitance extraction:
+ Duration: 00:00:07, Max (Total) memory: 867 MB
+ Max (CPU) memory: 742 MB, Max (CPU) time: 00:00:00
+
+INFO (EXTHPY-175) : Output generation started at Sun Mar 22 14:16:46 2026.
+
+INFO (EXTHPY-169) : 8 process(es) started.
+
+INFO (EXTSNZ-156) :    0%
+
+INFO (EXTSNZ-156) :    10%
+
+INFO (EXTSNZ-156) :    20%
+
+INFO (EXTSNZ-156) :    30%
+
+INFO (EXTSNZ-156) :    40%
+
+INFO (EXTSNZ-156) :    50%
+
+INFO (EXTSNZ-156) :    60%
+
+INFO (EXTSNZ-156) :    70%
+
+INFO (EXTSNZ-156) :    80%
+
+INFO (EXTSNZ-156) :    90%
+
+
+INFO (EXTHPY-176) : Output generation completed successfully at Sun Mar 22 14:16:48 2026 with 8
+CPU(s).
+
+INFO (EXTHPY-249) : Output generation:
+ Duration: 00:00:02, Max (Total) memory: 1026 MB
+ Max (CPU) memory: 712 MB, Max (CPU) time: 00:00:00
+
+INFO (EXTHPY-143) : ---Summary of Stage Duration
+ Preprocessing stage:
+ Duration: 00:00:11, Max (Total) memory: 953 MB
+ Max (CPU) memory: 757 MB, Max (CPU) time: 00:00:00
+ Capacitance extraction:
+ Duration: 00:00:07, Max (Total) memory: 867 MB
+ Max (CPU) memory: 742 MB, Max (CPU) time: 00:00:00
+ Output generation:
+ Duration: 00:00:02, Max (Total) memory: 1026 MB
+ Max (CPU) memory: 712 MB, Max (CPU) time: 00:00:00
+
+Warning message summary: 
+
+Message Code(ID)   Count     Message
+=================|=========|=======================================================================================================================
+EXTGRMP-103       1          Maximum size of the process stack (stacksize) on host cadpc19 is 133169152 bytes. Set it to a large value, preferably unlimited, to avoid any unexpected issues.
+
+---------------------------------------------------------------------------------------------------------------------------------------------------
+EXTOA2ZX-124      1          Gray-box mode was selected for extraction,but 15 macro definitions did not include any obstruction data.  The first 10 were:
+CKND2 CKND1 INVD1 CKND0 NR2D0 CKND2D0 ND4D0 NR3D0 FILL4 FILL1
+Check the library inputs and log files from library setup to determine whether there is a problem.
+---------------------------------------------------------------------------------------------------------------------------------------------------
+EXTOA2ZX-145      1          Layer "PO" will not be extracted and will be ignored.
+---------------------------------------------------------------------------------------------------------------------------------------------------
+ 
+
+TOTAL WARNINGS: 3 
+TOTAL ERRORS: 0 
+---------------------------------------------------------------------------------------------------------------------------------------------------
+----
+
+Ending at 2026-Mar-22 14:16:48 (2026-Mar-22 18:16:48 GMT).
+
+ Tool:                    Cadence Quantus Extraction 64-bit
+ Version:                 21.2.2-p045 Fri Sep 23 10:56:50 PDT 2022
+ IR Build No:             045 
+ Techfile:                
+    RC_BEST
+/tmp/innovus_temp_1540811_cadpc19_cm4648_9LIfAV/tmp_qrc_CAIxxJ/_qrc_techdir/RC_BEST/qrcTechFile
+; version: 7.1.0-p007
+    RC_TYP
+/tmp/innovus_temp_1540811_cadpc19_cm4648_9LIfAV/tmp_qrc_CAIxxJ/_qrc_techdir/RC_TYP/qrcTechFile
+; version: 7.1.0-p007
+    RC_WORST
+/tmp/innovus_temp_1540811_cadpc19_cm4648_9LIfAV/tmp_qrc_CAIxxJ/_qrc_techdir/RC_WORST/qrcTechFile
+; version: 7.1.0-p007 
+ License(s) used:         4 of QTS300, 1 of QTS310 
+ User Name:               cm4648
+ Host Name:               cadpc19
+ Host OS Release:         Linux 4.18.0-553.111.1.el8_10.x86_64
+ Host OS Version:         #1 SMP Sat Feb 28 00:49:56 EST 2026
+ CPU Model Name:          11th Gen Intel(R) Core(TM) i9-11900 @ 2.50GHz
+ L1d Cache:               48K
+ L1i Cache:               32K
+ L2 Cache:                512K
+ L3 Cache:                16384K
+ Memory:                  62 GB
+ Run duration:            00:00:00 CPU time, 00:00:20 clock time
+ Max (Total) memory used: 1026 MB
+ Max (CPU) memory used:   757 MB
+ Max Temp-Directory used: 11 MB
+ Nets/hour:               1188K nets/CPU-hr, 59K nets/clock-hr
+ Design data:
+    Components:           646
+    Phy components:       365
+    Nets:                 330
+    Unconnected pins:     0
+ Warning messages:        3
+ Error messages:          0
+
+Exit code 0.
+Cadence Quantus Extraction completed successfully at 2026-Mar-22 14:16:48
+(2026-Mar-22 18:16:48 GMT).
