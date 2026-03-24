@@ -1,0 +1,16 @@
+# Simulation work dirs
+work/
+**/work/
+
+# Large generated files
+*.qpg
+*.sdf
+
+# Synopsys/Cadence outputs
+*.log
+*.svf
+*.mr
+*.pvl
+
+# OS
+.DS_Store
