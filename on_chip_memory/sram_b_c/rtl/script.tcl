@@ -1,6 +1,9 @@
 # ============================================================
 # script.tcl - Cadence JasperGold FPV Script
 # Module: sram_wrapper
+# 
+# Run from: /user/stud/fall25/dy2538/ee6350/DIGITAL/Sram_wrapper
+# Command:  jg -fpv script.tcl
 # ============================================================
 
 # Clear previous session
@@ -9,17 +12,21 @@ clear -all
 # ============================================================
 # Analyze Design Files
 # ============================================================
-# Add FORMAL define to enable SVA
-analyze -sv09 +define+FORMAL sram_wrapper.sv
+# sram_wrapper with FORMAL define
+analyze -sv09 +define+FORMAL \
+        /user/stud/fall25/dy2538/ee6350/DIGITAL/Sram_wrapper/sram_wrapper.sv
 
-# Include sram00 model if available
-# analyze -v /path/to/sram00.v
+# sram00 ARM IP
+analyze -v +define+ARM_UD_MODEL \
+           +define+ARM_UD_DP \
+           +define+ARM_UD_CP \
+           +define+ARM_UD_SEQ \
+           /user/stud/fall25/dy2538/EE6321/ref/memory_compiler/sram00/sram00.v
 
 # ============================================================
 # Elaborate Design
 # ============================================================
-# Blackbox sram00 (treat as abstract)
-elaborate -top sram_wrapper -bbox_m sram00
+elaborate -top sram_wrapper
 
 # ============================================================
 # Clock and Reset Setup
@@ -55,14 +62,9 @@ cover -all
 report -property -results > results.txt
 report -summary
 
-# ============================================================
-# Interactive Debug (optional)
-# ============================================================
-# If assertion fails, visualize counterexample:
-# visualize -property <property_name> -new_window
-
 puts ""
 puts "============================================"
 puts "  JasperGold FPV Complete"
+puts "  Results saved to results.txt"
 puts "============================================"
 puts ""
