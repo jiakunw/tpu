@@ -163,4 +163,92 @@ module sram_wrapper #(
     // Select appropriate byte from 64-bit word
     assign bus_dout = sram_q[bus_byte_sel_d1*8 +: 8];
 
+    // =========================================================================
+    // FORMAL
+    // =========================================================================
+    `ifdef FORMAL
+
+    /************************** Assumptions ******************************/
+
+    // TPU read/write exclusion
+    asm_no_tpu_rw_1: assume property (@(posedge clk) tpu_we |-> !tpu_re);
+    asm_no_tpu_rw_2: assume property (@(posedge clk) tpu_re |-> !tpu_we);
+
+    // Bus read/write exclusion
+    asm_no_bus_rw_1: assume property (@(posedge clk) bus_we |-> !bus_re);
+    asm_no_bus_rw_2: assume property (@(posedge clk) bus_re |-> !bus_we);
+
+    // Bus/TPU exclusion
+    asm_no_bus_tpu_1: assume property (@(posedge clk) bus_we |-> !tpu_we && !tpu_re);
+    asm_no_bus_tpu_2: assume property (@(posedge clk) bus_re |-> !tpu_we && !tpu_re);
+    asm_no_bus_tpu_3: assume property (@(posedge clk) tpu_we |-> !bus_we && !bus_re);
+    asm_no_bus_tpu_4: assume property (@(posedge clk) tpu_re |-> !bus_we && !bus_re);
+
+    // address range
+    asm_bus_addr_range: assume property (@(posedge clk) (bus_we || bus_re) |-> bus_addr <= 4095);
+    asm_tpu_addr_range: assume property (@(posedge clk) (tpu_we || tpu_re) |-> tpu_addr <= 511);
+
+    /************************** Coverage ******************************/
+
+    cov_bus_write:      cover property (@(posedge clk) bus_we);
+    cov_bus_read:       cover property (@(posedge clk) bus_re);
+    cov_tpu_write:      cover property (@(posedge clk) tpu_we);
+    cov_tpu_read:       cover property (@(posedge clk) tpu_re);
+    cov_bus_we_d1:      cover property (@(posedge clk) bus_we_d1);
+    cov_idle:           cover property (@(posedge clk) !bus_we && !bus_re && !tpu_we && !tpu_re);
+
+    cov_byte_sel_0:     cover property (@(posedge clk) bus_we && bus_byte_sel == 3'd0);
+    cov_byte_sel_7:     cover property (@(posedge clk) bus_we && bus_byte_sel == 3'd7);
+
+    cov_8_consecutive:  cover property (
+        @(posedge clk) (bus_we && bus_byte_sel == 3'd0) ##1
+                       (bus_we && bus_byte_sel == 3'd1) ##1
+                       (bus_we && bus_byte_sel == 3'd2) ##1
+                       (bus_we && bus_byte_sel == 3'd3) ##1
+                       (bus_we && bus_byte_sel == 3'd4) ##1
+                       (bus_we && bus_byte_sel == 3'd5) ##1
+                       (bus_we && bus_byte_sel == 3'd6) ##1
+                       (bus_we && bus_byte_sel == 3'd7)
+    );
+
+    /************************** Assertions ******************************/
+
+    // === Timing ===
+    ast_dout_valid_timing:    assert property (@(posedge clk) bus_re |=> bus_dout_valid);
+    ast_dout_valid_low:       assert property (@(posedge clk) !bus_re |=> !bus_dout_valid);
+
+    // === Write Accumulation ===
+    ast_bus_we_d1_trigger:    assert property (@(posedge clk)
+                                  bus_we_d1 |-> $past(bus_we && bus_byte_sel == 3'b111));
+    ast_bus_we_d1_follows:    assert property (@(posedge clk)
+                                  (bus_we && bus_byte_sel == 3'b111) |=> bus_we_d1);
+    ast_bus_waddr_capture:    assert property (@(posedge clk)
+                                  bus_we |=> bus_waddr_d1 == $past(bus_word_addr));
+
+    // === SRAM Control ===
+    ast_tpu_we_ctrl:          assert property (@(posedge clk)
+                                  tpu_we |-> (sram_cen == 0 && sram_wen == 0 && sram_addr == tpu_addr));
+    ast_tpu_re_ctrl:          assert property (@(posedge clk)
+                                  (tpu_re && !tpu_we && !bus_we_d1) |-> 
+                                  (sram_cen == 0 && sram_wen == 1 && sram_addr == tpu_addr));
+    ast_bus_we_d1_ctrl:       assert property (@(posedge clk)
+                                  (bus_we_d1 && !tpu_we) |-> 
+                                  (sram_cen == 0 && sram_wen == 0 && sram_addr == bus_waddr_d1));
+    ast_bus_re_ctrl:          assert property (@(posedge clk)
+                                  (bus_re && !tpu_we && !bus_we_d1 && !tpu_re) |-> 
+                                  (sram_cen == 0 && sram_wen == 1 && sram_addr == bus_word_addr));
+    ast_idle_ctrl:            assert property (@(posedge clk)
+                                  (!tpu_we && !bus_we_d1 && !tpu_re && !bus_re) |-> sram_cen == 1);
+
+    // === Data Path ===
+    ast_tpu_dout:             assert property (@(posedge clk) tpu_dout == sram_q);
+    ast_bus_dout:             assert property (@(posedge clk)
+                                  bus_dout_valid |-> bus_dout == sram_q[bus_byte_sel_d1*8 +: 8]);
+
+    // === Address Range ===
+    ast_sram_addr_range:      assert property (@(posedge clk)
+                                  !sram_cen |-> sram_addr <= 511);
+
+    `endif
+
 endmodule
