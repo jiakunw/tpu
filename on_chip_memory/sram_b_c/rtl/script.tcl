@@ -13,20 +13,12 @@ clear -all
 # Analyze Design Files
 # ============================================================
 # sram_wrapper with FORMAL define
-analyze -sv09 +define+FORMAL \
-        /user/stud/fall25/dy2538/ee6350/DIGITAL/Sram_wrapper/sram_wrapper.sv
-
-# sram00 ARM IP
-analyze -v +define+ARM_UD_MODEL \
-           +define+ARM_UD_DP \
-           +define+ARM_UD_CP \
-           +define+ARM_UD_SEQ \
-           /user/stud/fall25/dy2538/EE6321/ref/memory_compiler/sram00/sram00.v
+analyze -sv09 {+define+FORMAL} sram_wrapper.sv
 
 # ============================================================
 # Elaborate Design
 # ============================================================
-elaborate -top sram_wrapper
+elaborate -top sram_wrapper -bbox_m sram00
 
 # ============================================================
 # Clock and Reset Setup
