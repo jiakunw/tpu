@@ -25,10 +25,10 @@ namespace eval iv {}
 # Project Information, Synthesis
 #####################################################################
 # Replace this with the name of your topcell
-set TOPCELL		slow_control_256	
+set TOPCELL		rf_top	
 # List of HDL files
-set gn::VERILOG_LIST	[list "slow_control_256.v"]	
-set gn::SDC_LIST	[list "slow_control_256.sdc"]
+set gn::VERILOG_LIST	[list "mmio_registers.sv" "spi_slave.sv" "rf_top.sv"]	
+set gn::SDC_LIST	[list "register_files.sdc"]
 # Tech node, in nm
 set iv::node		65
 
