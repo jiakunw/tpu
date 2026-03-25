@@ -1,6 +1,7 @@
 # Simulation work dirs
 work/
 **/work/
+on_chip_memory/sram_b_c/rtl/jgproject
 
 # Large generated files
 *.qpg
@@ -14,3 +15,4 @@ work/
 
 # OS
 .DS_Store
+
