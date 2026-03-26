@@ -14,7 +14,7 @@ VCSFLAGS = -sverilog -full64 \
            -j4
 
 # Source Files
-TB = tb_spi_master_slave.sv
+TB = tb.sv
 
 RTL = axi_spi_master.sv \
       rf_top.sv \
