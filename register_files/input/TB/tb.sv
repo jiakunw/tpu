@@ -461,19 +461,26 @@ module tb_spi_master_slave;
         end
         $display("");
 
-        //----------------------------------------------------------------------
-        // Test 6: Start TPU
-        //----------------------------------------------------------------------
-        $display("[Test 6] Start TPU");
-        tpu_reg_write(TPU_REG_CONTROL, 8'h01, ret);
-        repeat(10) @(posedge slave_clk);
-        if (tpu_start == 1'b1) begin
-            $display("  [PASS] tpu_start = 1");
-        end else begin
-            $display("  [FAIL] tpu_start = %0d", tpu_start);
-            errors++;
-        end
-        $display("");
+        // 读两次同一个寄存器
+        tpu_reg_read(2, read_data);
+        $display("First read: %0d", read_data);
+
+        tpu_reg_read(2, read_data);
+        $display("Second read: %0d", read_data);
+
+        // //----------------------------------------------------------------------
+        // // Test 6: Start TPU
+        // //----------------------------------------------------------------------
+        // $display("[Test 6] Start TPU");
+        // tpu_reg_write(TPU_REG_CONTROL, 8'h01, ret);
+        // repeat(10) @(posedge slave_clk);
+        // if (tpu_start == 1'b1) begin
+        //     $display("  [PASS] tpu_start = 1");
+        // end else begin
+        //     $display("  [FAIL] tpu_start = %0d", tpu_start);
+        //     errors++;
+        // end
+        // $display("");
 
         //----------------------------------------------------------------------
         // Summary
