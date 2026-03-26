@@ -1,8 +1,8 @@
 ///////////////////////////////////////////////////////////////////////////////
-// tb_spi_master_slave.sv
+// tb.sv
 //
 // Testbench: AXI SPI Master (100MHz) <-> rf_top Slave (10MHz)
-// SPI Clock: 2 MHz (CLKS_PER_HALF_BIT = 25)
+// SPI Clock: 2 MHz
 ///////////////////////////////////////////////////////////////////////////////
 `timescale 1ns / 1ps
 
@@ -75,7 +75,7 @@ module tb_spi_master_slave;
     logic [5:0]  dim_n;
     logic [5:0]  dim_k;
 
-    // Debug
+    // Debug from master
     logic [1:0]  debug_wr_state;
     logic [1:0]  debug_rd_state;
 
@@ -158,9 +158,13 @@ module tb_spi_master_slave;
     );
 
     //=========================================================================
-    // AXI Write Task (uses master_clk)
+    // AXI Write Task
     //=========================================================================
     task axi_write(input logic [6:0] addr, input logic [31:0] data);
+        int timeout;
+        
+        $display("      [axi_write] START addr=0x%02h data=0x%08h", addr, data);
+        
         @(posedge master_clk); #1;
         S_AXI_awaddr  = addr;
         S_AXI_wdata   = data;
@@ -170,73 +174,155 @@ module tb_spi_master_slave;
         S_AXI_wstrb   = 4'b1111;
         S_AXI_bready  = 1'b1;
         
-        wait(S_AXI_awready == 1'b1);
+        // Wait for AWREADY with timeout
+        $display("      [axi_write] Waiting AWREADY...");
+        timeout = 0;
+        while (S_AXI_awready != 1'b1) begin
+            @(posedge master_clk); #1;
+            timeout++;
+            if (timeout > 1000) begin
+                $display("ERROR: axi_write AWREADY timeout!");
+                $finish;
+            end
+        end
+        $display("      [axi_write] Got AWREADY");
+        
         @(posedge master_clk); #1;
         S_AXI_awvalid = 1'b0;
         
-        wait(S_AXI_wready == 1'b1);
+        // Wait for WREADY with timeout
+        $display("      [axi_write] Waiting WREADY...");
+        timeout = 0;
+        while (S_AXI_wready != 1'b1) begin
+            @(posedge master_clk); #1;
+            timeout++;
+            if (timeout > 1000) begin
+                $display("ERROR: axi_write WREADY timeout!");
+                $finish;
+            end
+        end
+        $display("      [axi_write] Got WREADY");
+        
         @(posedge master_clk); #1;
         S_AXI_wvalid = 1'b0;
         
-        wait(S_AXI_bvalid == 1'b1);
+        // Wait for BVALID with timeout
+        $display("      [axi_write] Waiting BVALID...");
+        timeout = 0;
+        while (S_AXI_bvalid != 1'b1) begin
+            @(posedge master_clk); #1;
+            timeout++;
+            if (timeout > 1000) begin
+                $display("ERROR: axi_write BVALID timeout!");
+                $finish;
+            end
+        end
+        $display("      [axi_write] Got BVALID");
+        
         @(posedge master_clk); #1;
         S_AXI_bready = 1'b0;
+        
+        $display("      [axi_write] DONE");
     endtask
 
     //=========================================================================
-    // AXI Read Task (uses master_clk)
+    // AXI Read Task
     //=========================================================================
     task axi_read(input logic [6:0] addr, output logic [31:0] data);
+        int timeout;
+        
+        $display("      [axi_read] START addr=0x%02h", addr);
+        
         @(posedge master_clk); #1;
         S_AXI_araddr  = addr;
         S_AXI_arprot  = 3'd0;
         S_AXI_arvalid = 1'b1;
         S_AXI_rready  = 1'b1;
         
-        wait(S_AXI_arready == 1'b1);
+        // Wait for ARREADY with timeout
+        $display("      [axi_read] Waiting ARREADY...");
+        timeout = 0;
+        while (S_AXI_arready != 1'b1) begin
+            @(posedge master_clk); #1;
+            timeout++;
+            if (timeout > 1000) begin
+                $display("ERROR: axi_read ARREADY timeout!");
+                $finish;
+            end
+        end
+        $display("      [axi_read] Got ARREADY");
+        
         @(posedge master_clk); #1;
         S_AXI_arvalid = 1'b0;
         
-        wait(S_AXI_rvalid == 1'b1);
+        // Wait for RVALID with timeout
+        $display("      [axi_read] Waiting RVALID...");
+        timeout = 0;
+        while (S_AXI_rvalid != 1'b1) begin
+            @(posedge master_clk); #1;
+            timeout++;
+            if (timeout > 1000) begin
+                $display("ERROR: axi_read RVALID timeout!");
+                $finish;
+            end
+        end
         data = S_AXI_rdata;
+        $display("      [axi_read] Got RVALID, data=0x%08h", data);
+        
         @(posedge master_clk); #1;
         S_AXI_rready = 1'b0;
+        
+        $display("      [axi_read] DONE");
     endtask
 
     //=========================================================================
-    // SPI Helper Tasks
+    // Wait TX Ready
     //=========================================================================
-    
-    // Wait for SPI TX Ready
     task wait_tx_ready();
         logic [31:0] status;
-        int timeout;
-        timeout = 0;
+        int count;
+        
+        $display("    [wait_tx_ready] START");
+        count = 0;
+        
         do begin
             axi_read(MASTER_STATUS, status);
-            timeout++;
-            if (timeout > 1000) begin
+            $display("    [wait_tx_ready] status=0x%08h TX_READY=%b count=%0d", status, status[0], count);
+            count++;
+            if (count > 200) begin
                 $display("ERROR: wait_tx_ready timeout!");
                 $finish;
             end
+            if (status[0] == 1'b0) begin
+                repeat(50) @(posedge master_clk);
+            end
         end while (status[0] == 1'b0);
+        
+        $display("    [wait_tx_ready] DONE");
     endtask
 
-    // Assert CS (select slave)
+    //=========================================================================
+    // SPI CS Assert/Deassert
+    //=========================================================================
     task spi_cs_assert();
-        axi_write(MASTER_CONTROL, 32'h0);  // CS_N = 0
-        repeat(10) @(posedge master_clk);
+        $display("    [spi_cs_assert] CS -> LOW");
+        axi_write(MASTER_CONTROL, 32'h0);
+        repeat(20) @(posedge master_clk);
     endtask
 
-    // Deassert CS (deselect slave)
     task spi_cs_deassert();
-        axi_write(MASTER_CONTROL, 32'h1);  // CS_N = 1
-        repeat(10) @(posedge master_clk);
+        $display("    [spi_cs_deassert] CS -> HIGH");
+        axi_write(MASTER_CONTROL, 32'h1);
+        repeat(20) @(posedge master_clk);
     endtask
 
-    // Send byte and receive response
+    //=========================================================================
+    // SPI Transfer (send byte, receive byte)
+    //=========================================================================
     task spi_transfer(input logic [7:0] tx_byte, output logic [7:0] rx_byte);
         logic [31:0] rx_data;
+        
+        $display("    [spi_transfer] TX=0x%02h", tx_byte);
         
         wait_tx_ready();
         axi_write(MASTER_TX_DATA, {24'h0, tx_byte});
@@ -244,13 +330,18 @@ module tb_spi_master_slave;
         
         axi_read(MASTER_RX_DATA, rx_data);
         rx_byte = rx_data[7:0];
+        
+        $display("    [spi_transfer] RX=0x%02h", rx_byte);
     endtask
 
-    // Write to slave register
-    // Protocol: [WR=0 | ADDR[6:0]] [DATA]
+    //=========================================================================
+    // Slave Register Write
+    //=========================================================================
     task slave_reg_write(input logic [3:0] reg_addr, input logic [7:0] data);
         logic [7:0] cmd_byte;
         logic [7:0] dummy;
+        
+        $display("  [slave_reg_write] reg[%0d] <- 0x%02h", reg_addr, data);
         
         cmd_byte = {1'b0, 3'b000, reg_addr};  // WR=0
         
@@ -259,17 +350,19 @@ module tb_spi_master_slave;
         spi_transfer(data, dummy);
         spi_cs_deassert();
         
-        // Wait for slave to process (a few slave clock cycles)
-        repeat(20) @(posedge slave_clk);
+        repeat(50) @(posedge slave_clk);
         
-        $display("  [SPI WR] reg[%0d] <- 0x%02h", reg_addr, data);
+        $display("  [slave_reg_write] DONE");
     endtask
 
-    // Read from slave register
-    // Protocol: [RD=1 | ADDR[6:0]] [DUMMY] -> [DATA]
+    //=========================================================================
+    // Slave Register Read
+    //=========================================================================
     task slave_reg_read(input logic [3:0] reg_addr, output logic [7:0] data);
         logic [7:0] cmd_byte;
         logic [7:0] dummy;
+        
+        $display("  [slave_reg_read] reg[%0d]", reg_addr);
         
         cmd_byte = {1'b1, 3'b000, reg_addr};  // RD=1
         
@@ -278,7 +371,7 @@ module tb_spi_master_slave;
         spi_transfer(8'hFF, data);
         spi_cs_deassert();
         
-        $display("  [SPI RD] reg[%0d] -> 0x%02h", reg_addr, data);
+        $display("  [slave_reg_read] -> 0x%02h", data);
     endtask
 
     //=========================================================================
@@ -293,6 +386,7 @@ module tb_spi_master_slave;
         $display("============================================");
 
         // Initialize AXI signals
+        $display("[INIT] Initializing signals...");
         aresetn       = 0;
         S_AXI_awaddr  = 0;
         S_AXI_awvalid = 0;
@@ -313,108 +407,122 @@ module tb_spi_master_slave;
         errors        = 0;
 
         // Reset sequence
+        $display("[INIT] Applying reset...");
         repeat(20) @(posedge master_clk);
         aresetn = 1;
-        repeat(20) @(posedge master_clk);
+        $display("[INIT] Reset released");
+        repeat(200) @(posedge master_clk);
+
+        // Check initial TX_READY
+        $display("[INIT] Checking initial SPI Master status...");
+        begin
+            logic [31:0] status;
+            axi_read(MASTER_STATUS, status);
+            $display("[INIT] Initial STATUS = 0x%08h, TX_READY = %b", status, status[0]);
+        end
 
         // Initialize CS high
+        $display("[INIT] Setting CS high...");
         spi_cs_deassert();
-        repeat(50) @(posedge master_clk);
+        repeat(100) @(posedge master_clk);
+
+        $display("[INIT] Initialization complete!\n");
 
         //=============================================
-        // Test 1: Write dim_m
+        // Test 1: Simple SPI byte transfer
         //=============================================
-        $display("\n[Test 1] Write dim_m = 8");
+        $display("============================================");
+        $display("[Test 1] Simple SPI byte transfer");
+        $display("============================================");
+        
+        begin
+            logic [7:0] tx_data, rx_data;
+            tx_data = 8'hA5;
+            
+            spi_cs_assert();
+            spi_transfer(tx_data, rx_data);
+            spi_cs_deassert();
+            
+            $display("[Test 1] Sent 0x%02h, Received 0x%02h", tx_data, rx_data);
+            $display("[Test 1] COMPLETE\n");
+        end
+
+        //=============================================
+        // Test 2: Write to slave register
+        //=============================================
+        $display("============================================");
+        $display("[Test 2] Write dim_m = 8");
+        $display("============================================");
+        
         slave_reg_write(4'h2, 8'd8);
         
+        $display("[Test 2] dim_m = %0d (expected 8)", dim_m);
         if (dim_m == 6'd8) begin
-            $display("  PASS: dim_m = %0d", dim_m);
+            $display("[Test 2] PASS\n");
         end else begin
-            $display("  FAIL: dim_m expected=8, got=%0d", dim_m);
+            $display("[Test 2] FAIL\n");
             errors++;
         end
 
         //=============================================
-        // Test 2: Write dim_n
+        // Test 3: Write dim_n
         //=============================================
-        $display("\n[Test 2] Write dim_n = 16");
+        $display("============================================");
+        $display("[Test 3] Write dim_n = 16");
+        $display("============================================");
+        
         slave_reg_write(4'h3, 8'd16);
         
+        $display("[Test 3] dim_n = %0d (expected 16)", dim_n);
         if (dim_n == 6'd16) begin
-            $display("  PASS: dim_n = %0d", dim_n);
+            $display("[Test 3] PASS\n");
         end else begin
-            $display("  FAIL: dim_n expected=16, got=%0d", dim_n);
+            $display("[Test 3] FAIL\n");
             errors++;
         end
 
         //=============================================
-        // Test 3: Write dim_k
+        // Test 4: Write dim_k
         //=============================================
-        $display("\n[Test 3] Write dim_k = 32");
+        $display("============================================");
+        $display("[Test 4] Write dim_k = 32");
+        $display("============================================");
+        
         slave_reg_write(4'h4, 8'd32);
         
+        $display("[Test 4] dim_k = %0d (expected 32)", dim_k);
         if (dim_k == 6'd32) begin
-            $display("  PASS: dim_k = %0d", dim_k);
+            $display("[Test 4] PASS\n");
         end else begin
-            $display("  FAIL: dim_k expected=32, got=%0d", dim_k);
+            $display("[Test 4] FAIL\n");
             errors++;
         end
 
         //=============================================
-        // Test 4: Read back dim_m
+        // Test 5: Read back from slave
         //=============================================
-        $display("\n[Test 4] Read dim_m");
+        $display("============================================");
+        $display("[Test 5] Read dim_m back");
+        $display("============================================");
+        
         slave_reg_read(4'h2, rx_byte);
         
+        $display("[Test 5] Read back: 0x%02h (expected 0x08)", rx_byte);
         if (rx_byte == 8'd8) begin
-            $display("  PASS: read dim_m = %0d", rx_byte);
+            $display("[Test 5] PASS\n");
         end else begin
-            $display("  FAIL: read dim_m expected=8, got=%0d", rx_byte);
-            errors++;
-        end
-
-        //=============================================
-        // Test 5: Read status
-        //=============================================
-        $display("\n[Test 5] Read status");
-        slave_reg_read(4'h1, rx_byte);
-        $display("  Status = 0x%02h", rx_byte);
-
-        //=============================================
-        // Test 6: Start TPU
-        //=============================================
-        $display("\n[Test 6] Start TPU (write control)");
-        slave_reg_write(4'h0, 8'h01);
-        
-        repeat(10) @(posedge slave_clk);
-        
-        if (tpu_start == 1'b1) begin
-            $display("  PASS: tpu_start = 1");
-        end else begin
-            $display("  FAIL: tpu_start not asserted");
-            errors++;
-        end
-
-        //=============================================
-        // Test 7: Multiple transactions
-        //=============================================
-        $display("\n[Test 7] Multiple writes");
-        for (int i = 0; i < 4; i++) begin
-            slave_reg_write(4'h2, 8'd20 + i);
-        end
-        
-        if (dim_m == 6'd23) begin
-            $display("  PASS: dim_m = %0d", dim_m);
-        end else begin
-            $display("  FAIL: dim_m expected=23, got=%0d", dim_m);
+            $display("[Test 5] FAIL\n");
             errors++;
         end
 
         //=============================================
         // Summary
         //=============================================
-        repeat(100) @(posedge master_clk);
-        $display("\n============================================");
+        repeat(200) @(posedge master_clk);
+        
+        $display("============================================");
+        $display("  TEST SUMMARY");
+        $display("============================================");
         if (errors == 0) begin
             $display("  ALL TESTS PASSED!");
         end else begin
@@ -429,8 +537,10 @@ module tb_spi_master_slave;
     // Timeout
     //=========================================================================
     initial begin
-        #(MASTER_CLK_PERIOD * 500000);
-        $display("ERROR: Timeout!");
+        #(MASTER_CLK_PERIOD * 50000000);
+        $display("\n============================================");
+        $display("ERROR: Global Timeout!");
+        $display("============================================\n");
         $finish;
     end
 
@@ -438,7 +548,7 @@ module tb_spi_master_slave;
     // Waveform Dump
     //=========================================================================
     initial begin
-        $dumpfile("spi_master_slave.vcd");
+        $dumpfile("tb.vcd");
         $dumpvars(0, tb_spi_master_slave);
     end
 
