@@ -179,7 +179,7 @@ module tb_spi_master_slave;
         logic got_awready, got_wready;
         
         $display("      [axi_write] START addr=0x%02h data=0x%08h", addr, data);
-        @(posedge master_clk); #1;
+        @(posedge clk); #1;
         S_AXI_awaddr  = addr;
         S_AXI_wdata   = data;
         S_AXI_awprot  = 3'd0;
@@ -194,7 +194,7 @@ module tb_spi_master_slave;
         
         // Wait for BOTH AWREADY and WREADY (may come same or different cycles)
         while (!got_awready || !got_wready) begin
-            @(posedge master_clk);
+            @(posedge clk);
             if (S_AXI_awready) begin
                 got_awready = 1;
                 $display("      [axi_write] Got AWREADY");
@@ -218,7 +218,7 @@ module tb_spi_master_slave;
         $display("      [axi_write] Waiting BVALID...");
         timeout = 0;
         while (S_AXI_bvalid !== 1'b1) begin
-            @(posedge master_clk);
+            @(posedge clk);
             timeout++;
             if (timeout > 100) begin
                 $display("ERROR: BVALID timeout!");
@@ -228,7 +228,7 @@ module tb_spi_master_slave;
         $display("      [axi_write] Got BVALID");
         
         S_AXI_bready = 1'b1;
-        @(posedge master_clk); #1;
+        @(posedge clk); #1;
         S_AXI_bready = 1'b0;
         $display("      [axi_write] DONE");
     endtask
