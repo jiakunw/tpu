@@ -46,8 +46,8 @@ set iv::GND_name	DVSS
 set iv::PWR_libname	VDD
 set iv::GND_libname	VSS
 #### die dimensions ####
-set vars(fp,width)           89.3
-set vars(fp,height)          89.3
+set vars(fp,width)           103.0
+set vars(fp,height)          103.0
 set vars(fp,io_core_space)   27.5  
 #### ring parameters ####
 # metal layer
