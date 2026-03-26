@@ -288,12 +288,12 @@ module tb_spi_master_slave;
 
     task spi_cs_low();
         axi_write(SPI_REG_CONTROL, 32'h0);
-        repeat(10) @(posedge master_clk);
+        repeat($urandom_range(20, 5)) @(posedge master_clk);
     endtask
 
     task spi_cs_high();
         axi_write(SPI_REG_CONTROL, 32'h1);
-        repeat(10) @(posedge master_clk);
+        repeat($urandom_range(20, 5)) @(posedge master_clk);
     endtask
 
     task spi_transfer_byte(input logic [7:0] tx_byte, output logic [7:0] rx_byte);
@@ -302,7 +302,7 @@ module tb_spi_master_slave;
         spi_wait_ready();
         axi_write(SPI_REG_TX_DATA, {24'h0, tx_byte});
         spi_wait_ready();
-        repeat(20) @(posedge master_clk);
+        repeat($urandom_range(30, 10)) @(posedge master_clk);
         axi_read(SPI_REG_RX_DATA, rx_data);
         rx_byte = rx_data[7:0];
     endtask
@@ -322,7 +322,7 @@ module tb_spi_master_slave;
         spi_transfer_byte(8'h00, rx);
         spi_cs_high();
         
-        repeat(20) @(posedge slave_clk);
+        repeat($urandom_range(35, 10)) @(posedge slave_clk);
         
         if (rx == TPU_NAK) begin
             result = -1;
@@ -345,7 +345,7 @@ module tb_spi_master_slave;
         spi_transfer_byte(8'h00, resp2);
         spi_cs_high();
         
-        repeat(20) @(posedge slave_clk);
+        repeat($urandom_range(35, 10)) @(posedge slave_clk);
         
         if (resp1 == TPU_NAK || resp1 != TPU_ACK || resp2 != TPU_ACK) begin
             result = -1;
@@ -462,11 +462,11 @@ module tb_spi_master_slave;
         $display("");
 
         // 读两次同一个寄存器
-        tpu_reg_read(2, read_data);
-        $display("First read: %0d", read_data);
+        tpu_reg_read(TPU_REG_DIM_K, read_data, ret);
+        $display("First read: %0d, ret: %0d", read_data, ret);
 
-        tpu_reg_read(2, read_data);
-        $display("Second read: %0d", read_data);
+        tpu_reg_read(TPU_REG_DIM_K, read_data, ret);
+        $display("Second read: %0d, ret: %0d", read_data, ret);
 
         // //----------------------------------------------------------------------
         // // Test 6: Start TPU
