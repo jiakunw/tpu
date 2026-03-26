@@ -359,7 +359,7 @@ module tb_spi_master_slave;
     //=========================================================================
     initial begin
         logic [31:0] status32;
-        logic [7:0]  status8, data;
+        logic [7:0]  status8, read_data, data;
         int ret;
         
         $display("");
@@ -462,7 +462,6 @@ module tb_spi_master_slave;
         $display("");
 
         // 读两次同一个寄存器
-        logic [7:0] read_data;
         tpu_reg_read(TPU_REG_DIM_K, read_data, ret);
         $display("First read: %0d, ret: %0d", read_data, ret);
 
