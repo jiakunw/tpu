@@ -120,6 +120,9 @@ set iv::hold_target_slack		1.0
 # See mmmc.tcl for library setup for innovus
 # See user_timing_derating.tcl for user customization
 # Grab from environment variable
+set env(PDK_PATH)               "/courses/ee6350/pdk2023/T-N65-CM-SP-018-K3_MOM/Base_PDK/PDK_CRN65GP_v1.0c_official_IC61_20101010"
+set env(PDK_DIGITAL)            "/courses/ee6350/pdk2023/T-N65-CM-SP-018-K3_MOM/digital"
+
 set PDK_PATH		$env(PDK_PATH)	
 set PDK_DIGITAL		$env(PDK_DIGITAL)	
 # List of NLDM libraries of all std cell libraries to be used
