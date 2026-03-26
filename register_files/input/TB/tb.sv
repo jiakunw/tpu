@@ -1,48 +1,57 @@
 ///////////////////////////////////////////////////////////////////////////////
-// tb.sv - SPI Master <-> Slave Testbench (Single 100MHz Clock)
+// tb.sv
 //
-// Protocol:
-//   CMD byte: [ADDR[7:4] | CMD[3:0]]
-//   CMD_READ  = 4'b0001 (0x1)
-//   CMD_WRITE = 4'b0010 (0x2)
+// Testbench: AXI SPI Master <-> rf_top (SPI Slave)
+// 
+// Clock Configuration:
+//   Master AXI: 100 MHz
+//   Slave:      10 MHz
+//   SPI:        2 MHz (sampling ratio = 5x)
 //
-//   WRITE: [CMD] [ACK/NAK] [DATA] [ACK]  (4 bytes)
-//   READ:  [CMD] [DATA]                   (2 bytes)
+// TPU SPI Protocol:
+//   Command format: [ADDR:4][OPCODE:4]
+//   OPCODE: 0x1 = READ, 0x2 = WRITE
+//   ACK = 0xFF, NAK = 0xF0
 ///////////////////////////////////////////////////////////////////////////////
 `timescale 1ns / 1ps
 
 module tb_spi_master_slave;
 
     //=========================================================================
-    // Parameters
+    // Clock Parameters
     //=========================================================================
-    parameter CLK_PERIOD        = 10;   // 100 MHz
-    parameter CLKS_PER_HALF_BIT = 5;    // SPI = 100/(5*2) = 10 MHz
-    parameter SPI_MODE          = 0;
+    parameter MASTER_CLK_PERIOD = 10;    // 100 MHz (10 ns period)
+    parameter SLAVE_CLK_PERIOD  = 100;   // 10 MHz  (100 ns period)
+    parameter CLKS_PER_HALF_BIT = 25;    // SPI = 100MHz / (2*25) = 2 MHz
+    parameter SPI_MODE = 0;
+
+    // TPU Protocol Constants
+    localparam TPU_OP_READ  = 4'h1;
+    localparam TPU_OP_WRITE = 4'h2;
+    localparam TPU_ACK      = 8'hFF;
+    localparam TPU_NAK      = 8'hF0;
+
+    // TPU Register Addresses
+    localparam TPU_REG_CONTROL = 4'h0;
+    localparam TPU_REG_STATUS  = 4'h1;
+    localparam TPU_REG_DIM_M   = 4'h2;
+    localparam TPU_REG_DIM_N   = 4'h3;
+    localparam TPU_REG_DIM_K   = 4'h4;
 
     //=========================================================================
-    // Protocol Constants
+    // Clocks and Reset
     //=========================================================================
-    localparam logic [3:0] CMD_READ  = 4'b0001;  // 0x1
-    localparam logic [3:0] CMD_WRITE = 4'b0010;  // 0x2
-    localparam logic [7:0] RESP_ACK  = 8'hFF;
-    localparam logic [7:0] RESP_NAK  = 8'hF0;
+    logic master_clk;  // 100 MHz
+    logic slave_clk;   // 10 MHz
+    logic aresetn;
 
-    // Register addresses
-    localparam logic [3:0] REG_CONTROL = 4'h0;
-    localparam logic [3:0] REG_STATUS  = 4'h1;
-    localparam logic [3:0] REG_DIM_M   = 4'h2;
-    localparam logic [3:0] REG_DIM_N   = 4'h3;
-    localparam logic [3:0] REG_DIM_K   = 4'h4;
+    // Master clock: 100 MHz
+    initial master_clk = 0;
+    always #(MASTER_CLK_PERIOD/2) master_clk = ~master_clk;
 
-    //=========================================================================
-    // Clock and Reset (Single Clock Domain)
-    //=========================================================================
-    logic clk;
-    logic rst_n;
-
-    initial clk = 0;
-    always #(CLK_PERIOD/2) clk = ~clk;
+    // Slave clock: 10 MHz
+    initial slave_clk = 0;
+    always #(SLAVE_CLK_PERIOD/2) slave_clk = ~slave_clk;
 
     //=========================================================================
     // AXI-Lite Signals
@@ -80,7 +89,7 @@ module tb_spi_master_slave;
     logic spi_miso;
 
     //=========================================================================
-    // rf_top TPU Interface
+    // rf_top Interface
     //=========================================================================
     logic        tpu_start;
     logic        tpu_idle;
@@ -90,21 +99,18 @@ module tb_spi_master_slave;
     logic [5:0]  dim_n;
     logic [5:0]  dim_k;
 
-    // Debug
     logic [1:0]  debug_wr_state;
     logic [1:0]  debug_rd_state;
 
-    // Test variables
-    logic [7:0]  rx_byte;
-    int          errors;
+    int errors;
 
     //=========================================================================
-    // Master Register Addresses
+    // AXI SPI Master Register Addresses
     //=========================================================================
-    localparam logic [6:0] MASTER_TX_DATA  = 7'h00;
-    localparam logic [6:0] MASTER_RX_DATA  = 7'h04;
-    localparam logic [6:0] MASTER_STATUS   = 7'h08;
-    localparam logic [6:0] MASTER_CONTROL  = 7'h0C;
+    localparam logic [6:0] SPI_REG_TX_DATA  = 7'h00;
+    localparam logic [6:0] SPI_REG_RX_DATA  = 7'h04;
+    localparam logic [6:0] SPI_REG_STATUS   = 7'h08;
+    localparam logic [6:0] SPI_REG_CONTROL  = 7'h0C;
 
     //=========================================================================
     // DUT: AXI SPI Master (100 MHz)
@@ -115,8 +121,8 @@ module tb_spi_master_slave;
         .SPI_MODE           (SPI_MODE),
         .CLKS_PER_HALF_BIT  (CLKS_PER_HALF_BIT)
     ) u_master (
-        .S_AXI_ACLK     (clk),
-        .S_AXI_ARESETN  (rst_n),
+        .S_AXI_ACLK     (master_clk),
+        .S_AXI_ARESETN  (aresetn),
         
         .S_AXI_AWADDR   (S_AXI_awaddr),
         .S_AXI_AWVALID  (S_AXI_awvalid),
@@ -150,11 +156,11 @@ module tb_spi_master_slave;
     );
 
     //=========================================================================
-    // DUT: rf_top SPI Slave (100 MHz - Same Clock!)
+    // DUT: rf_top SPI Slave (10 MHz)
     //=========================================================================
     rf_top u_slave (
-        .clk            (clk),      // Same 100MHz clock
-        .rst_n          (rst_n),
+        .clk            (slave_clk),   // 10 MHz
+        .rst_n          (aresetn),
         
         .spi_sck        (spi_sck),
         .spi_cs_n       (spi_cs_n),
@@ -178,8 +184,7 @@ module tb_spi_master_slave;
         int timeout;
         logic got_awready, got_wready;
         
-        $display("      [axi_write] START addr=0x%02h data=0x%08h", addr, data);
-        @(posedge clk); #1;
+        @(posedge master_clk); #1;
         S_AXI_awaddr  = addr;
         S_AXI_wdata   = data;
         S_AXI_awprot  = 3'd0;
@@ -192,20 +197,13 @@ module tb_spi_master_slave;
         got_wready = 0;
         timeout = 0;
         
-        // Wait for BOTH AWREADY and WREADY (may come same or different cycles)
         while (!got_awready || !got_wready) begin
-            @(posedge clk);
-            if (S_AXI_awready) begin
-                got_awready = 1;
-                $display("      [axi_write] Got AWREADY");
-            end
-            if (S_AXI_wready) begin
-                got_wready = 1;
-                $display("      [axi_write] Got WREADY");
-            end
+            @(posedge master_clk);
+            if (S_AXI_awready) got_awready = 1;
+            if (S_AXI_wready)  got_wready = 1;
             timeout++;
             if (timeout > 100) begin
-                $display("ERROR: axi_write timeout! awready=%b wready=%b", got_awready, got_wready);
+                $display("ERROR: axi_write timeout!");
                 $finish;
             end
         end
@@ -214,23 +212,19 @@ module tb_spi_master_slave;
         S_AXI_awvalid = 1'b0;
         S_AXI_wvalid  = 1'b0;
         
-        // Wait for BVALID
-        $display("      [axi_write] Waiting BVALID...");
         timeout = 0;
         while (S_AXI_bvalid !== 1'b1) begin
-            @(posedge clk);
+            @(posedge master_clk);
             timeout++;
             if (timeout > 100) begin
                 $display("ERROR: BVALID timeout!");
                 $finish;
             end
         end
-        $display("      [axi_write] Got BVALID");
         
         S_AXI_bready = 1'b1;
-        @(posedge clk); #1;
+        @(posedge master_clk); #1;
         S_AXI_bready = 1'b0;
-        $display("      [axi_write] DONE");
     endtask
 
     //=========================================================================
@@ -239,7 +233,7 @@ module tb_spi_master_slave;
     task axi_read(input logic [6:0] addr, output logic [31:0] data);
         int timeout;
         
-        @(posedge clk); #1;
+        @(posedge master_clk); #1;
         S_AXI_araddr  = addr;
         S_AXI_arprot  = 3'd0;
         S_AXI_arvalid = 1'b1;
@@ -247,23 +241,29 @@ module tb_spi_master_slave;
         
         timeout = 0;
         while (S_AXI_arready !== 1'b1) begin
-            @(posedge clk);
+            @(posedge master_clk);
             timeout++;
-            if (timeout > 100) begin $display("ERROR: ARREADY timeout!"); $finish; end
+            if (timeout > 100) begin
+                $display("ERROR: ARREADY timeout!");
+                $finish;
+            end
         end
-        @(posedge clk); #1;
+        @(posedge master_clk); #1;
         S_AXI_arvalid = 1'b0;
         
         timeout = 0;
         while (S_AXI_rvalid !== 1'b1) begin
-            @(posedge clk);
+            @(posedge master_clk);
             timeout++;
-            if (timeout > 100) begin $display("ERROR: RVALID timeout!"); $finish; end
+            if (timeout > 100) begin
+                $display("ERROR: RVALID timeout!");
+                $finish;
+            end
         end
         
         data = S_AXI_rdata;
         S_AXI_rready = 1'b1;
-        @(posedge clk); #1;
+        @(posedge master_clk); #1;
         S_AXI_rready = 1'b0;
     endtask
 
@@ -271,84 +271,108 @@ module tb_spi_master_slave;
     // SPI Helper Tasks
     //=========================================================================
     
-    task wait_tx_ready();
+    task spi_wait_ready();
         logic [31:0] status;
-        int count;
-        count = 0;
+        int timeout;
+        timeout = 0;
         do begin
-            axi_read(MASTER_STATUS, status);
-            count++;
-            if (count > 500) begin $display("ERROR: TX_READY timeout!"); $finish; end
-            repeat(2) @(posedge clk);
+            axi_read(SPI_REG_STATUS, status);
+            timeout++;
+            if (timeout > 200) begin
+                $display("ERROR: spi_wait_ready timeout!");
+                $finish;
+            end
+            repeat(5) @(posedge master_clk);
         end while (status[0] == 1'b0);
     endtask
 
-    task spi_cs_assert();
-        axi_write(MASTER_CONTROL, 32'h0);
-        repeat(5) @(posedge clk);
+    task spi_cs_low();
+        axi_write(SPI_REG_CONTROL, 32'h0);
+        repeat(10) @(posedge master_clk);
     endtask
 
-    task spi_cs_deassert();
-        axi_write(MASTER_CONTROL, 32'h1);
-        repeat(5) @(posedge clk);
+    task spi_cs_high();
+        axi_write(SPI_REG_CONTROL, 32'h1);
+        repeat(10) @(posedge master_clk);
     endtask
 
-    task spi_transfer(input logic [7:0] tx_byte, output logic [7:0] rx_byte);
+    task spi_transfer_byte(input logic [7:0] tx_byte, output logic [7:0] rx_byte);
         logic [31:0] rx_data;
-        wait_tx_ready();
-        axi_write(MASTER_TX_DATA, {24'h0, tx_byte});
-        wait_tx_ready();
-        axi_read(MASTER_RX_DATA, rx_data);
+        
+        spi_wait_ready();
+        axi_write(SPI_REG_TX_DATA, {24'h0, tx_byte});
+        spi_wait_ready();
+        repeat(20) @(posedge master_clk);
+        axi_read(SPI_REG_RX_DATA, rx_data);
         rx_byte = rx_data[7:0];
     endtask
 
     //=========================================================================
-    // Write to slave register (4-byte protocol)
+    // TPU Protocol Tasks
     //=========================================================================
-    task slave_reg_write(input logic [3:0] reg_addr, input logic [7:0] data, output int success);
-        logic [7:0] cmd_byte;
-        logic [7:0] resp0, resp1, resp2, resp3;
+
+    task tpu_reg_read(input logic [3:0] addr, output logic [7:0] data, output int result);
+        logic [7:0] cmd, rx;
         
-        cmd_byte = {reg_addr, CMD_WRITE};
+        cmd = {addr, TPU_OP_READ};
+        $display("  [tpu_reg_read] addr=%0d cmd=0x%02h", addr, cmd);
         
-        spi_cs_assert();
-        spi_transfer(cmd_byte, resp0);  // Byte 0: CMD
-        spi_transfer(8'h00, resp1);     // Byte 1: ACK/NAK
-        spi_transfer(data, resp2);      // Byte 2: DATA
-        spi_transfer(8'h00, resp3);     // Byte 3: Final ACK
-        spi_cs_deassert();
+        spi_cs_low();
+        spi_transfer_byte(cmd, rx);
+        spi_transfer_byte(8'h00, rx);
+        spi_cs_high();
         
-        success = (resp1 == RESP_ACK && resp3 == RESP_ACK) ? 1 : 0;
+        repeat(20) @(posedge slave_clk);
         
-        repeat(10) @(posedge clk);
+        if (rx == TPU_NAK) begin
+            result = -1;
+        end else begin
+            data = rx;
+            result = 0;
+        end
     endtask
 
-    //=========================================================================
-    // Read from slave register (2-byte protocol)
-    //=========================================================================
-    task slave_reg_read(input logic [3:0] reg_addr, output logic [7:0] data);
-        logic [7:0] cmd_byte;
-        logic [7:0] resp;
+    task tpu_reg_write(input logic [3:0] addr, input logic [7:0] data, output int result);
+        logic [7:0] cmd, resp1, resp2, dummy;
         
-        cmd_byte = {reg_addr, CMD_READ};
+        cmd = {addr, TPU_OP_WRITE};
+        $display("  [tpu_reg_write] addr=%0d data=0x%02h cmd=0x%02h", addr, data, cmd);
         
-        spi_cs_assert();
-        spi_transfer(cmd_byte, resp);   // Byte 0: CMD
-        spi_transfer(8'h00, data);      // Byte 1: DATA
-        spi_cs_deassert();
+        spi_cs_low();
+        spi_transfer_byte(cmd, dummy);
+        spi_transfer_byte(8'h00, resp1);
+        spi_transfer_byte(data, dummy);
+        spi_transfer_byte(8'h00, resp2);
+        spi_cs_high();
+        
+        repeat(20) @(posedge slave_clk);
+        
+        if (resp1 == TPU_NAK || resp1 != TPU_ACK || resp2 != TPU_ACK) begin
+            result = -1;
+        end else begin
+            result = 0;
+        end
     endtask
 
     //=========================================================================
     // Main Test
     //=========================================================================
     initial begin
-        $display("============================================");
-        $display("  SPI Master <-> Slave Testbench");
-        $display("  Clock: 100 MHz, SPI: 10 MHz");
-        $display("============================================\n");
+        logic [31:0] status32;
+        logic [7:0]  status8, data;
+        int ret;
+        
+        $display("");
+        $display("========================================");
+        $display("    AXI SPI Master - TPU Test");
+        $display("    Master: 100 MHz, Slave: 10 MHz");
+        $display("    SPI: 2 MHz");
+        $display("========================================");
+        $display("");
 
         // Initialize
-        rst_n         = 0;
+        errors        = 0;
+        aresetn       = 0;
         S_AXI_awaddr  = 0;
         S_AXI_awvalid = 0;
         S_AXI_awprot  = 0;
@@ -364,134 +388,102 @@ module tb_spi_master_slave;
         tpu_idle      = 1;
         tpu_working   = 0;
         tpu_done      = 0;
-        errors        = 0;
 
         // Reset
-        repeat(20) @(posedge clk);
-        rst_n = 1;
-        repeat(50) @(posedge clk);
+        repeat(20) @(posedge master_clk);
+        aresetn = 1;
+        repeat(100) @(posedge master_clk);
 
-        // CS high
-        spi_cs_deassert();
-        repeat(20) @(posedge clk);
+        spi_cs_high();
+        repeat(50) @(posedge master_clk);
 
-        //=============================================
-        // Test 1: Read Status
-        //=============================================
-        $display("[Test 1] Read Status");
-        slave_reg_read(REG_STATUS, rx_byte);
-        $display("         Status = 0x%02h (idle=%b)", rx_byte, rx_byte[0]);
+        //----------------------------------------------------------------------
+        // Test 1: SPI Status
+        //----------------------------------------------------------------------
+        $display("[Test 1] SPI Status Register");
+        axi_read(SPI_REG_STATUS, status32);
+        $display("  STATUS = 0x%02X (READY=%0d)", status32[7:0], status32[0]);
+        if (status32[0]) $display("  [PASS]");
+        else begin $display("  [FAIL]"); errors++; end
         $display("");
 
-        //=============================================
-        // Test 2: Write DIM_M = 8
-        //=============================================
-        begin
-            int ok;
-            $display("[Test 2] Write DIM_M = 8");
-            slave_reg_write(REG_DIM_M, 8'd8, ok);
-            if (dim_m == 6'd8) begin
-                $display("         PASS: dim_m = %0d", dim_m);
-            end else begin
-                $display("         FAIL: dim_m = %0d (expected 8)", dim_m);
-                errors++;
-            end
-            $display("");
-        end
-
-        //=============================================
-        // Test 3: Write DIM_N = 16
-        //=============================================
-        begin
-            int ok;
-            $display("[Test 3] Write DIM_N = 16");
-            slave_reg_write(REG_DIM_N, 8'd16, ok);
-            if (dim_n == 6'd16) begin
-                $display("         PASS: dim_n = %0d", dim_n);
-            end else begin
-                $display("         FAIL: dim_n = %0d (expected 16)", dim_n);
-                errors++;
-            end
-            $display("");
-        end
-
-        //=============================================
-        // Test 4: Write DIM_K = 32
-        //=============================================
-        begin
-            int ok;
-            $display("[Test 4] Write DIM_K = 32");
-            slave_reg_write(REG_DIM_K, 8'd32, ok);
-            if (dim_k == 6'd32) begin
-                $display("         PASS: dim_k = %0d", dim_k);
-            end else begin
-                $display("         FAIL: dim_k = %0d (expected 32)", dim_k);
-                errors++;
-            end
-            $display("");
-        end
-
-        //=============================================
-        // Test 5: Read back DIM_M
-        //=============================================
-        $display("[Test 5] Read DIM_M");
-        slave_reg_read(REG_DIM_M, rx_byte);
-        if (rx_byte == 8'd8) begin
-            $display("         PASS: read = %0d", rx_byte);
+        //----------------------------------------------------------------------
+        // Test 2: Read TPU Status
+        //----------------------------------------------------------------------
+        $display("[Test 2] Read TPU Status");
+        tpu_reg_read(TPU_REG_STATUS, data, ret);
+        if (ret == 0) begin
+            $display("  [PASS] Status = 0x%02X", data);
         end else begin
-            $display("         FAIL: read = %0d (expected 8)", rx_byte);
+            $display("  [FAIL] NAK"); errors++;
+        end
+        $display("");
+
+        //----------------------------------------------------------------------
+        // Test 3: Write DIM_M = 16
+        //----------------------------------------------------------------------
+        $display("[Test 3] Write DIM_M = 16");
+        tpu_reg_write(TPU_REG_DIM_M, 8'd16, ret);
+        if (ret == 0 && dim_m == 6'd16) begin
+            $display("  [PASS] dim_m = %0d", dim_m);
+        end else begin
+            $display("  [FAIL] ret=%0d dim_m=%0d", ret, dim_m);
             errors++;
         end
         $display("");
 
-        //=============================================
-        // Test 6: Read back DIM_N
-        //=============================================
-        $display("[Test 6] Read DIM_N");
-        slave_reg_read(REG_DIM_N, rx_byte);
-        if (rx_byte == 8'd16) begin
-            $display("         PASS: read = %0d", rx_byte);
+        //----------------------------------------------------------------------
+        // Test 4: Read back DIM_M
+        //----------------------------------------------------------------------
+        $display("[Test 4] Read back DIM_M");
+        tpu_reg_read(TPU_REG_DIM_M, data, ret);
+        if (ret == 0 && data == 16) begin
+            $display("  [PASS] DIM_M = %0d", data);
         end else begin
-            $display("         FAIL: read = %0d (expected 16)", rx_byte);
+            $display("  [FAIL] data=%0d", data);
             errors++;
         end
         $display("");
 
-        //=============================================
-        // Test 7: Read back DIM_K
-        //=============================================
-        $display("[Test 7] Read DIM_K");
-        slave_reg_read(REG_DIM_K, rx_byte);
-        if (rx_byte == 8'd32) begin
-            $display("         PASS: read = %0d", rx_byte);
+        //----------------------------------------------------------------------
+        // Test 5: Set All Dimensions
+        //----------------------------------------------------------------------
+        $display("[Test 5] Set M=16, N=8, K=32");
+        tpu_reg_write(TPU_REG_DIM_M, 8'd16, ret);
+        tpu_reg_write(TPU_REG_DIM_N, 8'd8, ret);
+        tpu_reg_write(TPU_REG_DIM_K, 8'd32, ret);
+        $display("  Hardware: dim_m=%0d, dim_n=%0d, dim_k=%0d", dim_m, dim_n, dim_k);
+        if (dim_m == 16 && dim_n == 8 && dim_k == 32) begin
+            $display("  [PASS]");
         end else begin
-            $display("         FAIL: read = %0d (expected 32)", rx_byte);
+            $display("  [FAIL]");
             errors++;
         end
         $display("");
 
-        //=============================================
-        // Test 8: Start TPU
-        //=============================================
-        begin
-            int ok;
-            $display("[Test 8] Start TPU");
-            slave_reg_write(REG_CONTROL, 8'h01, ok);
-            $display("         Control write done");
-            $display("");
+        //----------------------------------------------------------------------
+        // Test 6: Start TPU
+        //----------------------------------------------------------------------
+        $display("[Test 6] Start TPU");
+        tpu_reg_write(TPU_REG_CONTROL, 8'h01, ret);
+        repeat(10) @(posedge slave_clk);
+        if (tpu_start == 1'b1) begin
+            $display("  [PASS] tpu_start = 1");
+        end else begin
+            $display("  [FAIL] tpu_start = %0d", tpu_start);
+            errors++;
         end
+        $display("");
 
-        //=============================================
+        //----------------------------------------------------------------------
         // Summary
-        //=============================================
-        repeat(50) @(posedge clk);
-        $display("============================================");
-        if (errors == 0) begin
-            $display("  ALL TESTS PASSED!");
-        end else begin
-            $display("  FAILED: %0d errors", errors);
-        end
-        $display("============================================\n");
+        //----------------------------------------------------------------------
+        $display("========================================");
+        if (errors == 0)
+            $display("    ALL TESTS PASSED!");
+        else
+            $display("    FAILED: %0d errors", errors);
+        $display("========================================");
 
         $finish;
     end
@@ -500,17 +492,9 @@ module tb_spi_master_slave;
     // Timeout
     //=========================================================================
     initial begin
-        #(CLK_PERIOD * 500000);
+        #(MASTER_CLK_PERIOD * 5000000);
         $display("ERROR: Timeout!");
         $finish;
-    end
-
-    //=========================================================================
-    // Waveform
-    //=========================================================================
-    initial begin
-        $dumpfile("spi_test.vcd");
-        $dumpvars(0, tb_spi_master_slave);
     end
 
 endmodule
