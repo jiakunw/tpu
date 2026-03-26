@@ -161,8 +161,6 @@ module tb_spi_master_slave;
     // AXI Write Task
     //=========================================================================
     task axi_write(input logic [6:0] addr, input logic [31:0] data);
-        int timeout;
-        
         $display("      [axi_write] START addr=0x%02h data=0x%08h", addr, data);
         
         @(posedge master_clk); #1;
@@ -172,53 +170,30 @@ module tb_spi_master_slave;
         S_AXI_awvalid = 1'b1;
         S_AXI_wvalid  = 1'b1;
         S_AXI_wstrb   = 4'b1111;
-        S_AXI_bready  = 1'b1;
+        S_AXI_bready  = 1'b0;  // ← 改这里
         
-        // Wait for AWREADY with timeout
+        // Wait for AWREADY
         $display("      [axi_write] Waiting AWREADY...");
-        timeout = 0;
-        while (S_AXI_awready != 1'b1) begin
-            @(posedge master_clk); #1;
-            timeout++;
-            if (timeout > 1000) begin
-                $display("ERROR: axi_write AWREADY timeout!");
-                $finish;
-            end
-        end
+        wait(S_AXI_awready == 1'b1);
         $display("      [axi_write] Got AWREADY");
         
         @(posedge master_clk); #1;
         S_AXI_awvalid = 1'b0;
         
-        // Wait for WREADY with timeout
+        // Wait for WREADY
         $display("      [axi_write] Waiting WREADY...");
-        timeout = 0;
-        while (S_AXI_wready != 1'b1) begin
-            @(posedge master_clk); #1;
-            timeout++;
-            if (timeout > 1000) begin
-                $display("ERROR: axi_write WREADY timeout!");
-                $finish;
-            end
-        end
+        wait(S_AXI_wready == 1'b1);
         $display("      [axi_write] Got WREADY");
         
         @(posedge master_clk); #1;
         S_AXI_wvalid = 1'b0;
         
-        // Wait for BVALID with timeout
+        // Wait for BVALID
         $display("      [axi_write] Waiting BVALID...");
-        timeout = 0;
-        while (S_AXI_bvalid != 1'b1) begin
-            @(posedge master_clk); #1;
-            timeout++;
-            if (timeout > 1000) begin
-                $display("ERROR: axi_write BVALID timeout!");
-                $finish;
-            end
-        end
+        wait(S_AXI_bvalid == 1'b1);
         $display("      [axi_write] Got BVALID");
         
+        S_AXI_bready = 1'b1;  // ← 现在才设
         @(posedge master_clk); #1;
         S_AXI_bready = 1'b0;
         
@@ -232,47 +207,29 @@ module tb_spi_master_slave;
         int timeout;
         
         $display("      [axi_read] START addr=0x%02h", addr);
-        
         @(posedge master_clk); #1;
         S_AXI_araddr  = addr;
         S_AXI_arprot  = 3'd0;
         S_AXI_arvalid = 1'b1;
-        S_AXI_rready  = 1'b1;
+        S_AXI_rready  = 1'b0;  // ← 不要提前设 RREADY！
         
-        // Wait for ARREADY with timeout
+        // Wait for ARREADY
         $display("      [axi_read] Waiting ARREADY...");
-        timeout = 0;
-        while (S_AXI_arready != 1'b1) begin
-            @(posedge master_clk); #1;
-            timeout++;
-            if (timeout > 1000) begin
-                $display("ERROR: axi_read ARREADY timeout!");
-                $finish;
-            end
-        end
+        wait(S_AXI_arready == 1'b1);
         $display("      [axi_read] Got ARREADY");
-        
         @(posedge master_clk); #1;
         S_AXI_arvalid = 1'b0;
         
-        // Wait for RVALID with timeout
+        // Wait for RVALID
         $display("      [axi_read] Waiting RVALID...");
-        timeout = 0;
-        while (S_AXI_rvalid != 1'b1) begin
-            @(posedge master_clk); #1;
-            timeout++;
-            if (timeout > 1000) begin
-                $display("ERROR: axi_read RVALID timeout!");
-                $finish;
-            end
-        end
-        data = S_AXI_rdata;
-        $display("      [axi_read] Got RVALID, data=0x%08h", data);
+        wait(S_AXI_rvalid);
+        $display("      [axi_read] Got RVALID");
         
+        data = S_AXI_rdata;
+        S_AXI_rready = 1'b1;  // ← 现在才设 RREADY
         @(posedge master_clk); #1;
         S_AXI_rready = 1'b0;
-        
-        $display("      [axi_read] DONE");
+        $display("      [axi_read] DONE data=0x%08h", data);
     endtask
 
     //=========================================================================
