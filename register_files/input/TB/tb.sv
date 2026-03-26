@@ -176,8 +176,10 @@ module tb_spi_master_slave;
     //=========================================================================
     task axi_write(input logic [6:0] addr, input logic [31:0] data);
         int timeout;
+        logic got_awready, got_wready;
         
-        @(posedge clk); #1;
+        $display("      [axi_write] START addr=0x%02h data=0x%08h", addr, data);
+        @(posedge master_clk); #1;
         S_AXI_awaddr  = addr;
         S_AXI_wdata   = data;
         S_AXI_awprot  = 3'd0;
@@ -186,34 +188,49 @@ module tb_spi_master_slave;
         S_AXI_wstrb   = 4'b1111;
         S_AXI_bready  = 1'b0;
         
+        got_awready = 0;
+        got_wready = 0;
         timeout = 0;
-        while (S_AXI_awready !== 1'b1) begin
-            @(posedge clk);
+        
+        // Wait for BOTH AWREADY and WREADY (may come same or different cycles)
+        while (!got_awready || !got_wready) begin
+            @(posedge master_clk);
+            if (S_AXI_awready) begin
+                got_awready = 1;
+                $display("      [axi_write] Got AWREADY");
+            end
+            if (S_AXI_wready) begin
+                got_wready = 1;
+                $display("      [axi_write] Got WREADY");
+            end
             timeout++;
-            if (timeout > 100) begin $display("ERROR: AWREADY timeout!"); $finish; end
+            if (timeout > 100) begin
+                $display("ERROR: axi_write timeout! awready=%b wready=%b", got_awready, got_wready);
+                $finish;
+            end
         end
-        @(posedge clk); #1;
+        
+        #1;
         S_AXI_awvalid = 1'b0;
+        S_AXI_wvalid  = 1'b0;
         
-        timeout = 0;
-        while (S_AXI_wready !== 1'b1) begin
-            @(posedge clk);
-            timeout++;
-            if (timeout > 100) begin $display("ERROR: WREADY timeout!"); $finish; end
-        end
-        @(posedge clk); #1;
-        S_AXI_wvalid = 1'b0;
-        
+        // Wait for BVALID
+        $display("      [axi_write] Waiting BVALID...");
         timeout = 0;
         while (S_AXI_bvalid !== 1'b1) begin
-            @(posedge clk);
+            @(posedge master_clk);
             timeout++;
-            if (timeout > 100) begin $display("ERROR: BVALID timeout!"); $finish; end
+            if (timeout > 100) begin
+                $display("ERROR: BVALID timeout!");
+                $finish;
+            end
         end
+        $display("      [axi_write] Got BVALID");
         
         S_AXI_bready = 1'b1;
-        @(posedge clk); #1;
+        @(posedge master_clk); #1;
         S_AXI_bready = 1'b0;
+        $display("      [axi_write] DONE");
     endtask
 
     //=========================================================================
