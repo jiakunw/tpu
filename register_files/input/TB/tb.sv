@@ -196,12 +196,12 @@ module tb;
         wait(S_AXI_awvalid & S_AXI_awready);
         S_AXI_wvalid  = 1'b1;
         @(posedge master_clk);
+        S_AXI_awvalid = 1'b0;
 
         // write data handshake
         wait(S_AXI_wvalid & S_AXI_wready);
-        S_AXI_awvalid = 1'b0;
-        S_AXI_wvalid  = 1'b0;
         @(posedge master_clk);
+        S_AXI_wvalid  = 1'b0;
         
         repeat($urandom_range(10, 4))
         
