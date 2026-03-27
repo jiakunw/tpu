@@ -186,6 +186,8 @@ module tb_spi_master_slave;
         
         @(posedge master_clk); #1;
         S_AXI_awaddr  = addr;
+
+        @(posedge master_clk); #1;
         S_AXI_wdata   = data;
         S_AXI_awprot  = 3'd0;
         S_AXI_awvalid = 1'b1;
@@ -193,36 +195,21 @@ module tb_spi_master_slave;
         S_AXI_wstrb   = 4'b1111;
         S_AXI_bready  = 1'b0;
         
-        got_awready = 0;
-        got_wready = 0;
-        timeout = 0;
-        
-        while (!got_awready || !got_wready) begin
-            @(posedge master_clk);
-            if (S_AXI_awready) got_awready = 1;
-            if (S_AXI_wready)  got_wready = 1;
-            timeout++;
-            if (timeout > 100) begin
-                $display("ERROR: axi_write timeout!");
-                $finish;
-            end
-        end
-        
-        #1;
+        // write addr handshake
+        wait(S_AXI_awvalid & S_AXI_awready);
+        @(posedge master_clk); #1;
+
+        // write data handshake
+        wait(S_AXI_wvalid & S_AXI_wready);
         S_AXI_awvalid = 1'b0;
         S_AXI_wvalid  = 1'b0;
+        @(posedge master_clk); #1;
         
-        timeout = 0;
-        while (S_AXI_bvalid !== 1'b1) begin
-            @(posedge master_clk);
-            timeout++;
-            if (timeout > 100) begin
-                $display("ERROR: BVALID timeout!");
-                $finish;
-            end
-        end
+        repeat($urandom_range(10, 4))
         
         S_AXI_bready = 1'b1;
+        // write response handshake
+        wait(S_AXI_wvalid & S_AXI_wready);
         @(posedge master_clk); #1;
         S_AXI_bready = 1'b0;
     endtask
