@@ -210,6 +210,7 @@ module tb;
         wait(S_AXI_wvalid & S_AXI_wready);
         @(posedge master_clk);
         S_AXI_bready = 1'b0;
+        @(posedge master_clk);
     endtask
 
     //=========================================================================
