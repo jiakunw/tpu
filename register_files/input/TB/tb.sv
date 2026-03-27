@@ -184,10 +184,10 @@ module tb;
         int timeout;
         logic got_awready, got_wready;
         
-        @(posedge master_clk); #1;
+        @(posedge master_clk); 
         S_AXI_awaddr  = addr;
 
-        @(posedge master_clk); #1;
+        @(posedge master_clk);
         S_AXI_wdata   = data;
         S_AXI_awprot  = 3'd0;
         S_AXI_awvalid = 1'b1;
@@ -197,20 +197,20 @@ module tb;
         
         // write addr handshake
         wait(S_AXI_awvalid & S_AXI_awready);
-        @(posedge master_clk); #1;
+        @(posedge master_clk);
 
         // write data handshake
         wait(S_AXI_wvalid & S_AXI_wready);
         S_AXI_awvalid = 1'b0;
         S_AXI_wvalid  = 1'b0;
-        @(posedge master_clk); #1;
+        @(posedge master_clk);
         
         repeat($urandom_range(10, 4))
         
         S_AXI_bready = 1'b1;
         // write response handshake
         wait(S_AXI_wvalid & S_AXI_wready);
-        @(posedge master_clk); #1;
+        @(posedge master_clk);
         S_AXI_bready = 1'b0;
     endtask
 
