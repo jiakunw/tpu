@@ -182,21 +182,19 @@ module tb;
     //=========================================================================
     task axi_write(input logic [6:0] addr, input logic [31:0] data);
         int timeout;
-        logic got_awready, got_wready;
-        
-        @(posedge master_clk); 
-        S_AXI_awaddr  = addr;
+        logic got_awready, got_wready;       
 
         @(posedge master_clk);
+        S_AXI_awaddr  = addr;
         S_AXI_wdata   = data;
         S_AXI_awprot  = 3'd0;
         S_AXI_awvalid = 1'b1;
-        S_AXI_wvalid  = 1'b1;
         S_AXI_wstrb   = 4'b1111;
         S_AXI_bready  = 1'b0;
         
         // write addr handshake
         wait(S_AXI_awvalid & S_AXI_awready);
+        S_AXI_wvalid  = 1'b1;
         @(posedge master_clk);
 
         // write data handshake
