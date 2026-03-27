@@ -218,37 +218,24 @@ module tb;
     task axi_read(input logic [6:0] addr, output logic [31:0] data);
         int timeout;
         
-        @(posedge master_clk); #1;
+        @(posedge master_clk);
         S_AXI_araddr  = addr;
         S_AXI_arprot  = 3'd0;
         S_AXI_arvalid = 1'b1;
         S_AXI_rready  = 1'b0;
         
-        timeout = 0;
-        while (S_AXI_arready !== 1'b1) begin
-            @(posedge master_clk);
-            timeout++;
-            if (timeout > 100) begin
-                $display("ERROR: ARREADY timeout!");
-                $finish;
-            end
-        end
-        @(posedge master_clk); #1;
+        // address read handshake 
+        wait(S_AXI_arvalid & S_AXI_arready);
+        @(posedge master_clk);
         S_AXI_arvalid = 1'b0;
         
-        timeout = 0;
-        while (S_AXI_rvalid !== 1'b1) begin
-            @(posedge master_clk);
-            timeout++;
-            if (timeout > 100) begin
-                $display("ERROR: RVALID timeout!");
-                $finish;
-            end
-        end
-        
-        data = S_AXI_rdata;
+        @(posedge master_clk);
         S_AXI_rready = 1'b1;
-        @(posedge master_clk); #1;
+
+        // read data handshake
+        wait(S_AXI_rvalid & S_AXI_rready);
+        data = S_AXI_rdata;
+        @(posedge master_clk);
         S_AXI_rready = 1'b0;
     endtask
 
