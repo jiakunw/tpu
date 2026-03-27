@@ -207,10 +207,9 @@ module tb;
         
         S_AXI_bready = 1'b1;
         // write response handshake
-        wait(S_AXI_wvalid & S_AXI_wready);
+        wait(S_AXI_bvalid & S_AXI_bready);
         @(posedge master_clk);
         S_AXI_bready = 1'b0;
-        @(posedge master_clk);
     endtask
 
     //=========================================================================
