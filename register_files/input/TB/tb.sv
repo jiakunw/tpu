@@ -203,7 +203,7 @@ module tb;
         @(posedge master_clk);
         S_AXI_wvalid  = 1'b0;
         
-        repeat($urandom_range(10, 4))
+        repeat($urandom_range(10, 4)) @(posedge master_clk);
         
         S_AXI_bready = 1'b1;
         // write response handshake
