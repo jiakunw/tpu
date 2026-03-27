@@ -5,7 +5,7 @@
 // 
 // Clock Configuration:
 //   Master AXI: 100 MHz
-//   Slave:      10 MHz
+//   Slave:      100 MHz
 //   SPI:        2 MHz (sampling ratio = 5x)
 //
 // TPU SPI Protocol:
@@ -185,31 +185,31 @@ module tb;
         logic got_awready, got_wready;       
 
         @(posedge master_clk);
-        S_AXI_awaddr  = addr;
-        S_AXI_wdata   = data;
-        S_AXI_awprot  = 3'd0;
-        S_AXI_awvalid = 1'b1;
-        S_AXI_wstrb   = 4'b1111;
-        S_AXI_bready  = 1'b0;
+        S_AXI_awaddr  <= addr;
+        S_AXI_wdata   <= data;
+        S_AXI_awprot  <= 3'd0;
+        S_AXI_awvalid <= 1'b1;
+        S_AXI_wstrb   <= 4'b1111;
+        S_AXI_bready  <= 1'b0;
         
         // write addr handshake
         wait(S_AXI_awvalid & S_AXI_awready);
-        S_AXI_wvalid  = 1'b1;
+        S_AXI_wvalid  <= 1'b1;
         @(posedge master_clk);
         S_AXI_awvalid = 1'b0;
 
         // write data handshake
         wait(S_AXI_wvalid & S_AXI_wready);
         @(posedge master_clk);
-        S_AXI_wvalid  = 1'b0;
+        S_AXI_wvalid  <= 1'b0;
         
         repeat($urandom_range(10, 4)) @(posedge master_clk);
         
-        S_AXI_bready = 1'b1;
+        S_AXI_bready <= 1'b1;
         // write response handshake
         wait(S_AXI_bvalid & S_AXI_bready);
         @(posedge master_clk);
-        S_AXI_bready = 1'b0;
+        S_AXI_bready <= 1'b0;
     endtask
 
     //=========================================================================
@@ -219,24 +219,24 @@ module tb;
         int timeout;
         
         @(posedge master_clk);
-        S_AXI_araddr  = addr;
-        S_AXI_arprot  = 3'd0;
-        S_AXI_arvalid = 1'b1;
-        S_AXI_rready  = 1'b0;
+        S_AXI_araddr  <= addr;
+        S_AXI_arprot  <= 3'd0;
+        S_AXI_arvalid <= 1'b1;
+        S_AXI_rready  <= 1'b0;
         
         // address read handshake 
         wait(S_AXI_arvalid & S_AXI_arready);
         @(posedge master_clk);
-        S_AXI_arvalid = 1'b0;
+        S_AXI_arvalid <= 1'b0;
         
-        @(posedge master_clk);
-        S_AXI_rready = 1'b1;
+        repeat($urandom_range(10, 4)) @(posedge master_clk);
+        S_AXI_rready <= 1'b1;
 
         // read data handshake
         wait(S_AXI_rvalid & S_AXI_rready);
-        data = S_AXI_rdata;
+        data <= S_AXI_rdata;
         @(posedge master_clk);
-        S_AXI_rready = 1'b0;
+        S_AXI_rready <= 1'b0;
     endtask
 
     //=========================================================================
@@ -260,12 +260,12 @@ module tb;
 
     task spi_cs_low();
         axi_write(SPI_REG_CONTROL, 32'h0);
-        repeat($urandom_range(20, 5)) @(posedge master_clk);
+        repeat($urandom_range(100, 50)) @(posedge master_clk);
     endtask
 
     task spi_cs_high();
         axi_write(SPI_REG_CONTROL, 32'h1);
-        repeat($urandom_range(20, 5)) @(posedge master_clk);
+        repeat($urandom_range(100, 50)) @(posedge master_clk);
     endtask
 
     task spi_transfer_byte(input logic [7:0] tx_byte, output logic [7:0] rx_byte);
@@ -274,7 +274,7 @@ module tb;
         spi_wait_ready();
         axi_write(SPI_REG_TX_DATA, {24'h0, tx_byte});
         spi_wait_ready();
-        repeat($urandom_range(30, 10)) @(posedge master_clk);
+        repeat($urandom_range(100, 50)) @(posedge master_clk);
         axi_read(SPI_REG_RX_DATA, rx_data);
         rx_byte = rx_data[7:0];
     endtask
