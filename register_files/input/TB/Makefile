@@ -9,6 +9,7 @@ VCS = vcs
 VCSFLAGS = -sverilog -full64 \
            -assert svaext \
            -debug_access+all \
+		   -kdb \
            +lint=all \
            -timescale=1ns/1ps \
            -j4
