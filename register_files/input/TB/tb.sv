@@ -22,7 +22,7 @@ module tb;
     //=========================================================================
     parameter MASTER_CLK_PERIOD = 10;    // 100 MHz (10 ns period)
     parameter SLAVE_CLK_PERIOD  = 100;   // 10 MHz  (100 ns period)
-    parameter CLKS_PER_HALF_BIT = 25;    // SPI = 100MHz / (2*25) = 2 MHz
+    parameter CLKS_PER_HALF_BIT = 50;    // SPI = 100MHz / (2*50) = 1 MHz
     parameter SPI_MODE = 0;
 
     // TPU Protocol Constants
