@@ -3,12 +3,22 @@
 //
 // Dual-port wrapper for sram00 (512 x 64-bit)
 //
-// Used for:
-//   - Matrix A: bus_slave write (8-bit), tpu_core read (64-bit)
-//   - Matrix B: tpu_core write (64-bit), bus_slave read (8-bit)
+// Hold-time fix: SRAM control inputs (CEN/WEN/A/D) are registered at
+// negedge clk before driving the SRAM instance. This guarantees they are
+// stable for a full half-period (50 ns @ 10 MHz) before and after every
+// posedge CLK, satisfying the SRAM's setup and hold requirements.
 //
-// Key assumption: bus_slave and tpu_core are time-multiplexed,
-//                 they will not access simultaneously.
+// Timing diagram:
+//   posedge N  : arbitration logic settles (sram_*_r updated from _d1 FFs)
+//   negedge N  : sram_*_ff latched          <- SRAM inputs change here
+//   posedge N+1: SRAM samples               <- inputs stable for 50 ns ✓
+//
+// Write latency: bus write commits at negedge after bus_we_d1, i.e. 1.5
+//   cycles after the 8th byte arrives (was 1 cycle before fix).
+// Read latency: 1 full cycle from bus_re / tpu_re (unchanged).
+//
+// Port A: bus_slave interface (8-bit byte, inputs change at negedge externally)
+// Port B: tpu_core interface (64-bit word, posedge)
 ///////////////////////////////////////////////////////////////////////////////
 `timescale 1ns / 1ps
 
@@ -22,42 +32,40 @@ module sram_wrapper #(
     //=========================================================================
     // Port A: bus_slave interface (8-bit byte)
     //=========================================================================
-    input  wire          bus_we,            // Write enable
-    input  wire          bus_re,            // Read enable
-    input  wire [AW+2:0] bus_addr,          // Byte address (12-bit for 512 words x 8 bytes)
-    input  wire [DW-1:0] bus_din,           // Write data (8-bit)
-    output wire [DW-1:0] bus_dout,          // Read data (8-bit)
-    output reg           bus_dout_valid,    // Read data valid
+    input  wire          bus_we,
+    input  wire          bus_re,
+    input  wire [AW+2:0] bus_addr,      // 12-bit byte address
+    input  wire [DW-1:0] bus_din,
+    output wire [DW-1:0] bus_dout,
+    output reg           bus_dout_valid,
 
     //=========================================================================
     // Port B: tpu_core interface (64-bit word)
     //=========================================================================
-    input  wire          tpu_we,            // Write enable
-    input  wire          tpu_re,            // Read enable
-    input  wire [AW-1:0] tpu_addr,          // Word address (9-bit)
-    input  wire [63:0]   tpu_din,           // Write data (64-bit)
-    output wire [63:0]   tpu_dout           // Read data (64-bit)
+    input  wire          tpu_we,
+    input  wire          tpu_re,
+    input  wire [AW-1:0] tpu_addr,      // 9-bit word address
+    input  wire [63:0]   tpu_din,
+    output wire [63:0]   tpu_dout
 );
 
     // =========================================================================
     // bus_slave write accumulator (8 bytes -> 64-bit word)
     // =========================================================================
-    reg [63:0]   bus_wbuf;          // Write buffer for byte accumulation
-    reg          bus_we_d1;         // Delayed write enable
-    reg [AW-1:0] bus_waddr_d1;      // Delayed word address
+    reg [63:0]   bus_wbuf;
+    reg          bus_we_d1;
+    reg [AW-1:0] bus_waddr_d1;
 
-    // Extract byte select and word address from bus byte address
-    wire [2:0]    bus_byte_sel  = bus_addr[2:0];        // Which byte in word
-    wire [AW-1:0] bus_word_addr = bus_addr[AW+2:3];     // Word address
+    wire [2:0]    bus_byte_sel  = bus_addr[2:0];
+    wire [AW-1:0] bus_word_addr = bus_addr[AW+2:3];
 
-    // Accumulate bytes into 64-bit buffer
-    // Bytes are placed according to bus_byte_sel: 0->LSB, 7->MSB
+    // Accumulate bytes into write buffer at posedge
     always @(posedge clk) begin
         if (bus_we)
             bus_wbuf[bus_byte_sel*8 +: 8] <= bus_din;
     end
 
-    // Fire write one cycle after 8th byte arrives (byte_sel==111)
+    // Fire write flag one posedge after the 8th byte arrives
     always @(posedge clk or negedge rstn) begin
         if (!rstn) begin
             bus_we_d1    <= 1'b0;
@@ -69,98 +77,104 @@ module sram_wrapper #(
     end
 
     // =========================================================================
-    // SRAM control signal arbitration
-    // Priority: tpu_core write > bus_slave write > tpu_core read > bus_slave read
+    // SRAM control arbitration (combinational)
+    // Priority: tpu_we > bus_we_d1 > tpu_re > bus_re
     // =========================================================================
-    wire        sram_cen;           // Chip enable (active low)
-    wire        sram_wen;           // Write enable (active low)
-    wire [8:0]  sram_addr;          // Address
-    wire [63:0] sram_din;           // Write data
-    wire [63:0] sram_q;             // Read data
-
-    reg         sram_cen_r;
-    reg         sram_wen_r;
-    reg [8:0]   sram_addr_r;
-    reg [63:0]  sram_din_r;
+    reg        sram_cen_r;
+    reg        sram_wen_r;
+    reg [8:0]  sram_addr_r;
+    reg [63:0] sram_din_r;
 
     always @(*) begin
         if (tpu_we) begin
-            // tpu_core write - highest priority during compute phase
-            // This is for writing Matrix C results
             sram_cen_r  = 1'b0;
-            sram_wen_r  = 1'b0;     // WEN=0 means write
+            sram_wen_r  = 1'b0;     // WEN=0: write
             sram_addr_r = tpu_addr;
             sram_din_r  = tpu_din;
         end else if (bus_we_d1) begin
-            // bus_slave write - accumulated 64-bit word
-            // This is for loading Matrix B
             sram_cen_r  = 1'b0;
             sram_wen_r  = 1'b0;
             sram_addr_r = bus_waddr_d1;
             sram_din_r  = bus_wbuf;
         end else if (tpu_re) begin
-            // tpu_core read - for reading Matrix B during compute
             sram_cen_r  = 1'b0;
-            sram_wen_r  = 1'b1;     // WEN=1 means read
+            sram_wen_r  = 1'b1;     // WEN=1: read
             sram_addr_r = tpu_addr;
             sram_din_r  = '0;
         end else if (bus_re) begin
-            // bus_slave read - for reading Matrix C results
             sram_cen_r  = 1'b0;
             sram_wen_r  = 1'b1;
             sram_addr_r = bus_word_addr;
             sram_din_r  = '0;
         end else begin
-            // Idle - disable chip to save power
-            sram_cen_r  = 1'b1;
+            sram_cen_r  = 1'b1;     // idle: chip disabled
             sram_wen_r  = 1'b1;
             sram_addr_r = '0;
             sram_din_r  = '0;
         end
     end
 
-    assign sram_cen  = sram_cen_r;
-    assign sram_wen  = sram_wen_r;
-    assign sram_addr = sram_addr_r;
-    assign sram_din  = sram_din_r;
+    // =========================================================================
+    // Negedge output register before SRAM pins  <-- hold-time fix
+    //
+    // Arbitration result is registered at negedge so SRAM inputs are stable
+    // from negedge to negedge, giving 50 ns of margin around every posedge.
+    // =========================================================================
+    reg        sram_cen_ff;
+    reg        sram_wen_ff;
+    reg [8:0]  sram_addr_ff;
+    reg [63:0] sram_din_ff;
+
+    always @(negedge clk or negedge rstn) begin
+        if (!rstn) begin
+            sram_cen_ff  <= 1'b1;
+            sram_wen_ff  <= 1'b1;
+            sram_addr_ff <= '0;
+            sram_din_ff  <= '0;
+        end else begin
+            sram_cen_ff  <= sram_cen_r;
+            sram_wen_ff  <= sram_wen_r;
+            sram_addr_ff <= sram_addr_r;
+            sram_din_ff  <= sram_din_r;
+        end
+    end
 
     // =========================================================================
     // SRAM Instance (512 x 64-bit)
     // =========================================================================
+    wire [63:0] sram_q;
+
     sram00 u_sram (
         .CLK  (clk),
-        .CEN  (sram_cen),
-        .WEN  (sram_wen),
-        .A    (sram_addr),
-        .D    (sram_din),
+        .CEN  (sram_cen_ff),
+        .WEN  (sram_wen_ff),
+        .A    (sram_addr_ff),
+        .D    (sram_din_ff),
         .EMA  (3'b010),
         .RETN (1'b1),
         .Q    (sram_q)
     );
 
     // =========================================================================
-    // tpu_core output (64-bit, 1-cycle read latency)
+    // tpu_core read output (1-cycle latency from tpu_re)
     // =========================================================================
     assign tpu_dout = sram_q;
 
     // =========================================================================
-    // bus_slave output (8-bit, 1-cycle read latency)
+    // bus_slave read output (1-cycle latency from bus_re)
     // =========================================================================
-    reg [2:0] bus_byte_sel_d1;      // Registered byte select
+    reg [2:0] bus_byte_sel_d1;
 
-    // Register read controls for 1-cycle latency
-    // bus_dout_valid is 1 cycle after bus_re, matching SRAM read latency
     always @(posedge clk or negedge rstn) begin
         if (!rstn) begin
             bus_byte_sel_d1 <= '0;
             bus_dout_valid  <= 1'b0;
         end else begin
             bus_byte_sel_d1 <= bus_byte_sel;
-            bus_dout_valid  <= bus_re;  // 1-cycle delay matches SRAM
+            bus_dout_valid  <= bus_re;
         end
     end
 
-    // Select appropriate byte from 64-bit word
     assign bus_dout = sram_q[bus_byte_sel_d1*8 +: 8];
 
 endmodule
