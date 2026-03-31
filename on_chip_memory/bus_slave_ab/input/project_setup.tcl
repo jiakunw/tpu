@@ -25,10 +25,10 @@ namespace eval iv {}
 # Project Information, Synthesis
 #####################################################################
 # Replace this with the name of your topcell
-set TOPCELL		rf_top	
+set TOPCELL		bus_slave_ab	
 # List of HDL files
-set gn::VERILOG_LIST	[list "mmio_registers.sv" "spi_slave.sv" "rf_top.sv"]	
-set gn::SDC_LIST	[list "register_files.sdc"]
+set gn::VERILOG_LIST	[list "bus_slave_ab.sv"]	
+set gn::SDC_LIST	[list "bus_slave_ab.sdc"]
 # Tech node, in nm
 set iv::node		65
 

@@ -1,4 +1,6 @@
 RTL_DIR = ../../input/RTL
+SRAM_DIR = /user/stud/fall25/dy2538/ee6350/DIGITAL/SRAM00_gen
+SRAM_WRAPPER_DIR = ../../../sram_wrapper
 TB_DIR  = ../../input/TB
 PNR_DIR = ../../pnr/output
 LIB_DIR = ../lib
@@ -8,8 +10,11 @@ LIB_DIR = ../lib
 ##################################################
 vcs:
 	vcs -sverilog -full64 -timescale=1ns/1ps -debug_all \
-		$(TB_DIR)/tb.sv $(TB_DIR)/axi_spi_master.sv \
-		$(RTL_DIR)/rf_top.sv $(RTL_DIR)/mmio_registers.sv $(RTL_DIR)/spi_slave.sv \
+		$(SRAM_DIR)/sram00.v \
+		$(SRAM_WRAPPER_DIR)/input/RTL/sram_wrapper.sv \
+		$(TB_DIR)/bus_master.sv \
+		$(RTL_DIR)/bus_slave_ab.sv \
+		$(TB_DIR)/tb.sv
 		-o simv
 	./simv | tee sim.log
 
@@ -18,8 +23,10 @@ vcs:
 ##################################################
 vsim:
 	vlib work
-	vlog +acc -sv $(RTL_DIR)/spi_slave.sv $(RTL_DIR)/mmio_registers.sv $(RTL_DIR)/rf_top.sv
-	vlog +acc -sv $(TB_DIR)/axi_spi_master.sv $(TB_DIR)/tb.sv
+	vlog +acc $(SRAM_DIR)/sram00.v
+	vlog +acc -sv $(SRAM_WRAPPER_DIR)/input/RTL/sram_wrapper.sv 
+	vlog +acc -sv $(RTL_DIR)/bus_slave_ab.sv 
+	vlog +acc -sv $(TB_DIR)/bus_master.sv $(TB_DIR)/tb.sv
 	vsim -c -do "run -all; quit" work.tb | tee sim.log
 
 ##################################################
@@ -27,8 +34,10 @@ vsim:
 ##################################################
 vsim_gui:
 	vlib work
-	vlog +acc -sv $(RTL_DIR)/spi_slave.sv $(RTL_DIR)/mmio_registers.sv $(RTL_DIR)/rf_top.sv
-	vlog +acc -sv $(TB_DIR)/axi_spi_master.sv $(TB_DIR)/tb.sv
+	vlog +acc $(SRAM_DIR)/sram00.v
+	vlog +acc -sv $(SRAM_WRAPPER_DIR)/input/RTL/sram_wrapper.sv
+	vlog +acc -sv $(RTL_DIR)/bus_slave_ab.sv
+	vlog +acc -sv $(TB_DIR)/bus_master.sv $(TB_DIR)/tb.sv
 	vsim -do "add wave -r /*; run -all" work.tb
 
 ##################################################

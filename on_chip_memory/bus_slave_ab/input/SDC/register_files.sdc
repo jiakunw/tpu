@@ -1,6 +1,6 @@
 set sdc_version 1.6
 
-current_design rf_top
+current_design bus_slave_ab
 
 set clkperiod 25.0
 
