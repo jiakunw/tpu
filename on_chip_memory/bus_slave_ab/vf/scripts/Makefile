@@ -1,6 +1,6 @@
 RTL_DIR = ../../input/RTL
 SRAM_DIR = /user/stud/fall25/dy2538/ee6350/DIGITAL/SRAM00_gen
-SRAM_WRAPPER_DIR = ../../../sram_wrapper
+SRAM_WRAPPER_DIR = ../../../V_Sram_wrapper
 TB_DIR  = ../../input/TB
 PNR_DIR = ../../pnr/output
 LIB_DIR = ../lib
@@ -9,7 +9,7 @@ LIB_DIR = ../lib
 # RTL Simulation - VCS
 ##################################################
 vcs:
-	vcs -sverilog -full64 -timescale=1ns/1ps -debug_all \
+	vcs +notimingchecks -sverilog -full64 -timescale=1ns/1ps -debug_all \
 		$(SRAM_DIR)/sram00.v \
 		$(SRAM_WRAPPER_DIR)/input/RTL/sram_wrapper.sv \
 		$(TB_DIR)/bus_master.sv \

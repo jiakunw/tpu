@@ -36,30 +36,22 @@ module bus_slave_ab #(
     input  logic [DW-1:0]     CHAB_WDATA_B,
     input  logic              CHAB_WR,
 
-    // SRAM_A Interface
+    // SRAM_A Interface (write only)
     output logic               sram_a_we,
-    output logic               sram_a_re,
     output logic [SRAM_AW-1:0] sram_a_addr,
     output logic [DW-1:0]      sram_a_din,
-    input  logic [DW-1:0]      sram_a_dout,
-    input  logic               sram_a_dout_valid,
 
-    // SRAM_B Interface
+    // SRAM_B Interface (write only)
     output logic               sram_b_we,
-    output logic               sram_b_re,
     output logic [SRAM_AW-1:0] sram_b_addr,
     output logic [DW-1:0]      sram_b_din,
-    input  logic [DW-1:0]      sram_b_dout,
-    input  logic               sram_b_dout_valid,
 
     output logic [SRAM_AW-1:0] debug_cnt_ab
 );
 
-    // Negedge-sampled bus signals
     logic              chab_wr_s;
     logic [DW-1:0]     chab_wdata_a_s;
     logic [DW-1:0]     chab_wdata_b_s;
-
     logic [SRAM_AW-1:0] cnt_ab;
 
     always_ff @(negedge BUS_CLK or negedge BUS_RST_N) begin
@@ -69,13 +61,9 @@ module bus_slave_ab #(
             chab_wdata_b_s <= '0;
             cnt_ab         <= '0;
         end else begin
-            // Sample bus inputs from master
             chab_wr_s      <= CHAB_WR;
             chab_wdata_a_s <= CHAB_WDATA_A;
             chab_wdata_b_s <= CHAB_WDATA_B;
-
-            // Delayed increment: use previous chab_wr_s so cnt_ab is still
-            // the correct byte address at the posedge following this negedge
             if (CHAB_START)
                 cnt_ab <= '0;
             else if (chab_wr_s)
@@ -83,14 +71,11 @@ module bus_slave_ab #(
         end
     end
 
-    // Drive sram_wrapper from negedge-sampled signals (stable at next posedge)
     assign sram_a_we   = chab_wr_s;
-    assign sram_a_re   = 1'b0;
     assign sram_a_addr = cnt_ab;
     assign sram_a_din  = chab_wdata_a_s;
 
     assign sram_b_we   = chab_wr_s;
-    assign sram_b_re   = 1'b0;
     assign sram_b_addr = cnt_ab;
     assign sram_b_din  = chab_wdata_b_s;
 

@@ -1,0 +1,264 @@
+********************************************************************************
+Product   : Virtuoso(R) XStream Out
+Program   : @(#)$CDS: strmout version 6.1.8-64b 08/09/2022 19:14 (cpgsrv11) $
+          : sub-version  IC6.1.8-64b.500.27 
+Started at: 12-Mar-2026  23:10:09
+User Name : dy2538
+Host Name : micro33
+Directory : /homes/user/stud/fall25/dy2538/ee6350/DIGITAL/SRAM00_gen
+CADENCE Design Systems, Inc.
+********************************************************************************
+Info: Cellview Rev Num:99,  Tech Rev Num:59
+
+
+                       Individual Cell Statistics - Basic Objects
+---------------------------------------------------------------------------------------------------------------------------------------
+Library/Cell/View               Instance Array   Polygon  Rect   Path   PathSeg   Text   TextDisplay   Line   Dot   Arc   Donut   Ellipse 
+---------------------------------------------------------------------------------------------------------------------------------------
+sram00_oalib/sram00CC_ROW128LE/layout                           130      0       0        0      0      0         0      0             0      0     0     0       0       
+sram00_oalib/sram00CCEDGEOUT/layout                             0        0       0        2      0      0         0      0             0      0     0     0       0       
+sram00_oalib/sram00CCEDGECAPMWDO/layout                         0        0       0        1      0      0         0      0             0      0     0     0       0       
+sram00_oalib/sram00CCTAPT/layout                                0        0       0        2      0      0         0      0             0      0     0     0       0       
+sram00_oalib/sram00VIA_V3_1X1/layout                            0        0       0        1      0      0         0      0             0      0     0     0       0       
+sram00_oalib/sram00IO4/layout   0        0       0        8      0      0         0      0             0      0     0     0       0       
+sram00_oalib/sram00CCTAPMW/layout                               0        0       0        2      0      0         0      0             0      0     0     0       0       
+sram00_oalib/sram00/layout      2        0       0        0      0      0         0      0             0      0     0     0       0       
+sram00_oalib/sram00FC4/layout   0        0       0        1      0      0         0      0             0      0     0     0       0       
+sram00_oalib/sram00XP4/layout   0        0       0        2      0      0         0      0             0      0     0     0       0       
+sram00_oalib/sram00CCCAPBK/layout                               0        0       0        3      0      0         0      0             0      0     0     0       0       
+sram00_oalib/sram00FPAL4_CTRL/layout                            0        0       0        3      0      0         0      0             0      0     0     0       0       
+sram00_oalib/sram00CAP_ROW128RE/layout                          130      0       0        0      0      0         0      0             0      0     0     0       0       
+sram00_oalib/sram00CABR128X64TT/layout                          71       0       0        0      0      0         0      0             0      0     0     0       0       
+sram00_oalib/sram00FLPIOAL4/layout                              0        0       0        1      0      0         0      0             0      0     0     0       0       
+sram00_oalib/sram00TAP_ROW128LE/layout                          130      0       0        0      0      0         0      0             0      0     0     0       0       
+sram00_oalib/sram00FPBCTRL64M4/layout                           38       0       0        0      0      0         0      0             0      0     0     0       0       
+sram00_oalib/sram00CD4/layout   0        0       0        1      0      0         0      0             0      0     0     0       0       
+sram00_oalib/sram00CC_ROW128RO/layout                           130      0       0        0      0      0         0      0             0      0     0     0       0       
+sram00_oalib/sram00CDROWRB064T/layout                           897      0       0        0      0      0         0      0             0      0     0     0       0       
+sram00_oalib/sram00CDEDGE4/layout                               0        0       0        1      0      0         0      0             0      0     0     0       0       
+sram00_oalib/sram00STUB_VIA3GDL/layout                          0        0       0        1      0      0         0      0             0      0     0     0       0       
+sram00_oalib/sram00STUB_VIA3GTPD/layout                         0        0       0        1      0      0         0      0             0      0     0     0       0       
+sram00_oalib/sram00CCEDGE_CCMBL/layout                          0        0       0        3      0      0         0      0             0      0     0     0       0       
+sram00_oalib/sram00BSAROW64LT/layout                            801      0       0        0      0      0         0      0             0      0     0     0       0       
+sram00_oalib/sram00CCEDGECAPMWD/layout                          0        0       0        2      0      0         0      0             0      0     0     0       0       
+sram00_oalib/sram00CORE_STRUCT/layout                           1        0       0        0      0      0         0      0             0      0     0     0       0       
+sram00_oalib/sram00CC/layout    0        0       0        3      0      0         0      0             0      0     0     0       0       
+sram00_oalib/sram00CCCAP/layout 0        0       0        2      0      0         0      0             0      0     0     0       0       
+sram00_oalib/sram00FC8RL32/layout                               321      0       0        0      0      0         0      0             0      0     0     0       0       
+sram00_oalib/sram00CDROWRT064T/layout                           897      0       0        0      0      0         0      0             0      0     0     0       0       
+sram00_oalib/sram00BCTRL64M4/layout                             456      0       0        0      0      0         0      0             0      0     0     0       0       
+sram00_oalib/sram00CCTAPEDGEMWD/layout                          0        0       0        2      0      0         0      0             0      0     0     0       0       
+sram00_oalib/sram00IO8RR32/layout                               3713     0       0        0      0      0         0      0             0      0     0     0       0       
+sram00_oalib/sram00LOCDECB0BT/layout                            306      0       0        0      0      0         0      0             0      0     0     0       0       
+sram00_oalib/sram00CC_ROW128LO/layout                           130      0       0        0      0      0         0      0             0      0     0     0       0       
+sram00_oalib/sram00WDTAP4/layout                                0        0       0        1      0      0         0      0             0      0     0     0       0       
+sram00_oalib/sram00STUB_VIA2GV/layout                           0        0       0        1      0      0         0      0             0      0     0     0       0       
+sram00_oalib/sram00WDSEC0B64/layout                             403      0       0        0      0      0         0      0             0      0     0     0       0       
+sram00_oalib/sram00FPIO4EDGE/layout                             0        0       0        1      0      0         0      0             0      0     0     0       0       
+sram00_oalib/sram00CATL128X64TT/layout                          68       0       0        0      0      0         0      0             0      0     0     0       0       
+sram00_oalib/sram00AL4/layout   0        0       0        4      0      0         0      0             0      0     0     0       0       
+sram00_oalib/sram00WRAPPED_CC/layout                            1        0       0        0      0      0         0      0             0      0     0     0       0       
+sram00_oalib/sram00CHB0_64M4BT/layout                           7        0       0        0      0      0         0      0             0      0     0     0       0       
+sram00_oalib/sram00TAP_ROW128RE/layout                          130      0       0        0      0      0         0      0             0      0     0     0       0       
+sram00_oalib/sram00CAP_ROW128LE/layout                          130      0       0        0      0      0         0      0             0      0     0     0       0       
+sram00_oalib/sram00CABL128X64TT/layout                          71       0       0        0      0      0         0      0             0      0     0     0       0       
+sram00_oalib/sram00CCTAPEDGE_CCMBLT/layout                      0        0       0        2      0      0         0      0             0      0     0     0       0       
+sram00_oalib/sram00CCEDGECAPOUT/layout                          0        0       0        1      0      0         0      0             0      0     0     0       0       
+sram00_oalib/sram00VIA_V2_1X1/layout                            0        0       0        1      0      0         0      0             0      0     0     0       0       
+sram00_oalib/sram00MWL_ROW128LO/layout                          130      0       0        0      0      0         0      0             0      0     0     0       0       
+sram00_oalib/sram00BSAROW64RT/layout                            801      0       0        0      0      0         0      0             0      0     0     0       0       
+sram00_oalib/sram00CATR128X64TT/layout                          68       0       0        0      0      0         0      0             0      0     0     0       0       
+sram00_oalib/sram00BK0B64X64/layout                             3        0       0        0      0      0         0      0             0      0     0     0       0       
+sram00_oalib/sram00WDSEC1T64/layout                             390      0       0        0      0      0         0      0             0      0     0     0       0       
+sram00_oalib/swRhjS/layout      0        0       0        0      0      0         0      0             0      0     0     0       0       
+sram00_oalib/sram00MWCAP_ROW128RO/layout                        130      0       0        0      0      0         0      0             0      0     0     0       0       
+sram00_oalib/sram00FC8RR32/layout                               321      0       0        0      0      0         0      0             0      0     0     0       0       
+sram00_oalib/sram00VIA_V2_2X1/layout                            0        0       0        1      0      0         0      0             0      0     0     0       0       
+sram00_oalib/sram00STUB_VIA3V/layout                            0        0       0        1      0      0         0      0             0      0     0     0       0       
+sram00_oalib/sram00FPIO4/layout 0        0       0        1      0      0         0      0             0      0     0     0       0       
+sram00_oalib/sram00MWTAP_ROW128RO/layout                        130      0       0        0      0      0         0      0             0      0     0     0       0       
+sram00_oalib/sram00F512X64M4/layout                             4        0       0        0      0      0         0      0             0      0     0     0       0       
+sram00_oalib/sram00WD4/layout   0        0       0        1      0      0         0      0             0      0     0     0       0       
+sram00_oalib/sram00CCCAPMW/layout                               0        0       0        2      0      0         0      0             0      0     0     0       0       
+sram00_oalib/sram00FCEDGEIN/layout                              0        0       0        1      0      0         0      0             0      0     0     0       0       
+sram00_oalib/sram00CK4/layout   0        0       0        2      0      0         0      0             0      0     0     0       0       
+sram00_oalib/sram00FPIO8RL32/layout                             161      0       0        0      0      0         0      0             0      0     0     0       0       
+sram00_oalib/sram00IO4EDGE/layout                               0        0       0        2      0      0         0      0             0      0     0     0       0       
+sram00_oalib/sram00FLMW/layout  0        0       0        3      0      0         0      0             0      0     0     0       0       
+sram00_oalib/sram00CCEDGEMWDOUT/layout                          0        0       0        2      0      0         0      0             0      0     0     0       0       
+sram00_oalib/sram00FLIOAL4/layout                               0        0       0        1      0      0         0      0             0      0     0     0       0       
+sram00_oalib/sram00BR64IO8/layout                               3        0       0        0      0      0         0      0             0      0     0     0       0       
+sram00_oalib/sram00MWCAP_ROW128LO/layout                        130      0       0        0      0      0         0      0             0      0     0     0       0       
+sram00_oalib/sram00FCWD4/layout 0        0       0        1      0      0         0      0             0      0     0     0       0       
+sram00_oalib/sram00IO8RL32/layout                               3713     0       0        0      0      0         0      0             0      0     0     0       0       
+sram00_oalib/sram00STUB_VIA3H/layout                            0        0       0        1      0      0         0      0             0      0     0     0       0       
+sram00_oalib/sram00MWL_CC/layout                                1        0       0        0      0      0         0      0             0      0     0     0       0       
+sram00_oalib/sram00MWTAP_ROW128LO/layout                        130      0       0        0      0      0         0      0             0      0     0     0       0       
+sram00_oalib/sram00STUB_VIA3GTP/layout                          0        0       0        1      0      0         0      0             0      0     0     0       0       
+sram00_oalib/sram00CCTAPEDGEOUT/layout                          0        0       0        2      0      0         0      0             0      0     0     0       0       
+sram00_oalib/sram00APY4/layout  0        0       0        1      0      0         0      0             0      0     0     0       0       
+sram00_oalib/sram00CDROWLT064T/layout                           897      0       0        0      0      0         0      0             0      0     0     0       0       
+sram00_oalib/sram00MWL_ROW128RO/layout                          130      0       0        0      0      0         0      0             0      0     0     0       0       
+sram00_oalib/sram00BK1T64X64/layout                             3        0       0        0      0      0         0      0             0      0     0     0       0       
+sram00_oalib/sram00CAPBK_ROW128RE/layout                        130      0       0        0      0      0         0      0             0      0     0     0       0       
+sram00_oalib/sram00CC_ROW128RE/layout                           130      0       0        0      0      0         0      0             0      0     0     0       0       
+sram00_oalib/sram00CTRL4/layout 0        0       0        3      0      0         0      0             0      0     0     0       0       
+sram00_oalib/sram00SAEDGE4/layout                               0        0       0        1      0      0         0      0             0      0     0     0       0       
+sram00_oalib/sram00CCTAPEDGEMWDO/layout                         0        0       0        2      0      0         0      0             0      0     0     0       0       
+sram00_oalib/sram00MWD4/layout  0        0       0        2      0      0         0      0             0      0     0     0       0       
+sram00_oalib/sram00CCW/layout   0        0       0        3      0      0         0      0             0      0     0     0       0       
+sram00_oalib/sram00TOPROW64/layout                              66       0       0        0      0      0         0      0             0      0     0     0       0       
+sram00_oalib/sram00CDROWLB064T/layout                           897      0       0        0      0      0         0      0             0      0     0     0       0       
+sram00_oalib/sram00VIA_V1_1X1/layout                            0        0       0        1      0      0         0      0             0      0     0     0       0       
+sram00_oalib/sram00BH512X64M4/layout                            3        0       0        0      0      0         0      0             0      0     0     0       0       
+sram00_oalib/sram00BR64FPIO8/layout                             3        0       0        0      0      0         0      0             0      0     0     0       0       
+sram00_oalib/sram00FPIO8RR32/layout                             161      0       0        0      0      0         0      0             0      0     0     0       0       
+sram00_oalib/sram00CAPBK_ROW128LE/layout                        130      0       0        0      0      0         0      0             0      0     0     0       0       
+sram00_oalib/sram00SA4/layout   0        0       0        1      0      0         0      0             0      0     0     0       0       
+sram00_oalib/sram00CCEDGECAP_CCMBL/layout                       0        0       0        2      0      0         0      0             0      0     0     0       0       
+sram00_oalib/sram00FCEDGEOUT/layout                             0        0       0        1      0      0         0      0             0      0     0     0       0       
+---------------------------------------------------------------------------------------------------------------------------------------
+
+                       Individual Cell Statistics - Advanced Objects
+---------------------------------------------------------------------------------------------------------------------------------------
+Library/Cell/View               PRBdy    OtherBdy   AreaBlkg   LayerBlkg  AreaHalo   Row   Marker   CustVia   StdVia    CdsGenVia
+---------------------------------------------------------------------------------------------------------------------------------------
+sram00_oalib/sram00CC_ROW128LE/layout                           0        0          0          0          0          0     0        0         0         0        
+sram00_oalib/sram00CCEDGEOUT/layout                             0        0          0          0          0          0     0        0         0         0        
+sram00_oalib/sram00CCEDGECAPMWDO/layout                         0        0          0          0          0          0     0        0         0         0        
+sram00_oalib/sram00CCTAPT/layout                                0        0          0          0          0          0     0        0         0         0        
+sram00_oalib/sram00VIA_V3_1X1/layout                            0        0          0          0          0          0     0        0         0         0        
+sram00_oalib/sram00IO4/layout   0        0          0          0          0          0     0        0         0         0        
+sram00_oalib/sram00CCTAPMW/layout                               0        0          0          0          0          0     0        0         0         0        
+sram00_oalib/sram00/layout      0        0          0          0          0          0     0        0         0         0        
+sram00_oalib/sram00FC4/layout   0        0          0          0          0          0     0        0         0         0        
+sram00_oalib/sram00XP4/layout   0        0          0          0          0          0     0        0         0         0        
+sram00_oalib/sram00CCCAPBK/layout                               0        0          0          0          0          0     0        0         0         0        
+sram00_oalib/sram00FPAL4_CTRL/layout                            0        0          0          0          0          0     0        0         0         0        
+sram00_oalib/sram00CAP_ROW128RE/layout                          0        0          0          0          0          0     0        0         0         0        
+sram00_oalib/sram00CABR128X64TT/layout                          0        0          0          0          0          0     0        0         0         0        
+sram00_oalib/sram00FLPIOAL4/layout                              0        0          0          0          0          0     0        0         0         0        
+sram00_oalib/sram00TAP_ROW128LE/layout                          0        0          0          0          0          0     0        0         0         0        
+sram00_oalib/sram00FPBCTRL64M4/layout                           0        0          0          0          0          0     0        0         0         0        
+sram00_oalib/sram00CD4/layout   0        0          0          0          0          0     0        0         0         0        
+sram00_oalib/sram00CC_ROW128RO/layout                           0        0          0          0          0          0     0        0         0         0        
+sram00_oalib/sram00CDROWRB064T/layout                           0        0          0          0          0          0     0        0         0         0        
+sram00_oalib/sram00CDEDGE4/layout                               0        0          0          0          0          0     0        0         0         0        
+sram00_oalib/sram00STUB_VIA3GDL/layout                          0        0          0          0          0          0     0        0         0         0        
+sram00_oalib/sram00STUB_VIA3GTPD/layout                         0        0          0          0          0          0     0        0         0         0        
+sram00_oalib/sram00CCEDGE_CCMBL/layout                          0        0          0          0          0          0     0        0         0         0        
+sram00_oalib/sram00BSAROW64LT/layout                            0        0          0          0          0          0     0        0         0         0        
+sram00_oalib/sram00CCEDGECAPMWD/layout                          0        0          0          0          0          0     0        0         0         0        
+sram00_oalib/sram00CORE_STRUCT/layout                           0        0          0          0          0          0     0        0         0         0        
+sram00_oalib/sram00CC/layout    0        0          0          0          0          0     0        0         0         0        
+sram00_oalib/sram00CCCAP/layout 0        0          0          0          0          0     0        0         0         0        
+sram00_oalib/sram00FC8RL32/layout                               0        0          0          0          0          0     0        0         0         0        
+sram00_oalib/sram00CDROWRT064T/layout                           0        0          0          0          0          0     0        0         0         0        
+sram00_oalib/sram00BCTRL64M4/layout                             0        0          0          0          0          0     0        0         0         0        
+sram00_oalib/sram00CCTAPEDGEMWD/layout                          0        0          0          0          0          0     0        0         0         0        
+sram00_oalib/sram00IO8RR32/layout                               0        0          0          0          0          0     0        0         0         0        
+sram00_oalib/sram00LOCDECB0BT/layout                            0        0          0          0          0          0     0        0         0         0        
+sram00_oalib/sram00CC_ROW128LO/layout                           0        0          0          0          0          0     0        0         0         0        
+sram00_oalib/sram00WDTAP4/layout                                0        0          0          0          0          0     0        0         0         0        
+sram00_oalib/sram00STUB_VIA2GV/layout                           0        0          0          0          0          0     0        0         0         0        
+sram00_oalib/sram00WDSEC0B64/layout                             0        0          0          0          0          0     0        0         0         0        
+sram00_oalib/sram00FPIO4EDGE/layout                             0        0          0          0          0          0     0        0         0         0        
+sram00_oalib/sram00CATL128X64TT/layout                          0        0          0          0          0          0     0        0         0         0        
+sram00_oalib/sram00AL4/layout   0        0          0          0          0          0     0        0         0         0        
+sram00_oalib/sram00WRAPPED_CC/layout                            0        0          0          0          0          0     0        0         0         0        
+sram00_oalib/sram00CHB0_64M4BT/layout                           0        0          0          0          0          0     0        0         0         0        
+sram00_oalib/sram00TAP_ROW128RE/layout                          0        0          0          0          0          0     0        0         0         0        
+sram00_oalib/sram00CAP_ROW128LE/layout                          0        0          0          0          0          0     0        0         0         0        
+sram00_oalib/sram00CABL128X64TT/layout                          0        0          0          0          0          0     0        0         0         0        
+sram00_oalib/sram00CCTAPEDGE_CCMBLT/layout                      0        0          0          0          0          0     0        0         0         0        
+sram00_oalib/sram00CCEDGECAPOUT/layout                          0        0          0          0          0          0     0        0         0         0        
+sram00_oalib/sram00VIA_V2_1X1/layout                            0        0          0          0          0          0     0        0         0         0        
+sram00_oalib/sram00MWL_ROW128LO/layout                          0        0          0          0          0          0     0        0         0         0        
+sram00_oalib/sram00BSAROW64RT/layout                            0        0          0          0          0          0     0        0         0         0        
+sram00_oalib/sram00CATR128X64TT/layout                          0        0          0          0          0          0     0        0         0         0        
+sram00_oalib/sram00BK0B64X64/layout                             0        0          0          0          0          0     0        0         0         0        
+sram00_oalib/sram00WDSEC1T64/layout                             0        0          0          0          0          0     0        0         0         0        
+sram00_oalib/swRhjS/layout      0        0          0          0          0          0     0        0         0         0        
+sram00_oalib/sram00MWCAP_ROW128RO/layout                        0        0          0          0          0          0     0        0         0         0        
+sram00_oalib/sram00FC8RR32/layout                               0        0          0          0          0          0     0        0         0         0        
+sram00_oalib/sram00VIA_V2_2X1/layout                            0        0          0          0          0          0     0        0         0         0        
+sram00_oalib/sram00STUB_VIA3V/layout                            0        0          0          0          0          0     0        0         0         0        
+sram00_oalib/sram00FPIO4/layout 0        0          0          0          0          0     0        0         0         0        
+sram00_oalib/sram00MWTAP_ROW128RO/layout                        0        0          0          0          0          0     0        0         0         0        
+sram00_oalib/sram00F512X64M4/layout                             0        0          0          0          0          0     0        0         0         0        
+sram00_oalib/sram00WD4/layout   0        0          0          0          0          0     0        0         0         0        
+sram00_oalib/sram00CCCAPMW/layout                               0        0          0          0          0          0     0        0         0         0        
+sram00_oalib/sram00FCEDGEIN/layout                              0        0          0          0          0          0     0        0         0         0        
+sram00_oalib/sram00CK4/layout   0        0          0          0          0          0     0        0         0         0        
+sram00_oalib/sram00FPIO8RL32/layout                             0        0          0          0          0          0     0        0         0         0        
+sram00_oalib/sram00IO4EDGE/layout                               0        0          0          0          0          0     0        0         0         0        
+sram00_oalib/sram00FLMW/layout  0        0          0          0          0          0     0        0         0         0        
+sram00_oalib/sram00CCEDGEMWDOUT/layout                          0        0          0          0          0          0     0        0         0         0        
+sram00_oalib/sram00FLIOAL4/layout                               0        0          0          0          0          0     0        0         0         0        
+sram00_oalib/sram00BR64IO8/layout                               0        0          0          0          0          0     0        0         0         0        
+sram00_oalib/sram00MWCAP_ROW128LO/layout                        0        0          0          0          0          0     0        0         0         0        
+sram00_oalib/sram00FCWD4/layout 0        0          0          0          0          0     0        0         0         0        
+sram00_oalib/sram00IO8RL32/layout                               0        0          0          0          0          0     0        0         0         0        
+sram00_oalib/sram00STUB_VIA3H/layout                            0        0          0          0          0          0     0        0         0         0        
+sram00_oalib/sram00MWL_CC/layout                                0        0          0          0          0          0     0        0         0         0        
+sram00_oalib/sram00MWTAP_ROW128LO/layout                        0        0          0          0          0          0     0        0         0         0        
+sram00_oalib/sram00STUB_VIA3GTP/layout                          0        0          0          0          0          0     0        0         0         0        
+sram00_oalib/sram00CCTAPEDGEOUT/layout                          0        0          0          0          0          0     0        0         0         0        
+sram00_oalib/sram00APY4/layout  0        0          0          0          0          0     0        0         0         0        
+sram00_oalib/sram00CDROWLT064T/layout                           0        0          0          0          0          0     0        0         0         0        
+sram00_oalib/sram00MWL_ROW128RO/layout                          0        0          0          0          0          0     0        0         0         0        
+sram00_oalib/sram00BK1T64X64/layout                             0        0          0          0          0          0     0        0         0         0        
+sram00_oalib/sram00CAPBK_ROW128RE/layout                        0        0          0          0          0          0     0        0         0         0        
+sram00_oalib/sram00CC_ROW128RE/layout                           0        0          0          0          0          0     0        0         0         0        
+sram00_oalib/sram00CTRL4/layout 0        0          0          0          0          0     0        0         0         0        
+sram00_oalib/sram00SAEDGE4/layout                               0        0          0          0          0          0     0        0         0         0        
+sram00_oalib/sram00CCTAPEDGEMWDO/layout                         0        0          0          0          0          0     0        0         0         0        
+sram00_oalib/sram00MWD4/layout  0        0          0          0          0          0     0        0         0         0        
+sram00_oalib/sram00CCW/layout   0        0          0          0          0          0     0        0         0         0        
+sram00_oalib/sram00TOPROW64/layout                              0        0          0          0          0          0     0        0         0         0        
+sram00_oalib/sram00CDROWLB064T/layout                           0        0          0          0          0          0     0        0         0         0        
+sram00_oalib/sram00VIA_V1_1X1/layout                            0        0          0          0          0          0     0        0         0         0        
+sram00_oalib/sram00BH512X64M4/layout                            0        0          0          0          0          0     0        0         0         0        
+sram00_oalib/sram00BR64FPIO8/layout                             0        0          0          0          0          0     0        0         0         0        
+sram00_oalib/sram00FPIO8RR32/layout                             0        0          0          0          0          0     0        0         0         0        
+sram00_oalib/sram00CAPBK_ROW128LE/layout                        0        0          0          0          0          0     0        0         0         0        
+sram00_oalib/sram00SA4/layout   0        0          0          0          0          0     0        0         0         0        
+sram00_oalib/sram00CCEDGECAP_CCMBL/layout                       0        0          0          0          0          0     0        0         0         0        
+sram00_oalib/sram00FCEDGEOUT/layout                             0        0          0          0          0          0     0        0         0         0        
+---------------------------------------------------------------------------------------------------------------------------------------
+
+                       Statistics of Layers 
+---------------------------------------------------------------------------------------------------------------------------------------
+Cadence         Cadence         Stream  Stream   
+Layer           Purpose         Layer   Datatype  Polygon  Rect     Path     Text     TextDisplay   Line Dot Arc Donut Ellipse Pathseg
+---------------------------------------------------------------------------------------------------------------------------------------
+prBoundary      drawing         235     0         0        92       0        0        0             0    0   0   0     0      0      
+---------------------------------------------------------------------------------------------------------------------------------------
+
+Summary of Objects Translated:
+	Scalar Instances:		17628
+	Array Instances:		0
+	Polygons:			0
+	Paths:				0
+	Rectangles:			92
+	Lines:				0
+	Arcs:				0
+	Donuts:				0
+	Dots:				0
+	Ellipses:			0
+	Boundaries:			0
+	Area Blockages:			0
+	Layer Blockages:		0
+	Area Halos:			0
+	Markers:			0
+	Rows:				0
+	Standard Vias:			0
+	Custom Vias:			0
+	CdsGen Vias:			0
+	Pathsegs:			0
+	Text:				0
+	TextDisplay:		0
+	Cells:				102
+Design Libraries: 
+
+DEFINE sram00_oalib	/homes/user/stud/fall25/dy2538/ee6350/DIGITAL/SRAM00_gen/sram00_oalib

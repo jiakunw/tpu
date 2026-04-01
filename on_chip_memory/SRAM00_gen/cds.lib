@@ -1,0 +1,5 @@
+DEFINE tcbn65gplus_oatech /courses/ee6350/pdk2023/T-N65-CM-SP-018-K3_MOM/digital/Back_End/cdk_oa/tcbn65gplus_oatech
+DEFINE tsmcN65 /courses/ee4321/tech/tsmc65/T-N65-CM-SP-018-K3_MOM/Base_PDK/PDK_CRN65GP_v1.0c_official_IC61_20101010/tsmcN65
+DEFINE sram00_oalib ./sram00_oalib
+
+DEFINE sram_gds /homes/user/stud/fall25/dy2538/ee6350/DIGITAL/SRAM00_gen/sram_gds

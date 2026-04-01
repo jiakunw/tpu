@@ -1,0 +1,158 @@
+********************************************************************************
+Product   : Virtuoso(R) XStream Out
+Program   : @(#)$CDS: strmout version 6.1.8-64b 08/09/2022 19:14 (cpgsrv11) $
+          : sub-version  IC6.1.8-64b.500.27 
+Started at: 12-Mar-2026  23:10:09
+User Name : dy2538
+Host Name : micro33
+Directory : /homes/user/stud/fall25/dy2538/ee6350/DIGITAL/SRAM00_gen
+CADENCE Design Systems, Inc.
+********************************************************************************
+Info: Cellview Rev Num:99,  Tech Rev Num:59
+
+WARNING (XSTRM-20): Output Stream file '/homes/user/stud/fall25/dy2538/ee6350/DIGITAL/SRAM00_gen/LVS_RUN/sram00.calibre.db' already exists. It will be overwritten.
+INFO (XSTRM-288): Performing automatic layer mapping because either the layer mapping information is not provided or the XST_AUTO_LM  value is used with the '-layerMap' option. Additionally, the  'xStrmOut_layerMap.txt' file has been generated and the mapping information has been added to it.
+
+Summary of Options :
+library                                 sram00_oalib
+strmFile                                /homes/user/stud/fall25/dy2538/ee6350/DIGITAL/SRAM00_gen/LVS_RUN/sram00.calibre.db
+topCell                                 sram00
+view                                    layout
+runDir                                  /homes/user/stud/fall25/dy2538/ee6350/DIGITAL/SRAM00_gen/LVS_RUN/
+logFile                                 PIPO.LOG.sram00
+summaryFile                             PIPO.SUM.sram00
+case                                    Preserve
+convertDot                              node
+convertPcellPin                         geometry
+
+INFO (XSTRM-223): 1. Translating cellView sram00_oalib/sram00CC/layout as STRUCTURE sram00CC.
+INFO (XSTRM-223): 2. Translating cellView sram00_oalib/sram00WRAPPED_CC/layout as STRUCTURE sram00WRAPPED_CC.
+INFO (XSTRM-223): 3. Translating cellView sram00_oalib/sram00CCEDGEOUT/layout as STRUCTURE sram00CCEDGEOUT.
+INFO (XSTRM-223): 4. Translating cellView sram00_oalib/sram00CCEDGE_CCMBL/layout as STRUCTURE sram00CCEDGE_CCMBL.
+INFO (XSTRM-223): 5. Translating cellView sram00_oalib/sram00CC_ROW128RE/layout as STRUCTURE sram00CC_ROW128RE.
+INFO (XSTRM-223): 6. Translating cellView sram00_oalib/sram00CC_ROW128RO/layout as STRUCTURE sram00CC_ROW128RO.
+INFO (XSTRM-223): 7. Translating cellView sram00_oalib/sram00CCCAPBK/layout as STRUCTURE sram00CCCAPBK.
+INFO (XSTRM-223): 8. Translating cellView sram00_oalib/sram00CAPBK_ROW128RE/layout as STRUCTURE sram00CAPBK_ROW128RE.
+INFO (XSTRM-223): 9. Translating cellView sram00_oalib/sram00CCCAPMW/layout as STRUCTURE sram00CCCAPMW.
+INFO (XSTRM-223): 10. Translating cellView sram00_oalib/sram00CCEDGECAPMWDO/layout as STRUCTURE sram00CCEDGECAPMWDO.
+INFO (XSTRM-223): 11. Translating cellView sram00_oalib/sram00CCEDGECAPMWD/layout as STRUCTURE sram00CCEDGECAPMWD.
+INFO (XSTRM-223): 12. Translating cellView sram00_oalib/sram00MWCAP_ROW128RO/layout as STRUCTURE sram00MWCAP_ROW128RO.
+INFO (XSTRM-223): 13. Translating cellView sram00_oalib/sram00CCTAPMW/layout as STRUCTURE sram00CCTAPMW.
+INFO (XSTRM-223): 14. Translating cellView sram00_oalib/sram00CCTAPEDGEMWDO/layout as STRUCTURE sram00CCTAPEDGEMWDO.
+INFO (XSTRM-223): 15. Translating cellView sram00_oalib/sram00CCTAPEDGEMWD/layout as STRUCTURE sram00CCTAPEDGEMWD.
+INFO (XSTRM-223): 16. Translating cellView sram00_oalib/sram00MWTAP_ROW128RO/layout as STRUCTURE sram00MWTAP_ROW128RO.
+INFO (XSTRM-223): 17. Translating cellView sram00_oalib/sram00CCW/layout as STRUCTURE sram00CCW.
+INFO (XSTRM-223): 18. Translating cellView sram00_oalib/sram00MWL_CC/layout as STRUCTURE sram00MWL_CC.
+INFO (XSTRM-223): 19. Translating cellView sram00_oalib/sram00CCEDGEMWDOUT/layout as STRUCTURE sram00CCEDGEMWDOUT.
+INFO (XSTRM-223): 20. Translating cellView sram00_oalib/sram00FLMW/layout as STRUCTURE sram00FLMW.
+INFO (XSTRM-223): 21. Translating cellView sram00_oalib/sram00MWL_ROW128RO/layout as STRUCTURE sram00MWL_ROW128RO.
+INFO (XSTRM-223): 22. Translating cellView sram00_oalib/sram00CCTAPT/layout as STRUCTURE sram00CCTAPT.
+INFO (XSTRM-223): 23. Translating cellView sram00_oalib/sram00CCTAPEDGEOUT/layout as STRUCTURE sram00CCTAPEDGEOUT.
+INFO (XSTRM-223): 24. Translating cellView sram00_oalib/sram00CCTAPEDGE_CCMBLT/layout as STRUCTURE sram00CCTAPEDGE_CCMBLT.
+INFO (XSTRM-223): 25. Translating cellView sram00_oalib/sram00TAP_ROW128RE/layout as STRUCTURE sram00TAP_ROW128RE.
+INFO (XSTRM-223): 26. Translating cellView sram00_oalib/sram00CCCAP/layout as STRUCTURE sram00CCCAP.
+INFO (XSTRM-223): 27. Translating cellView sram00_oalib/sram00CCEDGECAPOUT/layout as STRUCTURE sram00CCEDGECAPOUT.
+INFO (XSTRM-223): 28. Translating cellView sram00_oalib/sram00CCEDGECAP_CCMBL/layout as STRUCTURE sram00CCEDGECAP_CCMBL.
+INFO (XSTRM-223): 29. Translating cellView sram00_oalib/sram00CAP_ROW128RE/layout as STRUCTURE sram00CAP_ROW128RE.
+INFO (XSTRM-223): 30. Translating cellView sram00_oalib/sram00CABR128X64TT/layout as STRUCTURE sram00CABR128X64TT.
+INFO (XSTRM-223): 31. Translating cellView sram00_oalib/sram00CC_ROW128LE/layout as STRUCTURE sram00CC_ROW128LE.
+INFO (XSTRM-223): 32. Translating cellView sram00_oalib/sram00CC_ROW128LO/layout as STRUCTURE sram00CC_ROW128LO.
+INFO (XSTRM-223): 33. Translating cellView sram00_oalib/sram00CAPBK_ROW128LE/layout as STRUCTURE sram00CAPBK_ROW128LE.
+INFO (XSTRM-223): 34. Translating cellView sram00_oalib/sram00MWCAP_ROW128LO/layout as STRUCTURE sram00MWCAP_ROW128LO.
+INFO (XSTRM-223): 35. Translating cellView sram00_oalib/sram00MWTAP_ROW128LO/layout as STRUCTURE sram00MWTAP_ROW128LO.
+INFO (XSTRM-223): 36. Translating cellView sram00_oalib/sram00MWL_ROW128LO/layout as STRUCTURE sram00MWL_ROW128LO.
+INFO (XSTRM-223): 37. Translating cellView sram00_oalib/sram00TAP_ROW128LE/layout as STRUCTURE sram00TAP_ROW128LE.
+INFO (XSTRM-223): 38. Translating cellView sram00_oalib/sram00CAP_ROW128LE/layout as STRUCTURE sram00CAP_ROW128LE.
+INFO (XSTRM-223): 39. Translating cellView sram00_oalib/sram00CABL128X64TT/layout as STRUCTURE sram00CABL128X64TT.
+INFO (XSTRM-223): 40. Translating cellView sram00_oalib/sram00VIA_V2_1X1/layout as STRUCTURE sram00VIA_V2_1X1.
+INFO (XSTRM-223): 41. Translating cellView sram00_oalib/sram00VIA_V1_1X1/layout as STRUCTURE sram00VIA_V1_1X1.
+INFO (XSTRM-223): 42. Translating cellView sram00_oalib/sram00STUB_VIA3V/layout as STRUCTURE sram00STUB_VIA3V.
+INFO (XSTRM-223): 43. Translating cellView sram00_oalib/sram00MWD4/layout as STRUCTURE sram00MWD4.
+INFO (XSTRM-223): 44. Translating cellView sram00_oalib/sram00STUB_VIA3H/layout as STRUCTURE sram00STUB_VIA3H.
+INFO (XSTRM-223): 45. Translating cellView sram00_oalib/sram00WD4/layout as STRUCTURE sram00WD4.
+INFO (XSTRM-223): 46. Translating cellView sram00_oalib/sram00VIA_V2_2X1/layout as STRUCTURE sram00VIA_V2_2X1.
+INFO (XSTRM-223): 47. Translating cellView sram00_oalib/sram00WDTAP4/layout as STRUCTURE sram00WDTAP4.
+INFO (XSTRM-223): 48. Translating cellView sram00_oalib/sram00WDSEC0B64/layout as STRUCTURE sram00WDSEC0B64.
+INFO (XSTRM-223): 49. Translating cellView sram00_oalib/sram00BK0B64X64/layout as STRUCTURE sram00BK0B64X64.
+INFO (XSTRM-223): 50. Translating cellView sram00_oalib/sram00WDSEC1T64/layout as STRUCTURE sram00WDSEC1T64.
+INFO (XSTRM-223): 51. Translating cellView sram00_oalib/sram00CATR128X64TT/layout as STRUCTURE sram00CATR128X64TT.
+INFO (XSTRM-223): 52. Translating cellView sram00_oalib/sram00CATL128X64TT/layout as STRUCTURE sram00CATL128X64TT.
+INFO (XSTRM-223): 53. Translating cellView sram00_oalib/sram00BK1T64X64/layout as STRUCTURE sram00BK1T64X64.
+INFO (XSTRM-223): 54. Translating cellView sram00_oalib/sram00VIA_V3_1X1/layout as STRUCTURE sram00VIA_V3_1X1.
+INFO (XSTRM-223): 55. Translating cellView sram00_oalib/sram00CDEDGE4/layout as STRUCTURE sram00CDEDGE4.
+INFO (XSTRM-223): 56. Translating cellView sram00_oalib/sram00CD4/layout as STRUCTURE sram00CD4.
+INFO (XSTRM-223): 57. Translating cellView sram00_oalib/sram00CDROWRT064T/layout as STRUCTURE sram00CDROWRT064T.
+INFO (XSTRM-223): 58. Translating cellView sram00_oalib/sram00STUB_VIA3GTP/layout as STRUCTURE sram00STUB_VIA3GTP.
+INFO (XSTRM-223): 59. Translating cellView sram00_oalib/sram00STUB_VIA3GTPD/layout as STRUCTURE sram00STUB_VIA3GTPD.
+INFO (XSTRM-223): 60. Translating cellView sram00_oalib/sram00XP4/layout as STRUCTURE sram00XP4.
+INFO (XSTRM-223): 61. Translating cellView sram00_oalib/sram00APY4/layout as STRUCTURE sram00APY4.
+INFO (XSTRM-223): 62. Translating cellView sram00_oalib/sram00CK4/layout as STRUCTURE sram00CK4.
+INFO (XSTRM-223): 63. Translating cellView sram00_oalib/sram00LOCDECB0BT/layout as STRUCTURE sram00LOCDECB0BT.
+INFO (XSTRM-223): 64. Translating cellView sram00_oalib/sram00CDROWLB064T/layout as STRUCTURE sram00CDROWLB064T.
+INFO (XSTRM-223): 65. Translating cellView sram00_oalib/sram00STUB_VIA3GDL/layout as STRUCTURE sram00STUB_VIA3GDL.
+INFO (XSTRM-223): 66. Translating cellView sram00_oalib/sram00SA4/layout as STRUCTURE sram00SA4.
+INFO (XSTRM-223): 67. Translating cellView sram00_oalib/sram00SAEDGE4/layout as STRUCTURE sram00SAEDGE4.
+INFO (XSTRM-223): 68. Translating cellView sram00_oalib/sram00BSAROW64LT/layout as STRUCTURE sram00BSAROW64LT.
+INFO (XSTRM-223): 69. Translating cellView sram00_oalib/sram00CDROWLT064T/layout as STRUCTURE sram00CDROWLT064T.
+INFO (XSTRM-223): 70. Translating cellView sram00_oalib/sram00CDROWRB064T/layout as STRUCTURE sram00CDROWRB064T.
+INFO (XSTRM-223): 71. Translating cellView sram00_oalib/sram00BSAROW64RT/layout as STRUCTURE sram00BSAROW64RT.
+INFO (XSTRM-223): 72. Translating cellView sram00_oalib/sram00CHB0_64M4BT/layout as STRUCTURE sram00CHB0_64M4BT.
+INFO (XSTRM-223): 73. Translating cellView sram00_oalib/sram00BH512X64M4/layout as STRUCTURE sram00BH512X64M4.
+INFO (XSTRM-223): 74. Translating cellView sram00_oalib/sram00FPIO4/layout as STRUCTURE sram00FPIO4.
+INFO (XSTRM-223): 75. Translating cellView sram00_oalib/sram00FPIO4EDGE/layout as STRUCTURE sram00FPIO4EDGE.
+INFO (XSTRM-223): 76. Translating cellView sram00_oalib/sram00FPIO8RR32/layout as STRUCTURE sram00FPIO8RR32.
+INFO (XSTRM-223): 77. Translating cellView sram00_oalib/sram00FPIO8RL32/layout as STRUCTURE sram00FPIO8RL32.
+INFO (XSTRM-223): 78. Translating cellView sram00_oalib/sram00FLPIOAL4/layout as STRUCTURE sram00FLPIOAL4.
+INFO (XSTRM-223): 79. Translating cellView sram00_oalib/sram00FPAL4_CTRL/layout as STRUCTURE sram00FPAL4_CTRL.
+INFO (XSTRM-223): 80. Translating cellView sram00_oalib/sram00FPBCTRL64M4/layout as STRUCTURE sram00FPBCTRL64M4.
+INFO (XSTRM-223): 81. Translating cellView sram00_oalib/sram00BR64FPIO8/layout as STRUCTURE sram00BR64FPIO8.
+INFO (XSTRM-223): 82. Translating cellView sram00_oalib/sram00FC4/layout as STRUCTURE sram00FC4.
+INFO (XSTRM-223): 83. Translating cellView sram00_oalib/sram00FCEDGEOUT/layout as STRUCTURE sram00FCEDGEOUT.
+INFO (XSTRM-223): 84. Translating cellView sram00_oalib/sram00FC8RL32/layout as STRUCTURE sram00FC8RL32.
+INFO (XSTRM-223): 85. Translating cellView sram00_oalib/sram00FCEDGEIN/layout as STRUCTURE sram00FCEDGEIN.
+INFO (XSTRM-223): 86. Translating cellView sram00_oalib/sram00FCWD4/layout as STRUCTURE sram00FCWD4.
+INFO (XSTRM-223): 87. Translating cellView sram00_oalib/sram00FC8RR32/layout as STRUCTURE sram00FC8RR32.
+INFO (XSTRM-223): 88. Translating cellView sram00_oalib/sram00TOPROW64/layout as STRUCTURE sram00TOPROW64.
+INFO (XSTRM-223): 89. Translating cellView sram00_oalib/sram00IO4/layout as STRUCTURE sram00IO4.
+INFO (XSTRM-223): 90. Translating cellView sram00_oalib/sram00IO4EDGE/layout as STRUCTURE sram00IO4EDGE.
+INFO (XSTRM-223): 91. Translating cellView sram00_oalib/sram00STUB_VIA2GV/layout as STRUCTURE sram00STUB_VIA2GV.
+INFO (XSTRM-223): 92. Translating cellView sram00_oalib/sram00IO8RR32/layout as STRUCTURE sram00IO8RR32.
+INFO (XSTRM-223): 93. Translating cellView sram00_oalib/sram00IO8RL32/layout as STRUCTURE sram00IO8RL32.
+INFO (XSTRM-223): 94. Translating cellView sram00_oalib/sram00AL4/layout as STRUCTURE sram00AL4.
+INFO (XSTRM-223): 95. Translating cellView sram00_oalib/sram00FLIOAL4/layout as STRUCTURE sram00FLIOAL4.
+INFO (XSTRM-223): 96. Translating cellView sram00_oalib/sram00CTRL4/layout as STRUCTURE sram00CTRL4.
+INFO (XSTRM-223): 97. Translating cellView sram00_oalib/sram00BCTRL64M4/layout as STRUCTURE sram00BCTRL64M4.
+INFO (XSTRM-223): 98. Translating cellView sram00_oalib/sram00BR64IO8/layout as STRUCTURE sram00BR64IO8.
+INFO (XSTRM-223): 99. Translating cellView sram00_oalib/sram00F512X64M4/layout as STRUCTURE sram00F512X64M4.
+INFO (XSTRM-223): 100. Translating cellView sram00_oalib/sram00CORE_STRUCT/layout as STRUCTURE sram00CORE_STRUCT.
+INFO (XSTRM-223): 101. Translating cellView sram00_oalib/swRhjS/layout as STRUCTURE swRhjS.
+WARNING (XSTRM-399): The STRUCT 'swRhjS' generated for 'sram00_oalib/swRhjS/layout' in GDS is empty because either the design is empty or no shape or object was translated.
+INFO (XSTRM-223): 102. Translating cellView sram00_oalib/sram00/layout as STRUCTURE sram00.
+
+Summary of Objects Translated:
+	Scalar Instances:                       17628
+	Array Instances:                        0
+	Polygons:                               0
+	Paths:                                  0
+	Rectangles:                             92
+	Lines:                                  0
+	Arcs:                                   0
+	Donuts:                                 0
+	Dots:                                   0
+	Ellipses:                               0
+	Boundaries:                             0
+	Area Blockages:                         0
+	Layer Blockages:                        0
+	Area Halos:                             0
+	Markers:                                0
+	Rows:                                   0
+	Standard Vias                           0
+	Custom Vias:                            0
+	CdsGen Vias:                            0
+	Pathsegs:                               0
+	Text:                                   0
+	TextDisplay:                            0
+	Cells:                                  102
+
+Elapsed Time: 0.7s   User Time: 0.1s   CPU Time: 0.0s   Peak VM: 6128KB
+INFO (XSTRM-234): Translation completed. '0' error(s) and '2' warning(s) found.

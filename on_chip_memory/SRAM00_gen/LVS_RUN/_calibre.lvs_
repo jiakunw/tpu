@@ -1,0 +1,32 @@
+#!tvf
+tvf::VERBATIM {
+//
+//  Rule file generated on Thu Mar 12 23:10:10 2026
+//  by Calibre Interactive v2024.3_25.13    Thu Aug 1 18:57:13 PDT 2024
+//
+//      *** PLEASE DO NOT MODIFY THIS FILE ***
+//
+//
+
+LAYOUT PATH "sram00.calibre.db"
+LAYOUT SYSTEM GDSII
+LAYOUT PRIMARY "sram00"
+
+SOURCE PATH "/homes/user/stud/fall25/dy2538/ee6350/DIGITAL/SRAM00_gen/sram00.cdl"
+SOURCE SYSTEM SPICE
+SOURCE PRIMARY "sram00"
+
+MASK SVDB DIRECTORY "svdb" QUERY
+
+LVS REPORT "sram00.lvs.report"
+
+LVS EXECUTE ERC YES
+
+ERC RESULTS DATABASE "sram00.erc.results"
+ERC CELL NAME YES CELL SPACE XFORM
+
+DRC ICSTATION YES
+
+}
+
+source "/courses/ee6350/shared/calibre/pdk_cisl/lvs/calibre.lvs"

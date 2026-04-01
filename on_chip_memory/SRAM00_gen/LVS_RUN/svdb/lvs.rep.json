@@ -1,0 +1,23 @@
+{
+    "PLEASE DON'T EDIT OR PARSE": "This is automatically generated file for extracting in QS",
+    "CREATION TIME": "Thu Mar 12 21:35:04 2026",
+    "VERSION": "1",
+    "LVS BOTTOM WARNINGS": [
+        "Unbalanced smashed mosfets were matched",
+        "Ambiguity points were found and resolved arbitrarily"
+    ],
+    "LVS BOTTOM ERRORS": [
+        "Different numbers of ports",
+        "Different numbers of nets",
+        "Connectivity errors"
+    ],
+    "LVS REPORT OPTION": [
+        "S"
+    ],
+    "LVS INCORRECT CELLS": [
+        [
+            "sram00",
+            "sram00"
+        ]
+    ]
+}

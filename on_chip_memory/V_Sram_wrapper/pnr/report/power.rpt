@@ -1,0 +1,99 @@
+*----------------------------------------------------------------------------------------
+*	Innovus 21.16-s078_1 (64bit) 12/07/2022 12:07 (Linux 3.10.0-693.el7.x86_64)
+*	
+*
+* 	Date & Time:	2026-Apr-01 00:27:33 (2026-Apr-01 04:27:33 GMT)
+*
+*----------------------------------------------------------------------------------------
+*
+*	Design: sram_wrapper
+*
+*	Liberty Libraries used: 
+*	        av_normal_max: /courses/ee6350/pdk2023/T-N65-CM-SP-018-K3_MOM/digital/Front_End/timing_power_noise/NLDM/tcbn65gplus_200a/tcbn65gpluswc.lib
+*	        av_normal_max: ../../../SRAM00_gen/sram00_nldm_ss_0p90v_0p90v_125c_syn.lib
+*
+*	Power Domain used: 
+*              Rail:       DVDD      Voltage:        0.9 
+*
+*       Power View : av_normal_max
+*
+*       User-Defined Activity : N.A.
+*
+*       Activity File: N.A.
+*
+*       Hierarchical Global Activity: N.A.
+*
+*       Global Activity: N.A.
+*
+*       Sequential Element Activity: 0.200000
+*
+*       Primary Input Activity: 0.200000
+*
+*       Default icg ratio: N.A.
+*
+*       Global Comb ClockGate Ratio: N.A.
+*
+*	Power Units = 1mW
+*
+*	Time Units = 1e-09 secs 
+*
+*       report_power -o ../report
+*
+-----------------------------------------------------------------------------------------
+
+
+Total Power 
+-----------------------------------------------------------------------------------------
+Total Internal Power:        0.61663332 	   52.9169%
+Total Switching Power:       0.13796169 	   11.8393%
+Total Leakage Power:         0.41069211 	   35.2439%
+Total Glitch Power:          0.00000000 	    0.0000%
+Total Power:                 1.16528713 
+-----------------------------------------------------------------------------------------
+
+
+Group                           Internal   Switching     Leakage       Glitch       Total  Percentage 
+                                Power      Power         Power         Power        Power  (%)        
+-----------------------------------------------------------------------------------------
+Sequential                       0.06186    0.001976    0.009091           0     0.07292       6.258 
+Macro                             0.5171    0.001066      0.3784           0      0.8966       76.94 
+IO                                     0           0   1.451e-06           0   1.451e-06   0.0001245 
+Combinational                    0.03673      0.1251      0.0229           0      0.1847       15.85 
+Clock (Combinational)           0.000951    0.009867   0.0002839           0      0.0111      0.9527 
+Clock (Sequential)                     0           0           0           0           0           0 
+-----------------------------------------------------------------------------------------
+Total                             0.6166       0.138      0.4107           0       1.165         100 
+-----------------------------------------------------------------------------------------
+
+
+Clock                           Internal   Switching     Leakage       Glitch       Total  Percentage 
+                                Power      Power         Power         Power        Power  (%)        
+-----------------------------------------------------------------------------------------
+Clk                             0.000951    0.009867   0.0002839           0      0.0111      0.9527 
+-----------------------------------------------------------------------------------------
+Total (excluding duplicates)    0.000951    0.009867   0.0002839           0      0.0111      0.9527 
+-----------------------------------------------------------------------------------------
+Clock: Clk
+Clock Period: 0.025000 usec 
+Clock Toggle Rate:    80.0000 Mhz 
+Clock Static Probability:  0.5000
+
+
+
+Rail                  Voltage   Internal   Switching     Leakage       Glitch       Total  Percentage 
+                                Power      Power         Power         Power        Power  (%)        
+-----------------------------------------------------------------------------------------
+DVDD                      0.9     0.6166       0.138      0.4107           0       1.165         100 
+
+
+-----------------------------------------------------------------------------------------
+*	Power Distribution Summary: 
+*                Highest Average Power:                    u_sram (sram00):           0.8966 
+*                Highest Leakage Power:                    u_sram (sram00):           0.3784 
+*          Total Cap:      3.69157e-11 F
+*          Total instances in design:   803
+*          Total instances in design with no power:     0
+*          Total instances in design with no activity:     0
+*          Total Fillers and Decap:     0
+-----------------------------------------------------------------------------------------
+
