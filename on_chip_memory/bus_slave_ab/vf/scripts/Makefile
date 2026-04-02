@@ -1,9 +1,12 @@
-RTL_DIR = ../../input/RTL
-SRAM_DIR = /user/stud/fall25/dy2538/ee6350/DIGITAL/SRAM00_gen
+RTL_DIR          = ../../input/RTL
+SRAM_DIR         = /user/stud/fall25/dy2538/ee6350/DIGITAL/SRAM00_gen
 SRAM_WRAPPER_DIR = ../../../V_Sram_wrapper
-TB_DIR  = ../../input/TB
-PNR_DIR = ../../pnr/output
-LIB_DIR = ../lib
+TB_DIR           = ../../input/TB
+PNR_DIR          = ../../pnr/output
+PNR_SR_DIR       = $(SRAM_WRAPPER_DIR)/pnr/output
+SYN_DIR          = ../../syn/output
+SYN_SR_DIR       = $(SRAM_WRAPPER_DIR)/syn/output
+LIB_DIR          = ../lib
 
 ##################################################
 # RTL Simulation - VCS
@@ -14,7 +17,7 @@ vcs:
 		$(SRAM_WRAPPER_DIR)/input/RTL/sram_wrapper.sv \
 		$(TB_DIR)/bus_master.sv \
 		$(RTL_DIR)/bus_slave_ab.sv \
-		$(TB_DIR)/tb.sv
+		$(TB_DIR)/tb.sv \
 		-o simv
 	./simv | tee sim.log
 
@@ -24,8 +27,8 @@ vcs:
 vsim:
 	vlib work
 	vlog +acc $(SRAM_DIR)/sram00.v
-	vlog +acc -sv $(SRAM_WRAPPER_DIR)/input/RTL/sram_wrapper.sv 
-	vlog +acc -sv $(RTL_DIR)/bus_slave_ab.sv 
+	vlog +acc -sv $(SRAM_WRAPPER_DIR)/input/RTL/sram_wrapper.sv
+	vlog +acc -sv $(RTL_DIR)/bus_slave_ab.sv
 	vlog +acc -sv $(TB_DIR)/bus_master.sv $(TB_DIR)/tb.sv
 	vsim -c -do "run -all; quit" work.tb | tee sim.log
 
@@ -41,39 +44,68 @@ vsim_gui:
 	vsim -do "add wave -r /*; run -all" work.tb
 
 ##################################################
+# Post-Synthesis Simulation - VCS
+##################################################
+post_syn_vcs:
+	vcs -sverilog -full64 -timescale=1ns/1ps \
+	    -sdf max:tb/u_slave_ab:$(SYN_DIR)/bus_slave_ab.syn.sdf \
+	    -sdf max:tb/u_sram_a:$(SYN_SR_DIR)/sram_wrapper.syn.sdf \
+	    -sdf max:tb/u_sram_b:$(SYN_SR_DIR)/sram_wrapper.syn.sdf \
+	    $(LIB_DIR)/tcbn65gplus.v \
+	    $(SRAM_DIR)/sram00.v \
+	    $(SYN_SR_DIR)/sram_wrapper.syn.v \
+	    $(SYN_DIR)/bus_slave_ab.syn.v \
+	    $(TB_DIR)/bus_master.sv \
+	    $(TB_DIR)/tb.sv \
+	    -o simv_syn
+	./simv_syn | tee post_syn.log
+
+##################################################
 # Post-PnR Simulation - VCS (all three corners)
 ##################################################
 post_pnr_vcs:
-	# MIN corner (FF, 1.1V, -40C - fastest)
-	vcs -full64 -timescale=1ns/1ps \
-		+neg_tchk +sdfverbose \
-		-sdf min:/TB/spsram:$(PNR_DIR)/sram_wrapper.funct.sdf \
-		$(LIB_DIR)/tcbn65gplus.v \
-		$(PNR_DIR)/*.funct.v \
-		$(TB_DIR)/*.v \
-		-o simv_min
+	# MIN corner (FF, 1.1V, -40C)
+	vcs -sverilog -full64 -timescale=1ns/1ps \
+	    +neg_tchk +sdfverbose \
+	    -sdf min:tb/u_slave_ab:$(PNR_DIR)/bus_slave_ab.funct.sdf \
+	    -sdf min:tb/u_sram_a:$(PNR_SR_DIR)/sram_wrapper.funct.sdf \
+	    -sdf min:tb/u_sram_b:$(PNR_SR_DIR)/sram_wrapper.funct.sdf \
+	    $(LIB_DIR)/tcbn65gplus.v \
+	    $(SRAM_DIR)/sram00.v \
+	    $(PNR_DIR)/bus_slave_ab.funct.v \
+	    $(PNR_SR_DIR)/sram_wrapper.funct.v \
+	    $(TB_DIR)/bus_master.sv \
+	    $(TB_DIR)/tb.sv \
+	    -o simv_min
 	./simv_min +sdfverbose 2>&1 | tee post_pnr_min.log
-
-	# TYP corner (TT, 1.0V, 25C - typical)
-	vcs -full64 -timescale=1ns/1ps \
-		+neg_tchk +sdfverbose \
-		-sdf typ:/TB/spsram:$(PNR_DIR)/sram_wrapper.funct.sdf \
-		$(LIB_DIR)/tcbn65gplus.v \
-		$(PNR_DIR)/*.funct.v \
-		$(TB_DIR)/*.v \
-		-o simv_typ
+	# TYP corner (TT, 1.0V, 25C)
+	vcs -sverilog -full64 -timescale=1ns/1ps \
+	    +neg_tchk +sdfverbose \
+	    -sdf typ:tb/u_slave_ab:$(PNR_DIR)/bus_slave_ab.funct.sdf \
+	    -sdf typ:tb/u_sram_a:$(PNR_SR_DIR)/sram_wrapper.funct.sdf \
+	    -sdf typ:tb/u_sram_b:$(PNR_SR_DIR)/sram_wrapper.funct.sdf \
+	    $(LIB_DIR)/tcbn65gplus.v \
+	    $(SRAM_DIR)/sram00.v \
+	    $(PNR_DIR)/bus_slave_ab.funct.v \
+	    $(PNR_SR_DIR)/sram_wrapper.funct.v \
+	    $(TB_DIR)/bus_master.sv \
+	    $(TB_DIR)/tb.sv \
+	    -o simv_typ
 	./simv_typ +sdfverbose 2>&1 | tee post_pnr_typ.log
-
-	# MAX corner (SS, 0.9V, 125C - slowest)
-	vcs -full64 -timescale=1ns/1ps \
-		+neg_tchk +sdfverbose \
-		-sdf max:/TB/spsram:$(PNR_DIR)/sram_wrapper.funct.sdf \
-		$(LIB_DIR)/tcbn65gplus.v \
-		$(PNR_DIR)/*.funct.v \
-		$(TB_DIR)/*.v \
-		-o simv_max
+	# MAX corner (SS, 0.9V, 125C)
+	vcs -sverilog -full64 -timescale=1ns/1ps \
+	    +notimingchecks +neg_tchk +sdfverbose \
+	    -sdf max:tb/u_slave_ab:$(PNR_DIR)/bus_slave_ab.funct.sdf \
+	    -sdf max:tb/u_sram_a:$(PNR_SR_DIR)/sram_wrapper.funct.sdf \
+	    -sdf max:tb/u_sram_b:$(PNR_SR_DIR)/sram_wrapper.funct.sdf \
+	    $(LIB_DIR)/tcbn65gplus.v \
+	    $(SRAM_DIR)/sram00.v \
+	    $(PNR_DIR)/bus_slave_ab.funct.v \
+	    $(PNR_SR_DIR)/sram_wrapper.funct.v \
+	    $(TB_DIR)/bus_master.sv \
+	    $(TB_DIR)/tb.sv \
+	    -o simv_max
 	./simv_max +sdfverbose 2>&1 | tee post_pnr_max.log
-
 	@echo "=========================================="
 	@echo "Post-PnR VCS simulation complete!"
 	@echo "  post_pnr_min.log - FF (1.1V, -40C)"
@@ -90,37 +122,13 @@ post_pnr_modelsim:
 	vlog +acc -incr $(LIB_DIR)/tcbn65gplus.v
 	vlog +acc -incr $(PNR_DIR)/*.funct.v
 	@for f in $(TB_DIR)/*.v; do vlog +acc -incr $$f; done
-
-	# MIN corner (FF, 1.1V, -40C - fastest)
+	# MIN corner
 	vsim -voptargs=+acc -t ps -lib work \
 		-sdfmin /TB/spsram=$(PNR_DIR)/sram_wrapper.funct.sdf \
 		-sdfnoerror \
 		-suppress 3438,3262,12091,3448,8756,8470,3444 \
 		-wlf min_corner.wlf \
 		-c -do "add wave *; run -all; quit" TB | tee post_pnr_min.log
-
-	# TYP corner (TT, 1.0V, 25C - typical)
-	vsim -voptargs=+acc -t ps -lib work \
-		-sdftyp /TB/spsram=$(PNR_DIR)/sram_wrapper.funct.sdf \
-		-sdfnoerror \
-		-suppress 3438,3262,12091,3448,8756,8470,3444 \
-		-wlf typ_corner.wlf \
-		-c -do "add wave *; run -all; quit" TB | tee post_pnr_typ.log
-
-	# MAX corner (SS, 0.9V, 125C - slowest)
-	vsim -voptargs=+acc -t ps -lib work \
-		-sdfmax /TB/spsram=$(PNR_DIR)/sram_wrapper.funct.sdf \
-		-sdfnoerror \
-		-suppress 3438,3262,12091,3448,8756,8470,3444 \
-		-wlf max_corner.wlf \
-		-c -do "add wave *; run -all; quit" TB | tee post_pnr_max.log
-
-	@echo "=========================================="
-	@echo "Post-PnR ModelSim simulation complete!"
-	@echo "  min_corner.wlf - FF (1.1V, -40C)"
-	@echo "  typ_corner.wlf - TT (1.0V, 25C)"
-	@echo "  max_corner.wlf - SS (0.9V, 125C)"
-	@echo "=========================================="
 
 ##################################################
 # View ModelSim Waveforms
@@ -138,9 +146,9 @@ view_max:
 # Clean
 ##################################################
 clean:
-	rm -rf simv simv_min simv_typ simv_max
-	rm -rf simv.daidir simv_min.daidir simv_typ.daidir simv_max.daidir
+	rm -rf simv simv_min simv_typ simv_max simv_syn
+	rm -rf simv.daidir simv_min.daidir simv_typ.daidir simv_max.daidir simv_syn.daidir
 	rm -rf csrc work transcript
 	rm -rf *.log *.wlf *.vcd
 
-.PHONY: vcs vsim vsim_gui post_pnr_vcs post_pnr_modelsim view_min view_typ view_max clean
+.PHONY: vcs vsim vsim_gui post_syn_vcs post_pnr_vcs post_pnr_modelsim view_min view_typ view_max clean

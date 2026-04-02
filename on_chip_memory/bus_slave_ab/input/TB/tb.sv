@@ -1,13 +1,5 @@
 ///////////////////////////////////////////////////////////////////////////////
-// tb.sv
-//
-// Testbench: tpu_bus_master <-> bus_slave_ab <-> sram_wrapper x2
-//
-// TPU read timing (tpu_re combinational to SRAM CEN):
-//   negedge N  : assert tpu_re/addr  (CEN goes low, stable 50ns before posedge)
-//   posedge N+1: SRAM samples read request, Q begins settling
-//   negedge N+1: sample tpu_dout (50ns after posedge, realistic margin)
-//                deassert tpu_re (CEN goes high, stable 50ns before next posedge)
+// tb.sv - with bus debug monitor
 ///////////////////////////////////////////////////////////////////////////////
 `timescale 1ns / 1ps
 
@@ -31,7 +23,6 @@ module tb;
     logic [6:0]  S_AXI_araddr;  logic S_AXI_arvalid; logic S_AXI_arready; logic [2:0] S_AXI_arprot;
     logic [31:0] S_AXI_rdata;   logic [1:0] S_AXI_rresp; logic S_AXI_rvalid; logic S_AXI_rready;
 
-    // Bus signals
     logic bus_rst_n;
     logic chab_start, chab_wr;
     logic [7:0] chab_wdata_a, chab_wdata_b;
@@ -39,17 +30,14 @@ module tb;
     logic [7:0] chc_rdata;
     assign chc_rdata = 8'h00;
 
-    // SRAM A wires
     logic sram_a_we;
     logic [11:0] sram_a_addr;
     logic [7:0]  sram_a_din;
 
-    // SRAM B wires
     logic sram_b_we;
     logic [11:0] sram_b_addr;
     logic [7:0]  sram_b_din;
 
-    // TPU ports
     logic        tpu_a_re;
     logic [8:0]  tpu_a_addr;
     logic [63:0] tpu_a_dout;
@@ -95,7 +83,16 @@ module tb;
     );
 
     //=========================================================================
-    // AXI Write Task
+    // Bus debug monitor (print only, no early stop)
+    //=========================================================================
+    always @(posedge bus_clk) begin
+        if (sram_a_we)
+            $display("  [BUS DBG @%0t] we=1 addr=%0d dinA=0x%02h dinB=0x%02h",
+                     $time, sram_a_addr, sram_a_din, sram_b_din);
+    end
+
+    //=========================================================================
+    // AXI Tasks
     //=========================================================================
     task axi_write(input logic [6:0] addr, input logic [31:0] data);
         @(posedge master_clk);
@@ -116,9 +113,6 @@ module tb;
         S_AXI_bready  <= 1'b0;
     endtask
 
-    //=========================================================================
-    // AXI Read Task
-    //=========================================================================
     task axi_read(input logic [6:0] addr, output logic [31:0] data);
         @(posedge master_clk);
         S_AXI_araddr  <= addr;   S_AXI_arprot  <= 3'd0;
@@ -139,17 +133,12 @@ module tb;
         do begin axi_read(7'h00, status); end while (!status[0]);
     endtask
 
-    //=========================================================================
-    // TPU Read Tasks
-    // Drive at negedge so CEN is stable 50ns before posedge CLK.
-    // Sample at negedge after posedge: Q stable 50ns, realistic timing.
-    //=========================================================================
     task tpu_read_a(input logic [8:0] word_addr, output logic [63:0] data);
-        @(posedge bus_clk);         // TPU FF output: drive at posedge (realistic)
+        @(posedge bus_clk);
         tpu_a_re   <= 1'b1;
         tpu_a_addr <= word_addr;
-        @(posedge bus_clk);         // SRAM samples read request
-        @(negedge bus_clk);         // Q settled mid-cycle: sample here
+        @(posedge bus_clk);
+        @(negedge bus_clk);
         data        = tpu_a_dout;
         @(posedge bus_clk);
         tpu_a_re   <= 1'b0;
@@ -166,9 +155,6 @@ module tb;
         tpu_b_re   <= 1'b0;
     endtask
 
-    //=========================================================================
-    // Test Data
-    //=========================================================================
     logic [7:0] a_data [0:N_PAIRS-1];
     logic [7:0] b_data [0:N_PAIRS-1];
 
@@ -182,9 +168,6 @@ module tb;
         return w;
     endfunction
 
-    //=========================================================================
-    // Main Test
-    //=========================================================================
     logic [31:0] rdata;
     logic [63:0] got_a, got_b;
     int errors;
@@ -208,31 +191,28 @@ module tb;
         end
 
         aresetn = 0;
-        repeat(10) @(posedge master_clk);
+        repeat($urandom_range(10, 5)) @(posedge master_clk);
         aresetn = 1;
-        repeat(10) @(posedge master_clk);
+        repeat($urandom_range(10, 5)) @(posedge master_clk);
 
-        // Step 1: START_AB
         $display("\n[Step 1] Send START_AB");
         poll_ready_ab();
         axi_write(7'h04, 32'h1);
         poll_ready_ab();
         $display("  START_AB acked");
 
-        // Step 2: Write byte-pairs
         $display("\n[Step 2] Write %0d byte-pairs", N_PAIRS);
         for (int i = 0; i < N_PAIRS; i++) begin
             poll_ready_ab();
             axi_write(7'h08, {16'h0, b_data[i], a_data[i]});
             $display("  [%0d] A=0x%02h B=0x%02h", i, a_data[i], b_data[i]);
+            repeat($urandom_range(80, 50)) @(posedge bus_clk);
         end
         poll_ready_ab();
         $display("  All byte-pairs sent");
 
-        // Wait for last 64-bit word to commit
-        repeat(5) @(posedge bus_clk);
+        repeat($urandom_range(70, 40)) @(posedge bus_clk);
 
-        // Step 3: Readback
         $display("\n[Step 3] Readback via TPU port");
         for (int w = 0; w < N_PAIRS/8; w++) begin
             automatic logic [63:0] exp_a = pack_word(a_data, w);

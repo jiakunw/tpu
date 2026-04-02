@@ -48,7 +48,7 @@ set_db leakage_power_effort low
 
 
 # Load RTL
-set_db hdl_language v2001
+set_db hdl_language sv
 read_hdl $gn::VERILOG_LIST
 # elaborate $TOPCELL
 

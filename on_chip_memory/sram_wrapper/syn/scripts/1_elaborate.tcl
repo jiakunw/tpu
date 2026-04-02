@@ -41,8 +41,23 @@ set_db leakage_power_effort low
 #####################################################################
 # Load RTL
 #####################################################################
+
+# Treat hard macros as black boxes
+
+
+
+
+# Load RTL
 set_db hdl_language sv
 read_hdl $gn::VERILOG_LIST
+# elaborate $TOPCELL
+
+# # 确认 sram00 被当作黑盒（可选）
+# set_db [get_db modules sram00] .is_black_box true
+# # Load all hard macro behavioral models
+# foreach v $iv::MACRO_V_LIST {
+#     read_hdl $v
+# }
 
 #####################################################################
 # Elaborate
