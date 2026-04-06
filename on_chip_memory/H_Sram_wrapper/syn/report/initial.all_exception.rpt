@@ -1,0 +1,7 @@
+Total numbers of exceptions: 5
+
+exception:sram_wrapper_c/default_mode/Clk
+exception:sram_wrapper_c/default_mode/C2O
+exception:sram_wrapper_c/default_mode/I2C
+exception:sram_wrapper_c/default_mode/I2O
+exception:sram_wrapper_c/default_mode/C2C
