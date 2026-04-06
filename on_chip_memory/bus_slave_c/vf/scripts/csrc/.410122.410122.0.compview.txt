@@ -1,0 +1,9 @@
+{"vcs1":{"timestamp_begin":1775189753.765440201, "rt":3.12, "ut":1.88, "st":0.15}}
+{"vcselab":{"timestamp_begin":1775189756.929847970, "rt":0.54, "ut":0.12, "st":0.02}}
+{"link":{"timestamp_begin":1775189757.502804244, "rt":1.22, "ut":0.11, "st":0.09}}
+{"SNPS_VCS_INTERNAL_ROOT_START_TIME": 1775189753.540793211}
+{"VCS_COMP_START_TIME": 1775189753.540793211}
+{"VCS_COMP_END_TIME": 1775189758.777513251}
+{"VCS_USER_OPTIONS": "-sverilog -full64 -timescale=1ns/1ps +neg_tchk +sdfverbose -sdf typ:tb/u_slave_c:../../pnr/output/bus_slave_c.funct.sdf -sdf typ:tb/u_sram_c:../../../H_Sram_wrapper/pnr/output/sram_wrapper_c.funct.sdf ../lib/tcbn65gplus.v /user/stud/fall25/dy2538/ee6350/DIGITAL/SRAM00_gen/sram00.v ../../pnr/output/bus_slave_c.funct.v ../../../H_Sram_wrapper/pnr/output/sram_wrapper_c.funct.v ../../input/TB/bus_master.sv ../../input/TB/tb.sv -o simv_typ"}
+{"vcs1": {"peak_mem": 426008}}
+{"vcselab": {"peak_mem": 273556}}

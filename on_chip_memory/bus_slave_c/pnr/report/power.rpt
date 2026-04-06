@@ -1,0 +1,98 @@
+*----------------------------------------------------------------------------------------
+*	Innovus 21.16-s078_1 (64bit) 12/07/2022 12:07 (Linux 3.10.0-693.el7.x86_64)
+*	
+*
+* 	Date & Time:	2026-Apr-02 21:18:11 (2026-Apr-03 01:18:11 GMT)
+*
+*----------------------------------------------------------------------------------------
+*
+*	Design: bus_slave_c
+*
+*	Liberty Libraries used: 
+*	        av_normal_max: /courses/ee6350/pdk2023/T-N65-CM-SP-018-K3_MOM/digital/Front_End/timing_power_noise/NLDM/tcbn65gplus_200a/tcbn65gpluswc.lib
+*
+*	Power Domain used: 
+*              Rail:       DVDD      Voltage:        0.9 
+*
+*       Power View : av_normal_max
+*
+*       User-Defined Activity : N.A.
+*
+*       Activity File: N.A.
+*
+*       Hierarchical Global Activity: N.A.
+*
+*       Global Activity: N.A.
+*
+*       Sequential Element Activity: 0.200000
+*
+*       Primary Input Activity: 0.200000
+*
+*       Default icg ratio: N.A.
+*
+*       Global Comb ClockGate Ratio: N.A.
+*
+*	Power Units = 1mW
+*
+*	Time Units = 1e-09 secs 
+*
+*       report_power -o ../report
+*
+-----------------------------------------------------------------------------------------
+
+
+Total Power 
+-----------------------------------------------------------------------------------------
+Total Internal Power:        0.00347090 	   15.8727%
+Total Switching Power:       0.01141837 	   52.2172%
+Total Leakage Power:         0.00697781 	   31.9101%
+Total Glitch Power:          0.00000000 	    0.0000%
+Total Power:                 0.02186709 
+-----------------------------------------------------------------------------------------
+
+
+Group                           Internal   Switching     Leakage       Glitch       Total  Percentage 
+                                Power      Power         Power         Power        Power  (%)        
+-----------------------------------------------------------------------------------------
+Sequential                      0.001474   6.645e-05   0.0007607           0    0.002302       10.53 
+Macro                                  0           0           0           0           0           0 
+IO                                     0           0           0           0           0           0 
+Combinational                   0.001935     0.01081    0.006146           0     0.01889        86.4 
+Clock (Combinational)           6.16e-05   0.0005389   7.102e-05           0   0.0006715       3.071 
+Clock (Sequential)                     0           0           0           0           0           0 
+-----------------------------------------------------------------------------------------
+Total                           0.003471     0.01142    0.006978           0     0.02187         100 
+-----------------------------------------------------------------------------------------
+
+
+Clock                           Internal   Switching     Leakage       Glitch       Total  Percentage 
+                                Power      Power         Power         Power        Power  (%)        
+-----------------------------------------------------------------------------------------
+Clk                             6.16e-05   0.0005389   7.102e-05           0   0.0006715       3.071 
+-----------------------------------------------------------------------------------------
+Total (excluding duplicates)    6.16e-05   0.0005389   7.102e-05           0   0.0006715       3.071 
+-----------------------------------------------------------------------------------------
+Clock: Clk
+Clock Period: 0.100000 usec 
+Clock Toggle Rate:    20.0000 Mhz 
+Clock Static Probability:  0.5000
+
+
+
+Rail                  Voltage   Internal   Switching     Leakage       Glitch       Total  Percentage 
+                                Power      Power         Power         Power        Power  (%)        
+-----------------------------------------------------------------------------------------
+DVDD                      0.9   0.003471     0.01142    0.006978           0     0.02187         100 
+
+
+-----------------------------------------------------------------------------------------
+*	Power Distribution Summary: 
+*                Highest Average Power:    FE_OFC32_debug_cnt_c_0 (BUFFD12):        0.0006338 
+*                Highest Leakage Power:    FE_OFC34_debug_cnt_c_1 (BUFFD12):        0.0001918 
+*          Total Cap:      1.34915e-11 F
+*          Total instances in design:   142
+*          Total instances in design with no power:     0
+*          Total instances in design with no activity:     0
+*          Total Fillers and Decap:     0
+-----------------------------------------------------------------------------------------
+
