@@ -158,6 +158,8 @@ module tpu_bus_master #(
     // Single-cycle clear-ready signals from write FSM
     logic clr_sab, clr_sc, clr_ab, clr_c;
 
+    logic [7:0] ack_c_data_b;
+
     //=========================================================================
     // AXI-Lite Write FSM
     //=========================================================================
@@ -271,7 +273,7 @@ module tpu_bus_master #(
             if (ack_sc_pulse || ack_c_pulse) begin
                 ready_c <= 1'b1;
                 if (ack_c_pulse)
-                    reg_data_c_cap <= ack_c_data_sync;
+                    reg_data_c_cap <= ack_c_data_b;
             end else if (clr_sc || clr_c) begin
                 ready_c <= 1'b0;
             end

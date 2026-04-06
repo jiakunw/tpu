@@ -1,34 +1,34 @@
 ///////////////////////////////////////////////////////////////////////////////
 // bus_slave_ab.sv
 //
-// TPU Bus Slave - AB Channel (simultaneous write to SRAM_A and SRAM_B)
+// TPU Bus Slave - AB Channel
 //
-// Negedge sampling design:
-//   Master drives CHAB_WR/WDATA/START at posedge BUS_CLK.
-//   Slave samples all bus inputs at negedge BUS_CLK -> 50ns setup time
-//   before next posedge, satisfying sram_wrapper's posedge FF requirements.
+// Writes Matrix A (M×N bytes) and Matrix B (N×K bytes) simultaneously.
+// Two independent counters with independent write enables:
+//   cnt_a counts to M*N, after which sram_a_we is deasserted
+//   cnt_b counts to N*K, after which sram_b_we is deasserted
 //
-// Counter (cnt_ab) uses DELAYED increment:
-//   Increments based on the PREVIOUS negedge's sampled chab_wr_s, not the
-//   current one. This guarantees that at the posedge where sram_wrapper
-//   accumulates the byte, cnt_ab still holds the correct (pre-increment)
-//   byte address. The counter advances at the negedge AFTER the write.
+// Dimensions (M, N, K) are provided from on-chip register file and must
+// be valid before CHAB_START is asserted.
 //
-// Timing for byte K (zero-indexed):
-//   posedge P   : master drives CHAB_WR=1, WDATA=byte_K
-//   negedge P   : chab_wr_s=1, wdata_s=byte_K, cnt_ab += prev_wr (0 if first)
-//   posedge P+1 : sram_wrapper sees bus_we=1, bus_addr=cnt_ab=K, accumulates byte_K
-//   negedge P+1 : chab_wr_s=0, cnt_ab += chab_wr_s=1 -> cnt_ab = K+1
-//   posedge P+2 : sram_wrapper sees bus_we=0, no accumulation
+// Negedge sampling: master drives signals at posedge BUS_CLK.
+// Slave samples at negedge -> 50ns setup margin before next posedge.
+//
+// Software must transpose Matrix A before sending (row-major, transposed).
 ///////////////////////////////////////////////////////////////////////////////
 `timescale 1ns / 1ps
 
 module bus_slave_ab #(
-    parameter SRAM_AW = 12,   // byte address width: 4096 bytes (512 words x 8B)
+    parameter SRAM_AW = 12,
     parameter DW      = 8
 )(
     input  logic              BUS_CLK,
     input  logic              BUS_RST_N,
+
+    // Dimensions from on-chip register file (valid before CHAB_START)
+    input  logic [7:0]        DIM_M,     // rows of A, rows of C
+    input  logic [7:0]        DIM_N,     // cols of A = rows of B
+    input  logic [7:0]        DIM_K,     // cols of B, cols of C
 
     // Bus Interface (driven by master at posedge BUS_CLK)
     input  logic              CHAB_START,
@@ -36,49 +36,101 @@ module bus_slave_ab #(
     input  logic [DW-1:0]     CHAB_WDATA_B,
     input  logic              CHAB_WR,
 
-    // SRAM_A Interface (write only)
+    // SRAM_A Interface (M×N bytes)
     output logic               sram_a_we,
     output logic [SRAM_AW-1:0] sram_a_addr,
     output logic [DW-1:0]      sram_a_din,
 
-    // SRAM_B Interface (write only)
+    // SRAM_B Interface (N×K bytes)
     output logic               sram_b_we,
     output logic [SRAM_AW-1:0] sram_b_addr,
     output logic [DW-1:0]      sram_b_din,
 
-    output logic [SRAM_AW-1:0] debug_cnt_ab
+    output logic [SRAM_AW-1:0] debug_cnt_a,
+    output logic [SRAM_AW-1:0] debug_cnt_b
 );
 
+    // =========================================================================
+    // Negedge-sampled bus signals
+    // =========================================================================
     logic              chab_wr_s;
     logic [DW-1:0]     chab_wdata_a_s;
     logic [DW-1:0]     chab_wdata_b_s;
-    logic [SRAM_AW-1:0] cnt_ab;
+
+    // Byte counts: M*N and N*K (registered at START to latch stable dims)
+    logic [SRAM_AW-1:0] max_a;   // M * N
+    logic [SRAM_AW-1:0] max_b;   // N * K
+
+    // Independent counters
+    logic [SRAM_AW-1:0] cnt_a;
+    logic [SRAM_AW-1:0] cnt_b;
+
+    // Write enable flags (cleared when counter reaches max)
+    logic we_a_en;
+    logic we_b_en;
 
     always_ff @(negedge BUS_CLK or negedge BUS_RST_N) begin
         if (!BUS_RST_N) begin
             chab_wr_s      <= 1'b0;
             chab_wdata_a_s <= '0;
             chab_wdata_b_s <= '0;
-            cnt_ab         <= '0;
+            cnt_a          <= '0;
+            cnt_b          <= '0;
+            max_a          <= '0;
+            max_b          <= '0;
+            we_a_en        <= 1'b0;
+            we_b_en        <= 1'b0;
         end else begin
+            // Sample bus inputs
             chab_wr_s      <= CHAB_WR;
             chab_wdata_a_s <= CHAB_WDATA_A;
             chab_wdata_b_s <= CHAB_WDATA_B;
-            if (CHAB_START)
-                cnt_ab <= '0;
-            else if (chab_wr_s)
-                cnt_ab <= cnt_ab + 1'b1;
+
+            if (CHAB_START) begin
+                // Latch dimensions and reset counters
+                cnt_a   <= '0;
+                cnt_b   <= '0;
+                max_a   <= SRAM_AW'(DIM_M) * SRAM_AW'(DIM_N);
+                max_b   <= SRAM_AW'(DIM_N) * SRAM_AW'(DIM_K);
+                we_a_en <= 1'b1;
+                we_b_en <= 1'b1;
+            end else if (chab_wr_s) begin
+                // Advance counter A if still writing
+                if (we_a_en) begin
+                    if (cnt_a + 1 >= max_a) begin
+                        cnt_a   <= cnt_a + 1'b1;
+                        we_a_en <= 1'b0;
+                    end else begin
+                        cnt_a <= cnt_a + 1'b1;
+                    end
+                end
+                // Advance counter B if still writing
+                if (we_b_en) begin
+                    if (cnt_b + 1 >= max_b) begin
+                        cnt_b   <= cnt_b + 1'b1;
+                        we_b_en <= 1'b0;
+                    end else begin
+                        cnt_b <= cnt_b + 1'b1;
+                    end
+                end
+            end
         end
     end
 
-    assign sram_a_we   = chab_wr_s;
-    assign sram_a_addr = cnt_ab;
+    // =========================================================================
+    // Drive SRAM interfaces
+    // sram_*_we uses the previous chab_wr_s (delayed increment pattern)
+    // we_*_en gates the write enable
+    // =========================================================================
+    assign sram_a_we   = chab_wr_s & we_a_en;
+    assign sram_a_addr = cnt_a;
     assign sram_a_din  = chab_wdata_a_s;
 
-    assign sram_b_we   = chab_wr_s;
-    assign sram_b_addr = cnt_ab;
+    assign sram_b_we   = chab_wr_s & we_b_en;
+    assign sram_b_addr = cnt_b;
     assign sram_b_din  = chab_wdata_b_s;
 
-    assign debug_cnt_ab = cnt_ab;
+    assign debug_cnt_a = cnt_a;
+    assign debug_cnt_b = cnt_b;
 
 endmodule
