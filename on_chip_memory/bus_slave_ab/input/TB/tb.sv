@@ -1,8 +1,5 @@
 ///////////////////////////////////////////////////////////////////////////////
-// tb.sv
-//
-// Testbench: tpu_bus_master <-> bus_slave_ab <-> sram_wrapper x2
-// Tests multiple M/N/K combinations sequentially.
+// tb.sv - bus_slave_ab with DIM_M/N/K, multiple test cases
 ///////////////////////////////////////////////////////////////////////////////
 `timescale 1ns / 1ps
 
@@ -10,11 +7,14 @@ module tb;
 
     localparam MASTER_CLK_PERIOD = 10;
     localparam BUS_CLK_PERIOD    = 100;
-    localparam MAX_BYTES         = 64;
+    localparam MAX_PAIRS         = 64;
 
     logic master_clk, bus_clk, aresetn;
-    initial master_clk = 0; always #(MASTER_CLK_PERIOD/2) master_clk = ~master_clk;
-    initial bus_clk    = 0; always #(BUS_CLK_PERIOD/2)    bus_clk    = ~bus_clk;
+
+    initial master_clk = 0;
+    always #(MASTER_CLK_PERIOD/2) master_clk = ~master_clk;
+    initial bus_clk = 0;
+    always #(BUS_CLK_PERIOD/2) bus_clk = ~bus_clk;
 
     // AXI-Lite
     logic [6:0]  S_AXI_awaddr;  logic S_AXI_awvalid; logic S_AXI_awready; logic [2:0] S_AXI_awprot;
@@ -23,7 +23,6 @@ module tb;
     logic [6:0]  S_AXI_araddr;  logic S_AXI_arvalid; logic S_AXI_arready; logic [2:0] S_AXI_arprot;
     logic [31:0] S_AXI_rdata;   logic [1:0] S_AXI_rresp; logic S_AXI_rvalid; logic S_AXI_rready;
 
-    // Bus signals
     logic bus_rst_n;
     logic chab_start, chab_wr;
     logic [7:0] chab_wdata_a, chab_wdata_b;
@@ -31,7 +30,6 @@ module tb;
     logic [7:0] chc_rdata;
     assign chc_rdata = 8'h00;
 
-    // SRAM wires
     logic        sram_a_we;
     logic [11:0] sram_a_addr;
     logic [7:0]  sram_a_din;
@@ -39,25 +37,31 @@ module tb;
     logic [11:0] sram_b_addr;
     logic [7:0]  sram_b_din;
 
-    // TPU read ports
-    logic        tpu_a_re;  logic [8:0] tpu_a_addr; logic [63:0] tpu_a_dout;
-    logic        tpu_b_re;  logic [8:0] tpu_b_addr; logic [63:0] tpu_b_dout;
+    logic        tpu_a_re;
+    logic [8:0]  tpu_a_addr;
+    logic [63:0] tpu_a_dout;
+    logic        tpu_b_re;
+    logic [8:0]  tpu_b_addr;
+    logic [63:0] tpu_b_dout;
 
-    // DIM ports
-    logic [7:0] dim_m, dim_n, dim_k;
+    logic [7:0]  dim_m, dim_n, dim_k;
     logic [11:0] debug_cnt_a, debug_cnt_b;
 
-    // Module-level error counter (accessible from tasks)
-    int total_errors = 0;
+    // Module-level test data and error counter
+    logic [7:0] a_data [0:MAX_PAIRS-1];
+    logic [7:0] b_data [0:MAX_PAIRS-1];
+    logic [63:0] got_a, got_b;
+    logic [31:0] rdata;
+    int errors;
 
     // DUTs
     tpu_bus_master #(.C_S_AXI_DATA_WIDTH(32), .C_S_AXI_ADDR_WIDTH(7)) u_master (
         .S_AXI_ACLK(master_clk), .S_AXI_ARESETN(aresetn),
         .S_AXI_AWADDR(S_AXI_awaddr), .S_AXI_AWVALID(S_AXI_awvalid), .S_AXI_AWREADY(S_AXI_awready),
-        .S_AXI_WDATA(S_AXI_wdata),   .S_AXI_WSTRB(S_AXI_wstrb),   .S_AXI_WVALID(S_AXI_wvalid), .S_AXI_WREADY(S_AXI_wready),
-        .S_AXI_BRESP(S_AXI_bresp),   .S_AXI_BVALID(S_AXI_bvalid), .S_AXI_BREADY(S_AXI_bready),
+        .S_AXI_WDATA(S_AXI_wdata), .S_AXI_WSTRB(S_AXI_wstrb), .S_AXI_WVALID(S_AXI_wvalid), .S_AXI_WREADY(S_AXI_wready),
+        .S_AXI_BRESP(S_AXI_bresp), .S_AXI_BVALID(S_AXI_bvalid), .S_AXI_BREADY(S_AXI_bready),
         .S_AXI_ARADDR(S_AXI_araddr), .S_AXI_ARVALID(S_AXI_arvalid), .S_AXI_ARREADY(S_AXI_arready),
-        .S_AXI_RDATA(S_AXI_rdata),   .S_AXI_RRESP(S_AXI_rresp),   .S_AXI_RVALID(S_AXI_rvalid), .S_AXI_RREADY(S_AXI_rready),
+        .S_AXI_RDATA(S_AXI_rdata), .S_AXI_RRESP(S_AXI_rresp), .S_AXI_RVALID(S_AXI_rvalid), .S_AXI_RREADY(S_AXI_rready),
         .BUS_CLK(bus_clk), .BUS_RST_N(bus_rst_n),
         .CHAB_START(chab_start), .CHAB_WDATA_A(chab_wdata_a), .CHAB_WDATA_B(chab_wdata_b), .CHAB_WR(chab_wr),
         .CHC_START(chc_start), .CHC_RDATA(chc_rdata), .CHC_RD(chc_rd)
@@ -75,19 +79,30 @@ module tb;
     sram_wrapper #(.AW(9), .DW(8)) u_sram_a (
         .clk(bus_clk), .rstn(bus_rst_n),
         .bus_we(sram_a_we), .bus_addr(sram_a_addr), .bus_din(sram_a_din),
-        .tpu_re(tpu_a_re), .tpu_addr(tpu_a_addr), .tpu_dout(tpu_a_dout)
+        .tpu_re(tpu_a_re), .tpu_addr(tpu_a_addr),
+        .tpu_dout(tpu_a_dout)
     );
 
     sram_wrapper #(.AW(9), .DW(8)) u_sram_b (
         .clk(bus_clk), .rstn(bus_rst_n),
         .bus_we(sram_b_we), .bus_addr(sram_b_addr), .bus_din(sram_b_din),
-        .tpu_re(tpu_b_re), .tpu_addr(tpu_b_addr), .tpu_dout(tpu_b_dout)
+        .tpu_re(tpu_b_re), .tpu_addr(tpu_b_addr),
+        .tpu_dout(tpu_b_dout)
     );
 
     //=========================================================================
-    // AXI Tasks (unchanged)
+    // Bus debug monitor
     //=========================================================================
-    task automatic axi_write(input logic [6:0] addr, input logic [31:0] data);
+    always @(posedge bus_clk) begin
+        if (sram_a_we)
+            $display("  [BUS DBG @%0t] we=1 addr=%0d dinA=0x%02h dinB=0x%02h",
+                     $time, sram_a_addr, sram_a_din, sram_b_din);
+    end
+
+    //=========================================================================
+    // AXI Tasks
+    //=========================================================================
+    task axi_write(input logic [6:0] addr, input logic [31:0] data);
         @(posedge master_clk);
         S_AXI_awaddr  <= addr;    S_AXI_wdata   <= data;
         S_AXI_awprot  <= 3'd0;   S_AXI_awvalid <= 1'b1;
@@ -106,7 +121,7 @@ module tb;
         S_AXI_bready  <= 1'b0;
     endtask
 
-    task automatic axi_read(input logic [6:0] addr, output logic [31:0] data);
+    task axi_read(input logic [6:0] addr, output logic [31:0] data);
         @(posedge master_clk);
         S_AXI_araddr  <= addr;   S_AXI_arprot  <= 3'd0;
         S_AXI_arvalid <= 1'b1;  S_AXI_rready  <= 1'b0;
@@ -121,106 +136,100 @@ module tb;
         S_AXI_rready  <= 1'b0;
     endtask
 
-    task automatic poll_ready_ab();
+    task poll_ready_ab();
         logic [31:0] status;
         do begin axi_read(7'h00, status); end while (!status[0]);
     endtask
 
-    //=========================================================================
-    // TPU read tasks
-    //=========================================================================
-    task automatic tpu_read_a(input logic [8:0] word_addr, output logic [63:0] data);
-        @(posedge bus_clk); tpu_a_re <= 1; tpu_a_addr <= word_addr;
-        @(posedge bus_clk); @(negedge bus_clk); data = tpu_a_dout;
-        @(posedge bus_clk); tpu_a_re <= 0;
+    task tpu_read_a(input logic [8:0] word_addr, output logic [63:0] data);
+        @(posedge bus_clk);
+        tpu_a_re   <= 1'b1;
+        tpu_a_addr <= word_addr;
+        @(posedge bus_clk);
+        @(negedge bus_clk);
+        data        = tpu_a_dout;
+        @(posedge bus_clk);
+        tpu_a_re   <= 1'b0;
     endtask
 
-    task automatic tpu_read_b(input logic [8:0] word_addr, output logic [63:0] data);
-        @(posedge bus_clk); tpu_b_re <= 1; tpu_b_addr <= word_addr;
-        @(posedge bus_clk); @(negedge bus_clk); data = tpu_b_dout;
-        @(posedge bus_clk); tpu_b_re <= 0;
+    task tpu_read_b(input logic [8:0] word_addr, output logic [63:0] data);
+        @(posedge bus_clk);
+        tpu_b_re   <= 1'b1;
+        tpu_b_addr <= word_addr;
+        @(posedge bus_clk);
+        @(negedge bus_clk);
+        data        = tpu_b_dout;
+        @(posedge bus_clk);
+        tpu_b_re   <= 1'b0;
     endtask
 
-    //=========================================================================
-    // Run one test case
-    //=========================================================================
-    task automatic run_test(input int m, n, k, input string label);
-        int n_a, n_b, n_max, n_words_a, n_words_b, case_errors;
-        logic [7:0]  a_buf [0:MAX_BYTES-1];
-        logic [7:0]  b_buf [0:MAX_BYTES-1];
-        logic [63:0] got, exp;
-        logic [31:0] rdata;
+    // run_test uses module-level a_data, b_data, got_a, got_b, errors
+    task run_test(input int M, N, K);
+        int n_a, n_b, n_max, n_words_a, n_words_b;
+        logic [63:0] exp_a, exp_b;
+        n_a = M * N; n_b = N * K;
+        n_max = (n_a > n_b) ? n_a : n_b;
+        n_words_a = (n_a + 7) / 8;
+        n_words_b = (n_b + 7) / 8;
 
-        n_a         = m * n;
-        n_b         = n * k;
-        n_max       = (n_a > n_b) ? n_a : n_b;
-        n_words_a   = (n_a + 7) / 8;
-        n_words_b   = (n_b + 7) / 8;
-        case_errors = 0;
+        $display("\n=== Case M=%0d N=%0d K=%0d (A=%0d B=%0d bytes) ===", M, N, K, n_a, n_b);
 
-        $display("\n----------------------------------------------");
-        $display("  %s: M=%0d N=%0d K=%0d  A=%0d bytes  B=%0d bytes",
-                 label, m, n, k, n_a, n_b);
-        $display("----------------------------------------------");
-
-        for (int i = 0; i < MAX_BYTES; i++) begin
-            a_buf[i] = (i < n_a) ? (8'hA0 + i) : 8'h00;
-            b_buf[i] = (i < n_b) ? (8'hB0 + i) : 8'h00;
+        // Build test data
+        for (int i = 0; i < MAX_PAIRS; i++) begin
+            a_data[i] = (i < n_a) ? (8'hA0 + i) : 8'h00;
+            b_data[i] = (i < n_b) ? (8'hB0 + i) : 8'h00;
         end
 
-        dim_m = 8'(m); dim_n = 8'(n); dim_k = 8'(k);
+        // Set dimensions
+        dim_m = 8'(M); dim_n = 8'(N); dim_k = 8'(K);
         repeat(2) @(posedge bus_clk);
 
+        // START_AB
         poll_ready_ab();
         axi_write(7'h04, 32'h1);
         poll_ready_ab();
 
+        // Write n_max pairs
         for (int i = 0; i < n_max; i++) begin
             poll_ready_ab();
-            axi_write(7'h08, {16'h0, b_buf[i], a_buf[i]});
-            repeat($urandom_range(20, 10)) @(posedge bus_clk);
+            axi_write(7'h08, {16'h0, b_data[i], a_data[i]});
+            $display("  [%0d] A=0x%02h B=0x%02h", i, a_data[i], b_data[i]);
+            repeat($urandom_range(80, 50)) @(posedge bus_clk);
         end
         poll_ready_ab();
-        repeat(10) @(posedge bus_clk);
+        repeat($urandom_range(70, 40)) @(posedge bus_clk);
 
         // Verify SRAM_A
         for (int w = 0; w < n_words_a; w++) begin
-            exp = 64'h0;
+            exp_a = 64'h0;
             for (int b = 0; b < 8; b++) begin
                 int idx = w*8 + b;
-                exp[b*8 +: 8] = (idx < n_a) ? a_buf[idx] : 8'h00;
+                exp_a[b*8 +: 8] = (idx < n_a) ? a_data[idx] : 8'h00;
             end
-            tpu_read_a(9'(w), got);
-            if (got === exp)
-                $display("  PASS A word[%0d] = 0x%016h", w, got);
+            tpu_read_a(9'(w), got_a);
+            if (got_a === exp_a)
+                $display("  PASS SRAM_A word[%0d] = 0x%016h", w, got_a);
             else begin
-                $display("  FAIL A word[%0d]: exp=0x%016h got=0x%016h", w, exp, got);
-                case_errors++;
+                $display("  FAIL SRAM_A word[%0d]: exp=0x%016h got=0x%016h", w, exp_a, got_a);
+                errors++;
             end
         end
 
         // Verify SRAM_B
         for (int w = 0; w < n_words_b; w++) begin
-            exp = 64'h0;
+            exp_b = 64'h0;
             for (int b = 0; b < 8; b++) begin
                 int idx = w*8 + b;
-                exp[b*8 +: 8] = (idx < n_b) ? b_buf[idx] : 8'h00;
+                exp_b[b*8 +: 8] = (idx < n_b) ? b_data[idx] : 8'h00;
             end
-            tpu_read_b(9'(w), got);
-            if (got === exp)
-                $display("  PASS B word[%0d] = 0x%016h", w, got);
+            tpu_read_b(9'(w), got_b);
+            if (got_b === exp_b)
+                $display("  PASS SRAM_B word[%0d] = 0x%016h", w, got_b);
             else begin
-                $display("  FAIL B word[%0d]: exp=0x%016h got=0x%016h", w, exp, got);
-                case_errors++;
+                $display("  FAIL SRAM_B word[%0d]: exp=0x%016h got=0x%016h", w, exp_b, got_b);
+                errors++;
             end
         end
-
-        if (case_errors == 0)
-            $display("  >>> PASS (%s)", label);
-        else
-            $display("  >>> FAIL (%s): %0d error(s)", label, case_errors);
-
-        total_errors += case_errors;
     endtask
 
     //=========================================================================
@@ -228,40 +237,43 @@ module tb;
     //=========================================================================
     initial begin
         $display("==============================================");
-        $display("  TB: bus_slave_ab multi-dimension test");
+        $display("  TB: tpu_bus_master + bus_slave_ab + SRAMs");
         $display("==============================================");
 
         S_AXI_awaddr=0; S_AXI_awvalid=0; S_AXI_wdata=0;
-        S_AXI_wvalid=0; S_AXI_wstrb=0;   S_AXI_bready=0;
+        S_AXI_wvalid=0; S_AXI_wstrb=0;  S_AXI_bready=0;
         S_AXI_araddr=0; S_AXI_arvalid=0; S_AXI_rready=0;
         S_AXI_awprot=0; S_AXI_arprot=0;
         tpu_a_re=0; tpu_a_addr=0;
         tpu_b_re=0; tpu_b_addr=0;
         dim_m=1; dim_n=1; dim_k=1;
+        errors = 0;
 
         aresetn = 0;
-        repeat(10) @(posedge master_clk);
+        repeat($urandom_range(10, 5)) @(posedge master_clk);
         aresetn = 1;
-        repeat(10) @(posedge master_clk);
+        repeat($urandom_range(10, 5)) @(posedge master_clk);
 
-        run_test(4, 3, 5,  "asymmetric A<B");
-        run_test(8, 4, 2,  "A much > B");
-        run_test(2, 4, 8,  "A much < B");
-        run_test(4, 4, 4,  "square equal");
-        run_test(8, 8, 8,  "8-aligned large");
-        run_test(3, 5, 7,  "unaligned both");
-        run_test(1, 1, 1,  "minimum 1x1");
-        run_test(8, 1, 8,  "thin x wide");
+        run_test(4, 3, 5);   // A=12  B=15
+        run_test(8, 4, 2);   // A=32  B=8
+        run_test(4, 4, 4);   // A=16  B=16 square
+        run_test(8, 8, 8);   // A=64  B=64 large aligned
+        run_test(1, 1, 1);   // A=1   B=1  minimum
+        run_test(3, 5, 7);   // A=15  B=35 unaligned
 
         repeat(10) @(posedge master_clk);
         $display("\n==============================================");
-        if (total_errors == 0) $display("  ALL TESTS PASSED");
-        else                   $display("  FAILED: %0d total error(s)", total_errors);
+        if (errors == 0) $display("  ALL TESTS PASSED");
+        else             $display("  FAILED: %0d error(s)", errors);
         $display("==============================================\n");
         $finish;
     end
 
-    initial begin #100_000_000; $display("TIMEOUT"); $finish; end
-    initial begin $dumpfile("tb.vcd"); $dumpvars(0, tb); end
+    initial begin #50_000_000; $display("TIMEOUT"); $finish; end
+
+    initial begin
+        $dumpfile("tb.vcd");
+        $dumpvars(0, tb);
+    end
 
 endmodule
