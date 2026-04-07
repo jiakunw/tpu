@@ -87,7 +87,7 @@ module tb;
     //=========================================================================
     // AXI Tasks (unchanged)
     //=========================================================================
-    task axi_write(input logic [6:0] addr, input logic [31:0] data);
+    task automatic axi_write(input logic [6:0] addr, input logic [31:0] data);
         @(posedge master_clk);
         S_AXI_awaddr  <= addr;    S_AXI_wdata   <= data;
         S_AXI_awprot  <= 3'd0;   S_AXI_awvalid <= 1'b1;
@@ -106,7 +106,7 @@ module tb;
         S_AXI_bready  <= 1'b0;
     endtask
 
-    task axi_read(input logic [6:0] addr, output logic [31:0] data);
+    task automatic axi_read(input logic [6:0] addr, output logic [31:0] data);
         @(posedge master_clk);
         S_AXI_araddr  <= addr;   S_AXI_arprot  <= 3'd0;
         S_AXI_arvalid <= 1'b1;  S_AXI_rready  <= 1'b0;
@@ -121,7 +121,7 @@ module tb;
         S_AXI_rready  <= 1'b0;
     endtask
 
-    task poll_ready_ab();
+    task automatic poll_ready_ab();
         logic [31:0] status;
         do begin axi_read(7'h00, status); end while (!status[0]);
     endtask
@@ -129,13 +129,13 @@ module tb;
     //=========================================================================
     // TPU read tasks
     //=========================================================================
-    task tpu_read_a(input logic [8:0] word_addr, output logic [63:0] data);
+    task automatic tpu_read_a(input logic [8:0] word_addr, output logic [63:0] data);
         @(posedge bus_clk); tpu_a_re <= 1; tpu_a_addr <= word_addr;
         @(posedge bus_clk); @(negedge bus_clk); data = tpu_a_dout;
         @(posedge bus_clk); tpu_a_re <= 0;
     endtask
 
-    task tpu_read_b(input logic [8:0] word_addr, output logic [63:0] data);
+    task automatic tpu_read_b(input logic [8:0] word_addr, output logic [63:0] data);
         @(posedge bus_clk); tpu_b_re <= 1; tpu_b_addr <= word_addr;
         @(posedge bus_clk); @(negedge bus_clk); data = tpu_b_dout;
         @(posedge bus_clk); tpu_b_re <= 0;
@@ -144,7 +144,7 @@ module tb;
     //=========================================================================
     // Run one test case
     //=========================================================================
-    task run_test(input int m, n, k, input string label);
+    task automatic run_test(input int m, n, k, input string label);
         int n_a, n_b, n_max, n_words_a, n_words_b, case_errors;
         logic [7:0]  a_buf [0:MAX_BYTES-1];
         logic [7:0]  b_buf [0:MAX_BYTES-1];
