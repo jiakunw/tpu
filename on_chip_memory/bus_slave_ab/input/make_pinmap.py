@@ -1,9 +1,9 @@
 #!/bin/python3
 # make_pinmap.py
 # Pin placement for bus_slave_ab
-# Top   = BUS_CLK, BUS_RST_N
+# Top   = BUS_CLK, BUS_RST_N, DIM_M[7:0], DIM_N[7:0], DIM_K[7:0]
 # Left  = bus interface inputs (CHAB_*)
-# Right = sram interface outputs (sram_a_*, sram_b_*, debug_cnt_ab)
+# Right = sram interface outputs (sram_a_*, sram_b_*, debug_cnt_a, debug_cnt_b)
 
 f = open("./pins.io", "w")
 f.write("(globals\n")
@@ -13,11 +13,21 @@ f.write(")\n")
 f.write("(iopin\n")
 
 # ============================================================
-# TOP: clock and reset
+# TOP: clock, reset, dimensions
 # ============================================================
+top_pins = (
+    ["BUS_CLK", "BUS_RST_N"]
+    + [f"DIM_M[{i}]" for i in range(8)]
+    + [f"DIM_N[{i}]" for i in range(8)]
+    + [f"DIM_K[{i}]" for i in range(8)]
+)
+
 f.write("\t(top\n")
-f.write("\t\t(pin name=\"BUS_CLK\"\t\toffset=5.0 layer=4 width=0.1000 depth=0.5200 place_status=fixed)\n")
-f.write("\t\t(pin name=\"BUS_RST_N\"\t\tskip=3.0 layer=4 width=0.1000 depth=0.5200 place_status=fixed)\n")
+for idx, pin in enumerate(top_pins):
+    if idx == 0:
+        f.write(f"\t\t(pin name=\"{pin}\"\toffset=5.0 layer=4 width=0.1000 depth=0.5200 place_status=fixed)\n")
+    else:
+        f.write(f"\t\t(pin name=\"{pin}\"\tskip=1.0 layer=4 width=0.1000 depth=0.5200 place_status=fixed)\n")
 f.write("\t)\n")
 
 # ============================================================
@@ -42,7 +52,7 @@ f.write("\t)\n")
 # RIGHT: sram interface outputs
 #   sram_a_we, sram_a_addr[11:0], sram_a_din[7:0]
 #   sram_b_we, sram_b_addr[11:0], sram_b_din[7:0]
-#   debug_cnt_ab[11:0]
+#   debug_cnt_a[11:0], debug_cnt_b[11:0]
 # ============================================================
 right_pins = (
     ["sram_a_we"]
@@ -51,7 +61,8 @@ right_pins = (
     + ["sram_b_we"]
     + [f"sram_b_addr[{i}]" for i in range(12)]
     + [f"sram_b_din[{i}]" for i in range(8)]
-    + [f"debug_cnt_ab[{i}]" for i in range(12)]
+    + [f"debug_cnt_a[{i}]" for i in range(12)]
+    + [f"debug_cnt_b[{i}]" for i in range(12)]
 )
 
 f.write("\t(right\n")
@@ -70,4 +81,4 @@ f.write("\t)\n")
 
 f.write(")\n")
 f.close()
-print(f"Generated pins.io  (top=2, left={len(left_pins)}, right={len(right_pins)}, bottom=0)")
+print(f"Generated pins.io  (top={len(top_pins)}, left={len(left_pins)}, right={len(right_pins)}, bottom=0)")
