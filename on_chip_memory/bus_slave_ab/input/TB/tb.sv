@@ -53,6 +53,7 @@ module tb;
     logic [63:0] got_a, got_b;
     logic [31:0] rdata;
     int errors;
+    int w, b, idx;
 
     // DUTs
     tpu_bus_master #(.C_S_AXI_DATA_WIDTH(32), .C_S_AXI_ADDR_WIDTH(7)) u_master (
@@ -200,10 +201,10 @@ module tb;
         repeat($urandom_range(70, 40)) @(posedge bus_clk);
 
         // Verify SRAM_A
-        for (int w = 0; w < n_words_a; w++) begin
+        for (w = 0; w < n_words_a; w++) begin
             exp_a = 64'h0;
-            for (int b = 0; b < 8; b++) begin
-                int idx = w*8 + b;
+            for (b = 0; b < 8; b++) begin
+                idx = w*8 + b;
                 exp_a[b*8 +: 8] = (idx < n_a) ? a_data[idx] : 8'h00;
             end
             tpu_read_a(9'(w), got_a);
@@ -216,10 +217,10 @@ module tb;
         end
 
         // Verify SRAM_B
-        for (int w = 0; w < n_words_b; w++) begin
+        for (w = 0; w < n_words_b; w++) begin
             exp_b = 64'h0;
-            for (int b = 0; b < 8; b++) begin
-                int idx = w*8 + b;
+            for (b = 0; b < 8; b++) begin
+                idx = w*8 + b;
                 exp_b[b*8 +: 8] = (idx < n_b) ? b_data[idx] : 8'h00;
             end
             tpu_read_b(9'(w), got_b);
