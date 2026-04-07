@@ -10,7 +10,7 @@ module tb;
 
     localparam MASTER_CLK_PERIOD = 10;
     localparam BUS_CLK_PERIOD    = 100;
-    localparam MAX_BYTES         = 64;  // max N_A or N_B across all test cases
+    localparam MAX_BYTES         = 64;
 
     logic master_clk, bus_clk, aresetn;
     initial master_clk = 0; always #(MASTER_CLK_PERIOD/2) master_clk = ~master_clk;
@@ -43,9 +43,12 @@ module tb;
     logic        tpu_a_re;  logic [8:0] tpu_a_addr; logic [63:0] tpu_a_dout;
     logic        tpu_b_re;  logic [8:0] tpu_b_addr; logic [63:0] tpu_b_dout;
 
-    // DIM ports driven by TB (mimics on-chip register file)
+    // DIM ports
     logic [7:0] dim_m, dim_n, dim_k;
     logic [11:0] debug_cnt_a, debug_cnt_b;
+
+    // Module-level error counter (accessible from tasks)
+    int total_errors = 0;
 
     // DUTs
     tpu_bus_master #(.C_S_AXI_DATA_WIDTH(32), .C_S_AXI_ADDR_WIDTH(7)) u_master (
@@ -141,22 +144,18 @@ module tb;
     //=========================================================================
     // Run one test case
     //=========================================================================
-    task run_test(
-        input int m, n, k,
-        input string label
-    );
-        int n_a, n_b, n_max, n_words_a, n_words_b;
-        logic [7:0] a_buf [0:MAX_BYTES-1];
-        logic [7:0] b_buf [0:MAX_BYTES-1];
+    task run_test(input int m, n, k, input string label);
+        int n_a, n_b, n_max, n_words_a, n_words_b, case_errors;
+        logic [7:0]  a_buf [0:MAX_BYTES-1];
+        logic [7:0]  b_buf [0:MAX_BYTES-1];
         logic [63:0] got, exp;
         logic [31:0] rdata;
-        int case_errors;
 
-        n_a       = m * n;
-        n_b       = n * k;
-        n_max     = (n_a > n_b) ? n_a : n_b;
-        n_words_a = (n_a + 7) / 8;
-        n_words_b = (n_b + 7) / 8;
+        n_a         = m * n;
+        n_b         = n * k;
+        n_max       = (n_a > n_b) ? n_a : n_b;
+        n_words_a   = (n_a + 7) / 8;
+        n_words_b   = (n_b + 7) / 8;
         case_errors = 0;
 
         $display("\n----------------------------------------------");
@@ -164,22 +163,18 @@ module tb;
                  label, m, n, k, n_a, n_b);
         $display("----------------------------------------------");
 
-        // Build test data
         for (int i = 0; i < MAX_BYTES; i++) begin
             a_buf[i] = (i < n_a) ? (8'hA0 + i) : 8'h00;
             b_buf[i] = (i < n_b) ? (8'hB0 + i) : 8'h00;
         end
 
-        // Set dimensions (drive directly to bus_slave_ab)
-        dim_m = m; dim_n = n; dim_k = k;
+        dim_m = 8'(m); dim_n = 8'(n); dim_k = 8'(k);
         repeat(2) @(posedge bus_clk);
 
-        // START_AB
         poll_ready_ab();
         axi_write(7'h04, 32'h1);
         poll_ready_ab();
 
-        // Write n_max pairs
         for (int i = 0; i < n_max; i++) begin
             poll_ready_ab();
             axi_write(7'h08, {16'h0, b_buf[i], a_buf[i]});
@@ -188,15 +183,14 @@ module tb;
         poll_ready_ab();
         repeat(10) @(posedge bus_clk);
 
-        // Verify SRAM_A (n_words_a 64-bit words)
+        // Verify SRAM_A
         for (int w = 0; w < n_words_a; w++) begin
-            // Build expected word
             exp = 64'h0;
             for (int b = 0; b < 8; b++) begin
                 int idx = w*8 + b;
                 exp[b*8 +: 8] = (idx < n_a) ? a_buf[idx] : 8'h00;
             end
-            tpu_read_a(w, got);
+            tpu_read_a(9'(w), got);
             if (got === exp)
                 $display("  PASS A word[%0d] = 0x%016h", w, got);
             else begin
@@ -205,14 +199,14 @@ module tb;
             end
         end
 
-        // Verify SRAM_B (n_words_b 64-bit words)
+        // Verify SRAM_B
         for (int w = 0; w < n_words_b; w++) begin
             exp = 64'h0;
             for (int b = 0; b < 8; b++) begin
                 int idx = w*8 + b;
                 exp[b*8 +: 8] = (idx < n_b) ? b_buf[idx] : 8'h00;
             end
-            tpu_read_b(w, got);
+            tpu_read_b(9'(w), got);
             if (got === exp)
                 $display("  PASS B word[%0d] = 0x%016h", w, got);
             else begin
@@ -226,12 +220,12 @@ module tb;
         else
             $display("  >>> FAIL (%s): %0d error(s)", label, case_errors);
 
-        // Return errors via global counter
-        errors += case_errors;
+        total_errors += case_errors;
     endtask
 
-    int errors;
-
+    //=========================================================================
+    // Main
+    //=========================================================================
     initial begin
         $display("==============================================");
         $display("  TB: bus_slave_ab multi-dimension test");
@@ -244,27 +238,25 @@ module tb;
         tpu_a_re=0; tpu_a_addr=0;
         tpu_b_re=0; tpu_b_addr=0;
         dim_m=1; dim_n=1; dim_k=1;
-        errors = 0;
 
         aresetn = 0;
         repeat(10) @(posedge master_clk);
         aresetn = 1;
         repeat(10) @(posedge master_clk);
 
-        // Run all test cases
-        run_test(4, 3, 5,  "asymmetric A<B");   // A=12  B=15
-        run_test(8, 4, 2,  "A much > B");        // A=32  B=8
-        run_test(2, 4, 8,  "A much < B");        // A=8   B=32
-        run_test(4, 4, 4,  "square equal");      // A=16  B=16
-        run_test(8, 8, 8,  "8-aligned large");   // A=64  B=64
-        run_test(3, 5, 7,  "unaligned both");    // A=15  B=35
-        run_test(1, 1, 1,  "minimum 1x1");       // A=1   B=1
-        run_test(8, 1, 8,  "thin tall x wide");  // A=8   B=8
+        run_test(4, 3, 5,  "asymmetric A<B");
+        run_test(8, 4, 2,  "A much > B");
+        run_test(2, 4, 8,  "A much < B");
+        run_test(4, 4, 4,  "square equal");
+        run_test(8, 8, 8,  "8-aligned large");
+        run_test(3, 5, 7,  "unaligned both");
+        run_test(1, 1, 1,  "minimum 1x1");
+        run_test(8, 1, 8,  "thin x wide");
 
         repeat(10) @(posedge master_clk);
         $display("\n==============================================");
-        if (errors == 0) $display("  ALL TESTS PASSED");
-        else             $display("  FAILED: %0d total error(s)", errors);
+        if (total_errors == 0) $display("  ALL TESTS PASSED");
+        else                   $display("  FAILED: %0d total error(s)", total_errors);
         $display("==============================================\n");
         $finish;
     end

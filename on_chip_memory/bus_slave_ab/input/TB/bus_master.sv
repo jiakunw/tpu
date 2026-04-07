@@ -367,7 +367,6 @@ module tpu_bus_master #(
     //=========================================================================
     logic ack_sab_tog_b, ack_sc_tog_b;
     logic ack_ab_tog_b,  ack_c_tog_b;
-    logic [7:0] ack_c_data_b;
 
     // START AB
     always_ff @(posedge BUS_CLK or negedge BUS_RST_N) begin
