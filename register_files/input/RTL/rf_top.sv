@@ -26,7 +26,16 @@ module rf_top (
     // Dimension outputs to TPU
     output logic [5:0]  dim_m,
     output logic [5:0]  dim_n,
-    output logic [5:0]  dim_k
+    output logic [5:0]  dim_k,
+
+    // Zero point outputs
+    output logic [7:0]  zero_point_a,
+    output logic [7:0]  zero_point_b,
+    output logic [7:0]  zero_point_c,
+
+    // Scale outputs
+    output logic [15:0] scale_factor,
+    output logic [4:0]  scale_shift
 );
 
     //=========================================================================
@@ -46,14 +55,10 @@ module rf_top (
     tpu_spi_slave u_spi_slave (
         .clk            (clk),
         .rst_n          (rst_n),
-        
-        // SPI interface
         .spi_sck        (spi_sck),
         .spi_cs_n       (spi_cs_n),
         .spi_mosi       (spi_mosi),
         .spi_miso       (spi_miso),
-        
-        // Register interface
         .reg_addr       (reg_addr),
         .reg_rd         (reg_rd),
         .reg_wr         (reg_wr),
@@ -69,8 +74,6 @@ module rf_top (
     tpu_mmio_regfile u_regfile (
         .clk            (clk),
         .rst_n          (rst_n),
-        
-        // SPI Slave interface
         .reg_addr       (reg_addr),
         .reg_rd         (reg_rd),
         .reg_wr         (reg_wr),
@@ -78,17 +81,18 @@ module rf_top (
         .reg_rdata      (reg_rdata),
         .reg_addr_valid (reg_addr_valid),
         .reg_writable   (reg_writable),
-        
-        // TPU control interface
         .tpu_start      (tpu_start),
         .tpu_idle       (tpu_idle),
         .tpu_working    (tpu_working),
         .tpu_done       (tpu_done),
-        
-        // Dimension outputs
         .dim_m          (dim_m),
         .dim_n          (dim_n),
-        .dim_k          (dim_k)
+        .dim_k          (dim_k),
+        .zero_point_a   (zero_point_a),
+        .zero_point_b   (zero_point_b),
+        .zero_point_c   (zero_point_c),
+        .scale_factor   (scale_factor),
+        .scale_shift    (scale_shift)
     );
 
 endmodule
