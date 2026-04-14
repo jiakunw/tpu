@@ -22,6 +22,7 @@ module bus_slave_c #(
     input  logic              BUS_CLK,
     input  logic              BUS_RST_N,
 
+    // CPU Interface 
     input  logic              CHC_START,
     input  logic              CHC_RD,
     output logic [DW-1:0]     CHC_RDATA,
