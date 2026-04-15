@@ -1,7 +1,0 @@
-Total numbers of exceptions: 5
-
-exception:systolic_array_wrapper/default_mode/clk
-exception:systolic_array_wrapper/default_mode/C2O
-exception:systolic_array_wrapper/default_mode/I2C
-exception:systolic_array_wrapper/default_mode/I2O
-exception:systolic_array_wrapper/default_mode/C2C

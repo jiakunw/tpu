@@ -1,7 +1,0 @@
-Total numbers of exceptions: 5
-
-exception:input_idx_controller/default_mode/clk
-exception:input_idx_controller/default_mode/C2O
-exception:input_idx_controller/default_mode/I2C
-exception:input_idx_controller/default_mode/I2O
-exception:input_idx_controller/default_mode/C2C

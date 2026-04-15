@@ -1,6 +1,0 @@
-# This must include the Cadence basic libraries (analogLib, basic, etc), the PDK library, and all standard cell libraries in Opan-Access format
-SOFTINCLUDE $CDSHOME/share/cdssetup/cds.lib
-DEFINE tsmcN65 			$PDK_PATH/tsmcN65
-DEFINE tcbn65gplus_oatech 	$PDK_DIGITAL/Back_End/cdk_oa/tcbn65gplus_oatech
-DEFINE tcbn65gplus_oalib 	$PDK_DIGITAL/Back_End/cdk_oa/tcbn65gplus_oalib
-DEFINE tcbn65gplus 		$PDK_DIGITAL/Back_End/cdk_oa/tcbn65gplus
