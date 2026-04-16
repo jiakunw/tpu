@@ -79,6 +79,7 @@ module chipinterface (
     logic       tpu_start;
     logic [5:0] dim_m_6, dim_n_6, dim_k_6;
     logic       tpu_idle, tpu_working, tpu_done;
+    logic       tpu_core_rst;   // 1-cycle pulse when done is read → resets tpu_core
 
     // Quantization parameters from MMIO regfile — must be declared
     // BEFORE the instantiation so VCS doesn't infer them as 1-bit wires
@@ -107,7 +108,8 @@ module chipinterface (
         .zero_point_b   (zero_point_b),
         .zero_point_c   (zero_point_c),
         .scale_factor   (scale_factor),
-        .scale_shift    (scale_shift)
+        .scale_shift    (scale_shift),
+        .tpu_core_rst   (tpu_core_rst)
     );
 
     // Zero-extend to MNK_IDX_WIDTH=7
@@ -262,6 +264,10 @@ module chipinterface (
         else if (done_flag) tpu_working_int <= 1'b0;
     end
 
+    // tpu_core gets its own rstn: system reset OR read-done clear
+    logic tpu_core_rstn;
+    assign tpu_core_rstn = rstn & ~tpu_core_rst;
+
     tpu_core #(
         .ARRAY_SIZE         (8),
         .SRAM_DATA_WIDTH    (64),
@@ -275,7 +281,7 @@ module chipinterface (
         .SRAM_ADDR_WIDTH    (9)
     ) u_tpu_core (
         .clk                    (clk),
-        .rstn                   (rstn),
+        .rstn                   (tpu_core_rstn),
         .tpu_start              (tpu_start),
         .keep_pe_value          (1'b0),
         .m                      (7'(dim_m >> 3)),   // tile count = actual_dim / 8
