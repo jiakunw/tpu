@@ -80,6 +80,12 @@ module chipinterface (
     logic [5:0] dim_m_6, dim_n_6, dim_k_6;
     logic       tpu_idle, tpu_working, tpu_done;
 
+    // Quantization parameters from MMIO regfile — must be declared
+    // BEFORE the instantiation so VCS doesn't infer them as 1-bit wires
+    logic [7:0]  zero_point_a, zero_point_b, zero_point_c;
+    logic [15:0] scale_factor;
+    logic [4:0]  scale_shift;
+
     tpu_mmio_regfile u_regfile (
         .clk            (clk),
         .rst_n          (rstn),
@@ -93,9 +99,15 @@ module chipinterface (
         .tpu_start      (tpu_start),
         .tpu_idle       (tpu_idle),
         .tpu_working    (tpu_working),
-        .tpu_done       (tpu_done),.dim_m          (dim_m_6),
+        .tpu_done       (tpu_done),
+        .dim_m          (dim_m_6),
         .dim_n          (dim_n_6),
-        .dim_k          (dim_k_6)
+        .dim_k          (dim_k_6),
+        .zero_point_a   (zero_point_a),
+        .zero_point_b   (zero_point_b),
+        .zero_point_c   (zero_point_c),
+        .scale_factor   (scale_factor),
+        .scale_shift    (scale_shift)
     );
 
     // Zero-extend to MNK_IDX_WIDTH=7
@@ -118,9 +130,9 @@ module chipinterface (
     bus_slave_ab #(.SRAM_AW(12), .DW(8)) u_bus_slave_ab (
         .BUS_CLK        (clk),
         .BUS_RST_N      (rstn),
-        .DIM_M          (dim_m[7:0]),
-        .DIM_N          (dim_n[7:0]),
-        .DIM_K          (dim_k[7:0]),
+        .DIM_M          (dim_m),
+        .DIM_N          (dim_n),
+        .DIM_K          (dim_k),
         .CHAB_START     (CHAB_START),
         .CHAB_WDATA_A   (CHAB_WDATA_A),
         .CHAB_WDATA_B   (CHAB_WDATA_B),
@@ -234,6 +246,7 @@ module chipinterface (
 
     // TPU status back to MMIO regfile
     // done_flag is a level signal from tpu_core; detect rising edge for pulse
+    logic tpu_working_int;
     logic done_flag_prev;
     always_ff @(posedge clk or negedge rstn) begin
         if (!rstn) done_flag_prev <= 1'b0;
@@ -243,7 +256,6 @@ module chipinterface (
     assign tpu_idle    = ~done_flag & ~tpu_working_int;
     assign tpu_working = tpu_working_int;
 
-    logic tpu_working_int;
     always_ff @(posedge clk or negedge rstn) begin
         if (!rstn)          tpu_working_int <= 1'b0;
         else if (tpu_start) tpu_working_int <= 1'b1;
@@ -266,18 +278,18 @@ module chipinterface (
         .rstn                   (rstn),
         .tpu_start              (tpu_start),
         .keep_pe_value          (1'b0),
-        .m                      (dim_m),
-        .n                      (dim_n),
-        .k                      (dim_k),
-        .num_computation        (dim_k),    // inner loop count = K
+        .m                      (7'(dim_m >> 3)),   // tile count = actual_dim / 8
+        .n                      (7'(dim_n >> 3)),
+        .k                      (7'(dim_k >> 3)),
+        .num_computation        (7'(dim_k >> 3)),   // inner loop tile count = K/8
         .sram_rdata_a           (tpu_a_dout),
         .sram_rdata_b           (tpu_b_dout),
-        .zero_point_a           (8'h0),
-        .zero_point_b           (8'h0),
-        .zero_point_c           (8'h0),
+        .zero_point_a           (zero_point_a),
+        .zero_point_b           (zero_point_b),
+        .zero_point_c           (zero_point_c),
         .bias                   (32'h0),
-        .scale_factor           (16'h1),
-        .scale_shift            (5'h0),
+        .scale_factor           (scale_factor),
+        .scale_shift            (scale_shift),
         .outcome_quantized      (outcome_quantized),
         .a_raddr                (a_raddr),
         .b_raddr                (b_raddr),

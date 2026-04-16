@@ -4,7 +4,7 @@
 ###############################################################################
 
 # ─── Directories ─────────────────────────────────────────────────────────────
-TB_DIR       := /Users/mac/Development/tpu/chipinterface/tb
+TB_DIR       := .
 TOP_DIR      := ../rtl
 REG_RTL      := ../../register_files/input/RTL
 REG_TB       := ../../register_files/input/TB
@@ -16,27 +16,28 @@ BM_TB        := ../../on_chip_memory/bus_slave_c/input/TB
 TPU_RTL      := ../../tpu_core/rtl
 
 # ─── SRAM behavioral model ───────────────────────────────────────────────────
-# Confirm the exact filename inside SRAM00_gen/.
-# Common names: sram00.v / SRAM00.v / sram00_behav.v
-# Override: make sim SRAM_MODEL=/other/path/sram00.v
 SRAM_DIR   := /user/stud/fall25/dy2538/ee6350/DIGITAL/SRAM00_gen
 SRAM_MODEL := $(SRAM_DIR)/sram00.v
 
 # ─── Source files ─────────────────────────────────────────────────────────────
 
-# tpu_core sub-modules (leaves first, tpu_core last; skip dut/)
+# tpu_core sub-modules (leaves first, tpu_core last; skip *_backup.v)
 TPU_MODS := \
-    $(TPU_RTL)/activation/activation.v                        \
-    $(TPU_RTL)/addr_converter/addr_converter.v                \
-    $(TPU_RTL)/input_buffer/input_buffer.v                    \
-    $(TPU_RTL)/input_idx_controller/input_idx_controller.v    \
-    $(TPU_RTL)/input_offset_substract/input_offset_substract.v \
-    $(TPU_RTL)/output_buffer/output_buffer.v                  \
-    $(TPU_RTL)/output_idx_controller/output_idx_controller.v  \
-    $(TPU_RTL)/output_offset_adder/output_offset_adder.v      \
-    $(TPU_RTL)/scale_multiplier/scale_multiplier.v            \
-    $(TPU_RTL)/bias_adder/bias_adder.v                        \
-    $(TPU_RTL)/systolic/systolic.v                            \
+    $(TPU_RTL)/activation/ReLU_clamp.v                             \
+    $(TPU_RTL)/addr_converter/addr_converter.v                     \
+    $(TPU_RTL)/input_buffer/input_buffer.v                         \
+    $(TPU_RTL)/input_idx_controller/in_ac_mode_controller.v        \
+    $(TPU_RTL)/input_idx_controller/input_idx_controller.v         \
+    $(TPU_RTL)/input_offset_substract/input_offset_substract.v     \
+    $(TPU_RTL)/output_buffer/output_buffer.v                       \
+    $(TPU_RTL)/output_idx_controller/out_ac_mode_controller.v      \
+    $(TPU_RTL)/output_idx_controller/output_idx_controller.v       \
+    $(TPU_RTL)/output_offset_adder/output_offset_adder.v           \
+    $(TPU_RTL)/scale_multiplier/scale_multiplier_32x16.v           \
+    $(TPU_RTL)/scale_multiplier/scale_multiplier.v                 \
+    $(TPU_RTL)/bias_adder/bias_adder.v                             \
+    $(TPU_RTL)/systolic/systolic_array_8x8.v                       \
+    $(TPU_RTL)/tpu_core/systolic_array_wrapper.v                   \
     $(TPU_RTL)/tpu_core/tpu_core.v
 
 # register file & SPI
@@ -57,7 +58,7 @@ BUS_SRCS := \
 TOP_SRCS := $(TOP_DIR)/chipinterface.sv
 
 # testbench
-TB_SRCS  := tb.sv
+TB_SRCS  := $(TB_DIR)/tb.sv
 
 # All sources in compile order
 ALL_SRCS := \
@@ -81,6 +82,8 @@ VCS_FLAGS := \
     +v2k               \
     -notice            \
     +lint=TFIPC        \
+    +notimingcheck \
+    +no_tchk_msg \
     -l compile.log
 
 SIMV_FLAGS := \

@@ -2,7 +2,7 @@ set sdc_version 1.6
 
 current_design sram_wrapper
 
-set clkperiod 25.0
+set clkperiod 100.0
 
 # SPECIFY CLOCK NAMES HERE
 # set <clock name in Genus> [get_ports <name of your clock pin>]
@@ -13,7 +13,7 @@ set clks [get_ports clk]
 set num 0
 foreach c $clks {
     create_clock $c -name "Clk"	-period $clkperiod
-    incr 0
+    incr num
 }
 
 # SPECIFY CAP LOADING ON OUTPUT PINS (pF)	

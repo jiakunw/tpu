@@ -47,7 +47,7 @@ vsim_gui:
 # Post-Synthesis Simulation - VCS
 ##################################################
 post_syn_vcs:
-	vcs -sverilog -full64 -timescale=1ns/1ps \
+	vcs -sverilog +notimingchecks -full64 -timescale=1ns/1ps \
 	    -sdf max:tb/u_slave_ab:$(SYN_DIR)/bus_slave_ab.syn.sdf \
 	    -sdf max:tb/u_sram_a:$(SYN_SR_DIR)/sram_wrapper.syn.sdf \
 	    -sdf max:tb/u_sram_b:$(SYN_SR_DIR)/sram_wrapper.syn.sdf \

@@ -79,7 +79,7 @@
 ///////////////////////////////////////////////////////////////////////////////
 `timescale 1ns / 1ps
 
-module tb_top;
+module tb;
 
     //=========================================================================
     // Parameters
@@ -211,7 +211,7 @@ module tb_top;
         .S_AXI_BRESP   (bus_bresp),   .S_AXI_BVALID  (bus_bvalid),  .S_AXI_BREADY  (bus_bready),
         .S_AXI_ARADDR  (bus_araddr),  .S_AXI_ARVALID (bus_arvalid), .S_AXI_ARREADY (bus_arready),
         .S_AXI_RDATA   (bus_rdata),   .S_AXI_RRESP   (bus_rresp),   .S_AXI_RVALID  (bus_rvalid),  .S_AXI_RREADY (bus_rready),
-        .BUS_CLK       (master_clk),   // bus_clk = 100 MHz, same domain
+        .BUS_CLK       (tpu_clk),     // bus slaves run at 10 MHz on chip
         .BUS_RST_N     (bus_rst_n),
         .CHAB_START    (chab_start),
         .CHAB_WDATA_A  (chab_wdata_a),
@@ -223,24 +223,22 @@ module tb_top;
     );
 
     //=========================================================================
-    // DUT: top (chip)
+    // DUT: chipinterface (chip top)
     //=========================================================================
     chipinterface u_top (
         .clk          (tpu_clk),
-        .rst_n        (aresetn),
+        .rstn         (aresetn),
         .spi_sck      (spi_sck),
         .spi_cs_n     (spi_cs_n),
         .spi_mosi     (spi_mosi),
         .spi_miso     (spi_miso),
-        .bus_clk      (master_clk),
-        .bus_rst_n    (bus_rst_n),
-        .chab_start   (chab_start),
-        .chab_wr      (chab_wr),
-        .chab_wdata_a (chab_wdata_a),
-        .chab_wdata_b (chab_wdata_b),
-        .chc_start    (chc_start),
-        .chc_rd       (chc_rd),
-        .chc_rdata    (chc_rdata)
+        .CHAB_START   (chab_start),
+        .CHAB_WR      (chab_wr),
+        .CHAB_WDATA_A (chab_wdata_a),
+        .CHAB_WDATA_B (chab_wdata_b),
+        .CHC_START    (chc_start),
+        .CHC_RD       (chc_rd),
+        .CHC_RDATA    (chc_rdata)
     );
 
     //=========================================================================
@@ -280,7 +278,7 @@ module tb_top;
         repeat($urandom_range(10,4)) @(posedge master_clk);
         spi_rready  <= 1'b1;
         wait(spi_rvalid & spi_rready);
-        data        <= spi_rdata;
+        data        = spi_rdata;
         @(posedge master_clk);
         spi_rready  <= 1'b0;
     endtask
@@ -322,7 +320,7 @@ module tb_top;
         repeat($urandom_range(10,4)) @(posedge master_clk);
         bus_rready  <= 1'b1;
         wait(bus_rvalid & bus_rready);
-        data        <= bus_rdata;
+        data        = bus_rdata;
         @(posedge master_clk);
         bus_rready  <= 1'b0;
     endtask
