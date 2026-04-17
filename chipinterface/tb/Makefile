@@ -131,3 +131,46 @@ help:
 	@echo ""
 	@echo "  SRAM_MODEL default: $(SRAM_DIR)/sram00.v"
 	@echo "  Override:  make sim SRAM_MODEL=/other/path/sram00.v"
+
+# ─── ModelSim targets ────────────────────────────────────────────────────────
+VSIM     := vsim
+VLOG     := vlog
+MSIM_DIR := msim_work
+
+VLOG_FLAGS := \
+    -sv                \
+    -timescale 1ns/1ps \
+    +notimingchecks    \
+    +acc
+
+VSIM_FLAGS := \
+    -t 1ps             \
+    +notimingchecks    \
+    +no_tchk_msg       \
+    -l msim_sim.log
+
+## ModelSim compile only
+msim_compile:
+	@echo "=== ModelSim Compiling ==="
+	@mkdir -p $(MSIM_DIR)
+	$(VLOG) $(VLOG_FLAGS) -work $(MSIM_DIR) $(ALL_SRCS) | tee msim_compile.log
+	@echo "=== ModelSim Compile done ==="
+
+## ModelSim run only (batch, no GUI)
+msim_run:
+	@echo "=== ModelSim Running ==="
+	$(VSIM) $(VSIM_FLAGS) -work $(MSIM_DIR) -c tb \
+	    -do "run -all; quit" | tee -a msim_sim.log
+	@echo "=== ModelSim Simulation done ==="
+
+## ModelSim compile + run (batch)
+msim: msim_compile msim_run
+
+## ModelSim with GUI waveform
+msim_wave:
+	$(VSIM) $(VSIM_FLAGS) -work $(MSIM_DIR) tb \
+	    -do "add wave -r /*; run -all"
+
+## Clean ModelSim artifacts
+msim_clean:
+	rm -rf $(MSIM_DIR) msim_compile.log msim_sim.log transcript *.wlf

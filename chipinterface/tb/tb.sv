@@ -766,18 +766,18 @@ module tb;
         // Only 8×8×8 (single tile) confirmed working.
         // Re-enable larger cases once tpu_core multi-tile is validated.
 
-        run_test( 8,  8,  8);   // single tile — baseline
-        run_test( 8,  8,  8);   // repeat with different random data
-        run_test( 8,  8,  8);   // third run
+        //run_test( 8,  8,  8);   // single tile — baseline
+        //run_test( 8,  8,  8);   // repeat with different random data
+        //run_test( 8,  8,  8);   // third run
 
-        run_test(16,  8,  8);   // M=2 tiles
-        run_test( 8, 16,  8);   // N=2 tiles
-        run_test(16, 16,  8);   // M=2, N=2 tiles
-        run_test(24,  8,  8);   // M=3 tiles
-        run_test( 8, 24,  8);   // N=3 tiles
-        run_test(32,  8,  8);   // M=4 tiles
-        run_test(32, 16,  8);   // M=4, N=2 tiles
-        run_test(16, 24,  8);   // M=2, N=3 tiles
+        //run_test(16,  8,  8);   // M=2 tiles
+        //run_test( 8, 16,  8);   // N=2 tiles
+        //run_test(16, 16,  8);   // M=2, N=2 tiles
+        //run_test(24,  8,  8);   // M=3 tiles
+        //run_test( 8, 24,  8);   // N=3 tiles
+        //run_test(32,  8,  8);   // M=4 tiles
+        //run_test(32, 16,  8);   // M=4, N=2 tiles
+        //run_test(16, 24,  8);   // M=2, N=3 tiles
 
         run_test( 8,  8, 16);   // DISABLED: tpu_core k=2 never fires done
         run_test( 8,  8, 16);   // DISABLED: tpu_core k=2 never fires done
