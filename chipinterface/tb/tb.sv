@@ -738,8 +738,182 @@ module tb;
     endtask
 
     //=========================================================================
-    // Main test sequence
+    // run_test_fixed: same as run_test but with caller-specified parameters
+    // instead of random. Used for boundary value testing.
+    //
+    // a_val_in : fill value for all A elements (0..255, or -1 = use a_pat)
+    // b_val_in : fill value for all B elements (0..255, or -1 = use b_pat)
+    //   0 = all zeros, 1 = all ones (255), 2 = identity-like (128)
+    // Fixed zp/scale/shift passed explicitly.
     //=========================================================================
+    task automatic run_test_fixed(
+        input int    M, N, K,
+        input int    a_fill,      // fill value for A (0..255)
+        input int    b_fill,      // fill value for B (0..255)
+        input logic [7:0]  fix_zp_a,
+        input logic [7:0]  fix_zp_b,
+        input logic [7:0]  fix_zp_c,
+        input logic [15:0] fix_scale,
+        input logic [4:0]  fix_shift,
+        input string label
+    );
+        logic [7:0] A        [0:MAX_DIM-1][0:MAX_DIM-1];
+        logic [7:0] B        [0:MAX_DIM-1][0:MAX_DIM-1];
+        logic [7:0] C_golden [0:MAX_DIM-1][0:MAX_DIM-1];
+        logic [7:0] C_hw     [0:MAX_DIM-1][0:MAX_DIM-1];
+
+        logic [7:0]  zp_a, zp_b, zp_c;
+        logic [15:0] scale_factor;
+        logic [4:0]  scale_shift;
+
+        int n_a, n_b, n_max;
+        int ret, poll_cnt, errors;
+        int col, row, col_group, word_idx, byte_sel_pos, words_per_row;
+        logic [7:0] a_byte, b_byte, c_byte, status_val;
+
+        longint signed acc, product, result;
+        longint signed a_val, b_val;
+        int shift_total;
+
+        if ((M % 8 != 0) || (N % 8 != 0) || (K % 8 != 0)) begin
+            $display("ERROR: M/N/K must be multiples of 8"); total_errors++; return;
+        end
+
+        n_a   = M * N; n_b = N * K;
+        n_max = (n_a > n_b) ? n_a : n_b;
+        errors = 0;
+
+        zp_a = fix_zp_a; zp_b = fix_zp_b; zp_c = fix_zp_c;
+        scale_factor = fix_scale; scale_shift = fix_shift;
+
+        // Fill A and B with fixed values
+        for (int i = 0; i < M; i++)
+            for (int j = 0; j < N; j++)
+                A[i][j] = 8'(a_fill);
+        for (int i = 0; i < N; i++)
+            for (int j = 0; j < K; j++)
+                B[i][j] = 8'(b_fill);
+
+        $display("\n================================================================");
+        $display("  run_test_fixed [%s]: M=%0d N=%0d K=%0d", label, M, N, K);
+        $display("  A=0x%02X  B=0x%02X  zp_a=%0d zp_b=%0d zp_c=%0d scale=0x%04X shift=%0d",
+                 a_fill, b_fill, zp_a, zp_b, zp_c, scale_factor, scale_shift);
+        $display("================================================================");
+
+        // Golden
+        shift_total = 16 + int'(scale_shift);
+        for (int i = 0; i < M; i++) begin
+            for (int j = 0; j < K; j++) begin
+                acc = 0;
+                for (int t = 0; t < N; t++) begin
+                    a_val = longint'(A[i][t]) - longint'(zp_a);
+                    b_val = longint'(B[t][j]) - longint'(zp_b);
+                    acc  += a_val * b_val;
+                end
+                product  = acc * longint'(scale_factor);
+                begin
+                    longint half_hw;
+                    if (product >= 0) half_hw = (64'd1 << (shift_total - 1));
+                    else              half_hw = (64'd1 << (shift_total - 1)) - 1;
+                    result = (product + half_hw) >>> shift_total;
+                end
+                result = result + longint'(zp_c);
+                if (result < 0)   result = 0;
+                if (result > 255) result = 255;
+                C_golden[i][j] = result[7:0];
+            end
+        end
+        $display("  Golden: C[0][0]=0x%02X  C[%0d][%0d]=0x%02X",
+                 C_golden[0][0], M-1, K-1, C_golden[M-1][K-1]);
+
+        // Step 1: SPI config
+        $display("  [Step 1] SPI config...");
+        tpu_spi_write(TPUR_DIM_M,   M[7:0],             ret);
+        tpu_spi_write(TPUR_DIM_N,   N[7:0],             ret);
+        tpu_spi_write(TPUR_DIM_K,   K[7:0],             ret);
+        tpu_spi_write(TPUR_ZP_A,    zp_a,               ret);
+        tpu_spi_write(TPUR_ZP_B,    zp_b,               ret);
+        tpu_spi_write(TPUR_ZP_C,    zp_c,               ret);
+        tpu_spi_write(TPUR_SCL_LO,  scale_factor[7:0],  ret);
+        tpu_spi_write(TPUR_SCL_HI,  scale_factor[15:8], ret);
+        tpu_spi_write(TPUR_SCL_SHF, {3'b0, scale_shift},ret);
+
+        // Step 2: Write A/B
+        $display("  [Step 2] Write A/B...");
+        poll_ready_ab();
+        bus_axi_write(BUS_OFF_START, 32'h1);
+        poll_ready_ab();
+        for (int st = 0; st < n_max; st++) begin
+            if (st < n_a) begin
+                col = st / M;
+                row = ((st/8) % (M/8)) * 8 + (7 - (st%8));
+                a_byte = A[row][col];
+            end else a_byte = 8'h00;
+            if (st < n_b) begin
+                row = st / K;
+                col = ((st/8) % (K/8)) * 8 + (7 - (st%8));
+                b_byte = B[row][col];
+            end else b_byte = 8'h00;
+            bus_write_pair(a_byte, b_byte);
+        end
+        poll_ready_ab();
+
+        // Step 3: Start
+        $display("  [Step 3] Start...");
+        poll_cnt = 0;
+        do begin
+            repeat(5) @(posedge tpu_clk);
+            tpu_spi_read(TPUR_STAT, status_val, ret);
+            if (++poll_cnt > 100000) begin
+                $display("  ERROR: idle poll timeout!"); total_errors++; return;
+            end
+        end while (!status_val[0]);
+        tpu_spi_write(TPUR_CTRL, 8'h01, ret);
+
+        // Step 4: Poll done
+        $display("  [Step 4] Polling done...");
+        poll_cnt = 0;
+        do begin
+            repeat(10) @(posedge tpu_clk);
+            tpu_spi_read(TPUR_STAT, status_val, ret);
+            if (++poll_cnt > 500000) begin
+                $display("  ERROR: done poll timeout!"); total_errors++; return;
+            end
+        end while (!status_val[2]);
+
+        // Step 5: Read C
+        $display("  [Step 5] Read C...");
+        poll_ready_c();
+        bus_axi_write(BUS_OFF_START, 32'h2);
+        poll_ready_c();
+        words_per_row = K / 8;
+        for (int p = 0; p < M * K; p++) begin
+            bus_read_c_byte(c_byte);
+            word_idx     = p / 8;
+            byte_sel_pos = p % 8;
+            row          = word_idx / words_per_row;
+            col_group    = word_idx % words_per_row;
+            col          = col_group * 8 + (7 - byte_sel_pos);
+            C_hw[row][col] = c_byte;
+        end
+
+        // Step 6: Compare
+        $display("  [Step 6] Comparing...");
+        for (int i = 0; i < M; i++)
+            for (int j = 0; j < K; j++)
+                if (C_hw[i][j] !== C_golden[i][j]) begin
+                    if (errors < 8)
+                        $display("  FAIL C[%0d][%0d]: golden=0x%02X hw=0x%02X",
+                                 i, j, C_golden[i][j], C_hw[i][j]);
+                    errors++;
+                end
+
+        if (errors == 0) $display("  [PASS] All %0d pixels match!", M*K);
+        else             $display("  [FAIL] %0d / %0d mismatches", errors, M*K);
+        total_errors += errors;
+    endtask
+
+
     initial begin
         $display("================================================================");
         $display("  TPU Full-Chip Integration Testbench");
@@ -790,18 +964,43 @@ module tb;
         //run_test( 8,  8,  8);   // repeat with different random data
         //run_test( 8,  8,  8);   // third run
 
-        //run_test(16,  8,  8);   // M=2 tiles
-        //run_test( 8, 16,  8);   // N=2 tiles
-        //run_test(16, 16,  8);   // M=2, N=2 tiles
-        //run_test(24,  8,  8);   // M=3 tiles
-        //run_test( 8, 24,  8);   // N=3 tiles
-        //run_test(32,  8,  8);   // M=4 tiles
-        //run_test(32, 16,  8);   // M=4, N=2 tiles
-        //run_test(16, 24,  8);   // M=2, N=3 tiles
+        run_test(16,  8,  8);   // M=2 tiles
+        run_test( 8, 16,  8);   // N=2 tiles
+        run_test(16, 16,  8);   // M=2, N=2 tiles
+        run_test(24,  8,  8);   // M=3 tiles
+        run_test( 8, 24,  8);   // N=3 tiles
+        run_test(32,  8,  8);   // M=4 tiles
+        run_test(32, 16,  8);   // M=4, N=2 tiles
+        run_test(16, 24,  8);   // M=2, N=3 tiles
 
-        run_test( 8,  8, 16);   // DISABLED: tpu_core k=2 never fires done
-        // run_test( 8,  8, 16);   // DISABLED: tpu_core k=2 never fires done
-        // run_test(16, 16, 16);   // DISABLED: multi-tile all dims
+        run_test( 8,  8, 16);
+        run_test( 8,  8, 16);
+        run_test(16, 16, 16);
+
+        // ── Boundary value tests ─────────────────────────────────────────────
+        // A=0, B=0 → acc=0 → C should all be zp_c
+        run_test_fixed(8, 8, 8,   0,   0,  0,  0, 128, 16'h8000, 5'd0, "A=0 B=0");
+
+        // A=255, B=255, large values, no zp → large acc, check saturation to 255
+        run_test_fixed(8, 8, 8, 255, 255,  0,  0,   0, 16'hFFFF, 5'd0, "A=255 B=255 sat");
+
+        // A=128, B=128 typical midpoint
+        run_test_fixed(8, 8, 8, 128, 128,  0,  0,   0, 16'h0100, 5'd4, "A=128 B=128");
+
+        // zp_a = zp_b = data value → acc = 0 → C should all be zp_c
+        run_test_fixed(8, 8, 8, 100, 200, 100, 200, 42, 16'h8000, 5'd0, "zp=data C=zp_c");
+
+        // scale=0 → result=0+zp_c always
+        run_test_fixed(8, 8, 8, 100, 100,  0,   0,  77, 16'h0000, 5'd0, "scale=0");
+
+        // shift=0 minimal shift
+        run_test_fixed(8, 8, 8,  10,  10,  0,   0,   0, 16'h0001, 5'd0, "shift=0 min scale");
+
+        // Large M, boundary values
+        run_test_fixed(32, 8, 8,  50,  50,  5,   5,  10, 16'h0400, 5'd2, "M=32 fixed");
+
+        // K=16 boundary
+        run_test_fixed(8, 8, 16,   0,   0,  0,   0,  99, 16'h8000, 5'd0, "K=16 A=0 B=0");
 
         // ── Summary ─────────────────────────────────────────────────────────
         $display("\n================================================================");
