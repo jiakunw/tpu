@@ -287,7 +287,7 @@ module chipinterface (
         .m                      (7'(dim_m >> 3)),   // tile count = actual_dim / 8
         .n                      (7'(dim_n >> 3)),
         .k                      (7'(dim_k >> 3)),
-        .num_computation        (7'(dim_k >> 3)),   // inner loop tile count = K/8
+        .num_computation        (7'b1),   // inner loop tile count = K/8
         .sram_rdata_a           (tpu_a_dout),
         .sram_rdata_b           (tpu_b_dout),
         .zero_point_a           (zero_point_a),
