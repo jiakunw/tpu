@@ -48,7 +48,10 @@ module tpu_mmio_regfile (
 
     // Scale outputs
     output logic [15:0] scale_factor,
-    output logic [4:0]  scale_shift
+    output logic [4:0]  scale_shift,
+
+    // TPU core reset (pulse when done is read, to restart tpu_core)
+    output logic        tpu_core_rst
 );
 
     //=========================================================================
@@ -175,11 +178,16 @@ module tpu_mmio_regfile (
     
     always_ff @(posedge clk or negedge rst_n) begin
         if (!rst_n) begin
-            done_latched <= 1'b0;
+            done_latched  <= 1'b0;
+            tpu_core_rst  <= 1'b0;
         end else if (tpu_done) begin
-            done_latched <= 1'b1;
-        end else if (reg_rd && reg_addr == ADDR_STATUS) begin
-            done_latched <= 1'b0;
+            done_latched  <= 1'b1;
+            tpu_core_rst  <= 1'b0;
+        end else if (reg_rd && reg_addr == ADDR_STATUS && done_latched) begin
+            done_latched  <= 1'b0;
+            tpu_core_rst  <= 1'b1;   // 1-cycle reset pulse to tpu_core
+        end else begin
+            tpu_core_rst  <= 1'b0;
         end
     end
 
