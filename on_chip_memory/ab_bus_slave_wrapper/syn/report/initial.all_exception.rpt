@@ -1,0 +1,7 @@
+Total numbers of exceptions: 5
+
+exception:bus_slave_sram_ab/default_mode/Clk
+exception:bus_slave_sram_ab/default_mode/C2O
+exception:bus_slave_sram_ab/default_mode/I2C
+exception:bus_slave_sram_ab/default_mode/I2O
+exception:bus_slave_sram_ab/default_mode/C2C
