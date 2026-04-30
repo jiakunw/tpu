@@ -1,0 +1,7 @@
+Total numbers of exceptions: 5
+
+exception:bias_wrapper/default_mode/Clk
+exception:bias_wrapper/default_mode/C2O
+exception:bias_wrapper/default_mode/I2C
+exception:bias_wrapper/default_mode/I2O
+exception:bias_wrapper/default_mode/C2C

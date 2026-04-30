@@ -1,91 +1,84 @@
 ///////////////////////////////////////////////////////////////////////////////
-// tb.sv
+// tb.sv - spi_slave_mmio_register_file with axi_spi_master in loop
 //
-// Testbench: AXI SPI Master <-> rf_top (SPI Slave)
-// 
-// Clock Configuration:
-//   Master AXI: 100 MHz
-//   Slave:      100 MHz
-//   SPI:        1 MHz (CLKS_PER_HALF_BIT=50)
+// Topology:
+//   tb (AXI master) --AXI--> axi_spi_master --SPI--> spi_slave_mmio_register_file
 //
-// TPU SPI Protocol:
-//   Command format: [ADDR:4][OPCODE:4]
-//   OPCODE: 0x1 = READ, 0x2 = WRITE
-//   ACK = 0xFF, NAK = 0xF0
+// AXI clock: 100 MHz (master_clk)
+// Chip clock: 10 MHz (clk)
+// SPI clock: derived from AXI clock by axi_spi_master via CLKS_PER_HALF_BIT
+//
+// CLKS_PER_HALF_BIT settings (@ 100 MHz AXI clock):
+//   50  -> SCK = 1   MHz
+//   10  -> SCK = 5   MHz
+//    5  -> SCK = 10  MHz
+//
+// Random delays (20-50 cycles) inserted between AXI transactions to stress
+// the AXI handshake interface and CDC paths.
 ///////////////////////////////////////////////////////////////////////////////
 `timescale 1ns / 1ps
 
 module tb;
 
-    //=========================================================================
-    // Clock Parameters
-    //=========================================================================
-    parameter MASTER_CLK_PERIOD = 10;    // 100 MHz (10 ns period)
-    parameter SLAVE_CLK_PERIOD  = 100;   // 10 MHz  (100 ns period)
-    parameter CLKS_PER_HALF_BIT = 50;    // SPI = 100MHz / (2*50) = 1 MHz
-    parameter SPI_MODE = 0;
+    localparam MASTER_CLK_PERIOD = 10;    // 100 MHz AXI master
+    localparam CLK_PERIOD        = 100;   //  10 MHz chip clock
 
-    // TPU Protocol Constants
-    localparam TPU_OP_READ  = 4'h1;
-    localparam TPU_OP_WRITE = 4'h2;
-    localparam TPU_ACK      = 8'hFF;
-    localparam TPU_NAK      = 8'hF0;
+    // SPI commands
+    localparam [3:0] CMD_READ  = 4'b0001;
+    localparam [3:0] CMD_WRITE = 4'b0010;
+    localparam [7:0] RESP_ACK  = 8'hFF;
+    localparam [7:0] RESP_NAK  = 8'hF0;
 
-    // TPU Register Addresses
-    localparam TPU_REG_CONTROL     = 4'h0;
-    localparam TPU_REG_STATUS      = 4'h1;
-    localparam TPU_REG_DIM_M       = 4'h2;
-    localparam TPU_REG_DIM_N       = 4'h3;
-    localparam TPU_REG_DIM_K       = 4'h4;
-    localparam TPU_REG_ZP_A        = 4'h5;
-    localparam TPU_REG_ZP_B        = 4'h6;
-    localparam TPU_REG_ZP_C        = 4'h7;
-    localparam TPU_REG_SCALE_LO    = 4'h8;
-    localparam TPU_REG_SCALE_HI    = 4'h9;
-    localparam TPU_REG_SCALE_SHIFT = 4'hA;
+    // axi_spi_master register map (byte addresses)
+    localparam [6:0] M_ADDR_TX_DATA  = 7'h00;
+    localparam [6:0] M_ADDR_RX_DATA  = 7'h04;
+    localparam [6:0] M_ADDR_STATUS   = 7'h08;
+    localparam [6:0] M_ADDR_CONTROL  = 7'h0C;
+
+    // mmio_register_file register addresses (4-bit)
+    localparam [3:0] ADDR_CONTROL         = 4'h0;
+    localparam [3:0] ADDR_STATUS          = 4'h1;
+    localparam [3:0] ADDR_DIM_M           = 4'h2;
+    localparam [3:0] ADDR_DIM_N           = 4'h3;
+    localparam [3:0] ADDR_DIM_K           = 4'h4;
+    localparam [3:0] ADDR_NUM_COMPUTATION = 4'h5;
+    localparam [3:0] ADDR_ZP_A            = 4'h6;
+    localparam [3:0] ADDR_ZP_B            = 4'h7;
+    localparam [3:0] ADDR_ZP_C            = 4'h8;
+    localparam [3:0] ADDR_SCALE_LO        = 4'h9;
+    localparam [3:0] ADDR_SCALE_HI        = 4'hA;
+    localparam [3:0] ADDR_SCALE_SHIFT     = 4'hB;
+    localparam [3:0] ADDR_KEEP_PE_VALUE   = 4'hC;
+    localparam [3:0] ADDR_FULL_PERCISION  = 4'hD;
 
     //=========================================================================
-    // Clocks and Reset
+    // Clocks and reset
     //=========================================================================
-    logic master_clk;  // 100 MHz
-    logic slave_clk;   // 10 MHz
-    logic aresetn;
+    logic master_clk;
+    logic clk;
+    logic master_aresetn;
+    logic arstn;
+    logic rstn;
 
     initial master_clk = 0;
     always #(MASTER_CLK_PERIOD/2) master_clk = ~master_clk;
 
-    initial slave_clk = 0;
-    always #(SLAVE_CLK_PERIOD/2) slave_clk = ~slave_clk;
+    initial clk = 0;
+    always #(CLK_PERIOD/2) clk = ~clk;
 
     //=========================================================================
-    // AXI-Lite Signals
+    // AXI signals (tb -> master)
     //=========================================================================
-    logic [6:0]  S_AXI_awaddr;
-    logic        S_AXI_awvalid;
-    logic        S_AXI_awready;
-    logic [2:0]  S_AXI_awprot;
-    
-    logic [31:0] S_AXI_wdata;
-    logic [3:0]  S_AXI_wstrb;
-    logic        S_AXI_wvalid;
-    logic        S_AXI_wready;
-    
-    logic [1:0]  S_AXI_bresp;
-    logic        S_AXI_bvalid;
-    logic        S_AXI_bready;
-    
-    logic [6:0]  S_AXI_araddr;
-    logic        S_AXI_arvalid;
-    logic        S_AXI_arready;
-    logic [2:0]  S_AXI_arprot;
-    
-    logic [31:0] S_AXI_rdata;
-    logic [1:0]  S_AXI_rresp;
-    logic        S_AXI_rvalid;
-    logic        S_AXI_rready;
+    logic [6:0]  S_AXI_awaddr;  logic S_AXI_awvalid; logic S_AXI_awready; logic [2:0] S_AXI_awprot;
+    logic [31:0] S_AXI_wdata;   logic [3:0] S_AXI_wstrb; logic S_AXI_wvalid; logic S_AXI_wready;
+    logic [1:0]  S_AXI_bresp;   logic S_AXI_bvalid;  logic S_AXI_bready;
+    logic [6:0]  S_AXI_araddr;  logic S_AXI_arvalid; logic S_AXI_arready; logic [2:0] S_AXI_arprot;
+    logic [31:0] S_AXI_rdata;   logic [1:0] S_AXI_rresp; logic S_AXI_rvalid; logic S_AXI_rready;
+
+    logic [1:0]  debug_wr_state, debug_rd_state;
 
     //=========================================================================
-    // SPI Signals
+    // SPI signals (master <-> slave)
     //=========================================================================
     logic spi_sck;
     logic spi_cs_n;
@@ -93,92 +86,93 @@ module tb;
     logic spi_miso;
 
     //=========================================================================
-    // rf_top Interface
+    // SPI slave outputs (visible state for verification)
     //=========================================================================
-    logic        tpu_start;
-    logic        tpu_idle;
-    logic        tpu_working;
-    logic        tpu_done;
-    logic [5:0]  dim_m;
-    logic [5:0]  dim_n;
-    logic [5:0]  dim_k;
-    logic [7:0]  zero_point_a;
-    logic [7:0]  zero_point_b;
-    logic [7:0]  zero_point_c;
-    logic [15:0] scale_factor;
-    logic [4:0]  scale_shift;
+    logic       fsm_start;
+    logic [1:0] fsm_keep_pe_value;
+    logic       fsm_tpu_full_percision;
+    logic       fsm_idle;
+    logic       fsm_working;
+    logic       fsm_done;
 
-    logic [1:0]  debug_wr_state;
-    logic [1:0]  debug_rd_state;
+    logic [6:0]  tpu_dim_m, tpu_dim_n, tpu_dim_k, tpu_num_computation;
+    logic [7:0]  tpu_zero_point_a, tpu_zero_point_b, tpu_zero_point_c;
+    logic [15:0] tpu_scale_factor;
+    logic [4:0]  tpu_scale_shift;
 
     int errors;
 
     //=========================================================================
-    // AXI SPI Master Register Addresses
-    //=========================================================================
-    localparam logic [6:0] SPI_REG_TX_DATA  = 7'h00;
-    localparam logic [6:0] SPI_REG_RX_DATA  = 7'h04;
-    localparam logic [6:0] SPI_REG_STATUS   = 7'h08;
-    localparam logic [6:0] SPI_REG_CONTROL  = 7'h0C;
-
-    //=========================================================================
-    // DUT: AXI SPI Master (100 MHz)
+    // DUT 1: axi_spi_master (acts like FPGA-side master)
+    //
+    // CLKS_PER_HALF_BIT = 5 -> SCK = 100 MHz / (2*5) = 10 MHz
     //=========================================================================
     axi_spi_master #(
         .C_S_AXI_DATA_WIDTH (32),
         .C_S_AXI_ADDR_WIDTH (7),
-        .SPI_MODE           (SPI_MODE),
-        .CLKS_PER_HALF_BIT  (CLKS_PER_HALF_BIT)
+        .SPI_MODE           (0),
+        .CLKS_PER_HALF_BIT  (5)         // 10 MHz SCK
     ) u_master (
-        .S_AXI_ACLK     (master_clk),
-        .S_AXI_ARESETN  (aresetn),
-        .S_AXI_AWADDR   (S_AXI_awaddr),
-        .S_AXI_AWVALID  (S_AXI_awvalid),
-        .S_AXI_AWREADY  (S_AXI_awready),
-        .S_AXI_WDATA    (S_AXI_wdata),
-        .S_AXI_WSTRB    (S_AXI_wstrb),
-        .S_AXI_WVALID   (S_AXI_wvalid),
-        .S_AXI_WREADY   (S_AXI_wready),
-        .S_AXI_BRESP    (S_AXI_bresp),
-        .S_AXI_BVALID   (S_AXI_bvalid),
-        .S_AXI_BREADY   (S_AXI_bready),
-        .S_AXI_ARADDR   (S_AXI_araddr),
-        .S_AXI_ARVALID  (S_AXI_arvalid),
-        .S_AXI_ARREADY  (S_AXI_arready),
-        .S_AXI_RDATA    (S_AXI_rdata),
-        .S_AXI_RRESP    (S_AXI_rresp),
-        .S_AXI_RVALID   (S_AXI_rvalid),
-        .S_AXI_RREADY   (S_AXI_rready),
-        .SPI_SCK        (spi_sck),
-        .SPI_MOSI       (spi_mosi),
-        .SPI_MISO       (spi_miso),
-        .SPI_CS_N       (spi_cs_n),
-        .debug_wr_state (debug_wr_state),
-        .debug_rd_state (debug_rd_state)
+        .S_AXI_ACLK    (master_clk),
+        .S_AXI_ARESETN (master_aresetn),
+
+        .S_AXI_AWADDR  (S_AXI_awaddr),  .S_AXI_AWVALID (S_AXI_awvalid), .S_AXI_AWREADY (S_AXI_awready),
+        .S_AXI_WDATA   (S_AXI_wdata),   .S_AXI_WSTRB   (S_AXI_wstrb),
+        .S_AXI_WVALID  (S_AXI_wvalid),  .S_AXI_WREADY  (S_AXI_wready),
+        .S_AXI_BRESP   (S_AXI_bresp),   .S_AXI_BVALID  (S_AXI_bvalid),  .S_AXI_BREADY  (S_AXI_bready),
+        .S_AXI_ARADDR  (S_AXI_araddr),  .S_AXI_ARVALID (S_AXI_arvalid), .S_AXI_ARREADY (S_AXI_arready),
+        .S_AXI_RDATA   (S_AXI_rdata),   .S_AXI_RRESP   (S_AXI_rresp),
+        .S_AXI_RVALID  (S_AXI_rvalid),  .S_AXI_RREADY  (S_AXI_rready),
+
+        .SPI_SCK       (spi_sck),
+        .SPI_MOSI      (spi_mosi),
+        .SPI_MISO      (spi_miso),
+        .SPI_CS_N      (spi_cs_n),
+
+        .debug_wr_state(debug_wr_state),
+        .debug_rd_state(debug_rd_state)
     );
 
     //=========================================================================
-    // DUT: rf_top SPI Slave (10 MHz)
+    // DUT 2: spi_slave_mmio_register_file (chip side)
     //=========================================================================
-    rf_top u_slave (
-        .clk            (slave_clk),
-        .rst_n          (aresetn),
-        .spi_sck        (spi_sck),
-        .spi_cs_n       (spi_cs_n),
-        .spi_mosi       (spi_mosi),
-        .spi_miso       (spi_miso),
-        .tpu_start      (tpu_start),
-        .tpu_idle       (tpu_idle),
-        .tpu_working    (tpu_working),
-        .tpu_done       (tpu_done),
-        .dim_m          (dim_m),
-        .dim_n          (dim_n),
-        .dim_k          (dim_k),
-        .zero_point_a   (zero_point_a),
-        .zero_point_b   (zero_point_b),
-        .zero_point_c   (zero_point_c),
-        .scale_factor   (scale_factor),
-        .scale_shift    (scale_shift)
+    spi_slave_mmio_register_file u_dut (
+        .clk                    (clk),
+        .arstn                  (arstn),
+        .rstn                   (rstn),
+
+        .spi_sck                (spi_sck),
+        .spi_cs_n               (spi_cs_n),
+        .spi_mosi               (spi_mosi),
+        .spi_miso               (spi_miso),
+
+        .fsm_start              (fsm_start),
+        .fsm_keep_pe_value      (fsm_keep_pe_value),
+        .fsm_tpu_full_percision (fsm_tpu_full_percision),
+        .fsm_idle               (fsm_idle),
+        .fsm_working            (fsm_working),
+        .fsm_done               (fsm_done),
+
+        .tpu_dim_m              (tpu_dim_m),
+        .tpu_dim_n              (tpu_dim_n),
+        .tpu_dim_k              (tpu_dim_k),
+        .tpu_num_computation    (tpu_num_computation),
+
+        .tpu_zero_point_a       (tpu_zero_point_a),
+        .tpu_zero_point_b       (tpu_zero_point_b),
+        .tpu_zero_point_c       (tpu_zero_point_c),
+
+        .tpu_scale_factor       (tpu_scale_factor),
+        .tpu_scale_shift        (tpu_scale_shift),
+
+        .sc_mmio_ctrl           (1'b0),
+        .sc_mmio_reg_addr       (4'b0),
+        .sc_mmio_reg_rd         (1'b0),
+        .sc_mmio_reg_wr         (1'b0),
+        .sc_mmio_reg_wdata      (8'b0),
+        .sc_mmio_reg_rdata      (/* unused */),
+        .sc_mmio_reg_addr_valid (/* unused */),
+        .sc_mmio_reg_writable   (/* unused */)
     );
 
     //=========================================================================
@@ -186,8 +180,7 @@ module tb;
     //=========================================================================
     task axi_write(input logic [6:0] addr, input logic [31:0] data);
         int timeout;
-        logic got_awready, got_wready;       
-
+        logic got_awready, got_wready;
         @(posedge master_clk);
         S_AXI_awaddr  <= addr;
         S_AXI_wdata   <= data;
@@ -195,18 +188,17 @@ module tb;
         S_AXI_awvalid <= 1'b1;
         S_AXI_wstrb   <= 4'b1111;
         S_AXI_bready  <= 1'b0;
-        
+
         wait(S_AXI_awvalid & S_AXI_awready);
         S_AXI_wvalid  <= 1'b1;
         @(posedge master_clk);
         S_AXI_awvalid = 1'b0;
-
         wait(S_AXI_wvalid & S_AXI_wready);
         @(posedge master_clk);
         S_AXI_wvalid  <= 1'b0;
-        
+
         repeat($urandom_range(10, 4)) @(posedge master_clk);
-        
+
         S_AXI_bready <= 1'b1;
         wait(S_AXI_bvalid & S_AXI_bready);
         @(posedge master_clk);
@@ -218,20 +210,19 @@ module tb;
     //=========================================================================
     task axi_read(input logic [6:0] addr, output logic [31:0] data);
         int timeout;
-        
+
         @(posedge master_clk);
         S_AXI_araddr  <= addr;
         S_AXI_arprot  <= 3'd0;
         S_AXI_arvalid <= 1'b1;
         S_AXI_rready  <= 1'b0;
-        
+
         wait(S_AXI_arvalid & S_AXI_arready);
         @(posedge master_clk);
         S_AXI_arvalid <= 1'b0;
-        
+
         repeat($urandom_range(10, 4)) @(posedge master_clk);
         S_AXI_rready <= 1'b1;
-
         wait(S_AXI_rvalid & S_AXI_rready);
         data <= S_AXI_rdata;
         @(posedge master_clk);
@@ -239,365 +230,233 @@ module tb;
     endtask
 
     //=========================================================================
-    // SPI Helper Tasks
+    // Random gap between AXI transactions (20-50 master_clk cycles)
     //=========================================================================
-    task spi_wait_ready();
+    task random_gap();
+        repeat($urandom_range(50, 20)) @(posedge master_clk);
+    endtask
+
+    //=========================================================================
+    // Wait for SPI master to be ready (tx_ready=1, busy=0)
+    //=========================================================================
+    task wait_master_ready();
         logic [31:0] status;
-        int timeout;
-        timeout = 0;
         do begin
-            axi_read(SPI_REG_STATUS, status);
-            timeout++;
-            if (timeout > 200) begin
-                $display("ERROR: spi_wait_ready timeout!");
-                $finish;
-            end
-            repeat(5) @(posedge master_clk);
-        end while (status[0] == 1'b0);
-    endtask
-
-    task spi_cs_low();
-        axi_write(SPI_REG_CONTROL, 32'h0);
-        repeat($urandom_range(100, 50)) @(posedge master_clk);
-    endtask
-
-    task spi_cs_high();
-        axi_write(SPI_REG_CONTROL, 32'h1);
-        repeat($urandom_range(100, 50)) @(posedge master_clk);
-    endtask
-
-    task spi_transfer_byte(input logic [7:0] tx_byte, output logic [7:0] rx_byte);
-        logic [31:0] rx_data;
-        
-        spi_wait_ready();
-        axi_write(SPI_REG_TX_DATA, {24'h0, tx_byte});
-        spi_wait_ready();
-        repeat($urandom_range(100, 50)) @(posedge master_clk);
-        axi_read(SPI_REG_RX_DATA, rx_data);
-        rx_byte = rx_data[7:0];
+            axi_read(M_ADDR_STATUS, status);
+            random_gap();
+        end while (!status[0]);   // bit[0] = tx_ready
     endtask
 
     //=========================================================================
-    // TPU Protocol Tasks
+    // Send a single SPI byte through master (drives one byte transfer)
     //=========================================================================
-    task tpu_reg_read(input logic [3:0] addr, output logic [7:0] data, output int result);
-        logic [7:0] cmd, rx;
-        
-        cmd = {addr, TPU_OP_READ};
-        $display("  [tpu_reg_read] addr=0x%0h cmd=0x%02h", addr, cmd);
-        
-        spi_cs_low();
-        spi_transfer_byte(cmd, rx);
-        spi_transfer_byte(8'h00, rx);
-        spi_cs_high();
-        
-        repeat($urandom_range(35, 10)) @(posedge slave_clk);
-        
-        if (rx == TPU_NAK) begin
-            result = -1;
-        end else begin
-            data = rx;
-            result = 0;
+    task spi_send_byte(input logic [7:0] tx_byte, output logic [7:0] rx_byte);
+        logic [31:0] rdata;
+        wait_master_ready();
+        axi_write(M_ADDR_TX_DATA, {24'h0, tx_byte});
+        random_gap();
+        wait_master_ready();   // wait for transfer to complete
+        random_gap();
+        axi_read(M_ADDR_RX_DATA, rdata);
+        rx_byte = rdata[7:0];
+    endtask
+
+    //=========================================================================
+    // Drive a 4-byte SPI frame: assert CS_N=0, send 4 bytes, deassert CS_N=1
+    //=========================================================================
+    task spi_frame(
+        input  logic [7:0] tx0, tx1, tx2, tx3,
+        output logic [7:0] rx0, rx1, rx2, rx3
+    );
+        // CS_N = 0 (assert)
+        axi_write(M_ADDR_CONTROL, 32'h0);
+        random_gap();
+
+        spi_send_byte(tx0, rx0);
+        random_gap();
+        spi_send_byte(tx1, rx1);
+        random_gap();
+        spi_send_byte(tx2, rx2);
+        random_gap();
+        spi_send_byte(tx3, rx3);
+        random_gap();
+
+        // CS_N = 1 (deassert)
+        axi_write(M_ADDR_CONTROL, 32'h1);
+        random_gap();
+    endtask
+
+    //=========================================================================
+    // SPI register write
+    //=========================================================================
+    task spi_write_reg(input logic [3:0] addr, input logic [7:0] data);
+        logic [7:0] r0, r1, r2, r3;
+        spi_frame({addr, CMD_WRITE}, 8'h00, data, 8'h00, r0, r1, r2, r3);
+        if (r1 !== RESP_ACK)
+            $display("    [WARN] write addr=0x%0h byte1=0x%02h (expected 0xFF)", addr, r1);
+        if (r3 !== RESP_ACK)
+            $display("    [WARN] write addr=0x%0h byte3=0x%02h (expected 0xFF)", addr, r3);
+    endtask
+
+    //=========================================================================
+    // SPI register read
+    //=========================================================================
+    task spi_read_reg(input logic [3:0] addr, output logic [7:0] data);
+        logic [7:0] r0, r1, r2, r3;
+        spi_frame({addr, CMD_READ}, 8'h00, 8'h00, 8'h00, r0, r1, r2, r3);
+        data = r1;
+    endtask
+
+    //=========================================================================
+    // Check helper
+    //=========================================================================
+    task check(input string name, input logic [31:0] got, input logic [31:0] exp);
+        if (got === exp)
+            $display("  PASS %-30s = 0x%0h", name, got);
+        else begin
+            $display("  FAIL %-30s exp=0x%0h got=0x%0h", name, exp, got);
+            errors++;
         end
     endtask
 
-    task tpu_reg_write(input logic [3:0] addr, input logic [7:0] data, output int result);
-        logic [7:0] cmd, resp1, resp2, dummy;
-        
-        cmd = {addr, TPU_OP_WRITE};
-        $display("  [tpu_reg_write] addr=0x%0h data=0x%02h cmd=0x%02h", addr, data, cmd);
-        
-        spi_cs_low();
-        spi_transfer_byte(cmd, dummy);
-        spi_transfer_byte(8'h00, resp1);
-        spi_transfer_byte(data, dummy);
-        spi_transfer_byte(8'h00, resp2);
-        spi_cs_high();
-        
-        repeat($urandom_range(35, 10)) @(posedge slave_clk);
-        
-        if (resp1 == TPU_NAK || resp1 != TPU_ACK || resp2 != TPU_ACK) begin
-            result = -1;
-        end else begin
-            result = 0;
-        end
-    endtask
+    //=========================================================================
+    // Main
+    //=========================================================================
+    logic [7:0]  rd;
+    logic [31:0] rd32;
 
-    //=========================================================================
-    // Main Test
-    //=========================================================================
     initial begin
-        logic [31:0] status32;
-        logic [7:0]  status8, read_data, data;
-        int ret;
-        
-        $display("");
-        $display("========================================");
-        $display("    AXI SPI Master - TPU Test");
-        $display("    Master: 100 MHz, Slave: 10 MHz");
-        $display("    SPI: 1 MHz");
-        $display("========================================");
-        $display("");
+        $display("=================================================================");
+        $display("  TB: spi_slave_mmio_register_file with axi_spi_master in loop");
+        $display("  CLKS_PER_HALF_BIT = 5 -> SCK = 10 MHz");
+        $display("=================================================================");
 
-        // Initialize
-        errors        = 0;
-        aresetn       = 0;
-        S_AXI_awaddr  = 0;
-        S_AXI_awvalid = 0;
-        S_AXI_awprot  = 0;
-        S_AXI_wdata   = 0;
-        S_AXI_wstrb   = 0;
-        S_AXI_wvalid  = 0;
-        S_AXI_bready  = 0;
-        S_AXI_araddr  = 0;
-        S_AXI_arvalid = 0;
-        S_AXI_arprot  = 0;
-        S_AXI_rready  = 0;
-        
-        tpu_idle      = 1;
-        tpu_working   = 0;
-        tpu_done      = 0;
+        // Init AXI
+        S_AXI_awaddr  = 0; S_AXI_awvalid = 0; S_AXI_wdata = 0;
+        S_AXI_wvalid  = 0; S_AXI_wstrb   = 0; S_AXI_bready = 0;
+        S_AXI_araddr  = 0; S_AXI_arvalid = 0; S_AXI_rready = 0;
+        S_AXI_awprot  = 0; S_AXI_arprot  = 0;
 
-        // Reset
-        repeat(20) @(posedge master_clk);
-        aresetn = 1;
-        repeat(100) @(posedge master_clk);
+        // Init slave-side stimulus
+        arstn       = 0;
+        fsm_idle    = 1;
+        fsm_working = 0;
+        fsm_done    = 0;
+        errors      = 0;
 
-        spi_cs_high();
+        master_aresetn = 0;
+
+        // Reset both clock domains
+        repeat(10) @(posedge master_clk);
+        master_aresetn = 1;
+
+        repeat(5) @(posedge clk);
+        arstn = 1;
+        repeat(20) @(posedge clk);
+
+        // Initialize CS_N high (deasserted)
+        axi_write(M_ADDR_CONTROL, 32'h1);
+        random_gap();
+
+        //----------------------------------------------------------------------
+        // Test 1: Dimension registers
+        //----------------------------------------------------------------------
+        $display("\n[Test 1] Dimension registers");
+        spi_write_reg(ADDR_DIM_M,           8'h08);
+        spi_write_reg(ADDR_DIM_N,           8'h10);
+        spi_write_reg(ADDR_DIM_K,           8'h08);
+        spi_write_reg(ADDR_NUM_COMPUTATION, 8'h01);
+
+        spi_read_reg (ADDR_DIM_M,           rd);  check("DIM_M readback", rd, 8'h08);
+        spi_read_reg (ADDR_DIM_N,           rd);  check("DIM_N readback", rd, 8'h10);
+        spi_read_reg (ADDR_DIM_K,           rd);  check("DIM_K readback", rd, 8'h08);
+        spi_read_reg (ADDR_NUM_COMPUTATION, rd);  check("NUM_COMP readback", rd, 8'h01);
+
+        repeat(10) @(posedge clk);
+        check("tpu_dim_m output",           tpu_dim_m,           7'h08);
+        check("tpu_dim_n output",           tpu_dim_n,           7'h10);
+        check("tpu_dim_k output",           tpu_dim_k,           7'h08);
+        check("tpu_num_computation output", tpu_num_computation, 7'h01);
+
+        //----------------------------------------------------------------------
+        // Test 2: Zero-point registers
+        //----------------------------------------------------------------------
+        $display("\n[Test 2] Zero-point registers");
+        spi_write_reg(ADDR_ZP_A, 8'hAA);
+        spi_write_reg(ADDR_ZP_B, 8'hBB);
+        spi_write_reg(ADDR_ZP_C, 8'hCC);
+        repeat(10) @(posedge clk);
+        check("tpu_zero_point_a", tpu_zero_point_a, 8'hAA);
+        check("tpu_zero_point_b", tpu_zero_point_b, 8'hBB);
+        check("tpu_zero_point_c", tpu_zero_point_c, 8'hCC);
+
+        //----------------------------------------------------------------------
+        // Test 3: Scale factor / shift
+        //----------------------------------------------------------------------
+        $display("\n[Test 3] Scale factor / shift");
+        spi_write_reg(ADDR_SCALE_LO,    8'h34);
+        spi_write_reg(ADDR_SCALE_HI,    8'h12);
+        spi_write_reg(ADDR_SCALE_SHIFT, 8'h05);
+        repeat(10) @(posedge clk);
+        check("tpu_scale_factor", tpu_scale_factor, 16'h1234);
+        check("tpu_scale_shift",  tpu_scale_shift,   5'h05);
+
+        //----------------------------------------------------------------------
+        // Test 4: CONTROL.start triggers fsm_start; fsm_done clears it
+        //----------------------------------------------------------------------
+        $display("\n[Test 4] CONTROL.start -> fsm_start, fsm_done -> clear");
+        spi_write_reg(ADDR_CONTROL, 8'h01);
+        repeat(10) @(posedge clk);
+        check("fsm_start asserted", fsm_start, 1'b1);
+
+        @(posedge clk);
+        fsm_done <= 1'b1;
+        @(posedge clk);
+        fsm_done <= 1'b0;
+        repeat(10) @(posedge clk);
+        check("fsm_start cleared after fsm_done", fsm_start, 1'b0);
+
+        //----------------------------------------------------------------------
+        // Test 5: STATUS register reflects fsm_idle / fsm_working
+        //----------------------------------------------------------------------
+        $display("\n[Test 5] STATUS register");
+        fsm_idle    <= 1'b0;
+        fsm_working <= 1'b1;
+        repeat(10) @(posedge clk);
+        spi_read_reg(ADDR_STATUS, rd);
+        check("STATUS while working [1:0]", rd[1:0], 2'b10);
+
+        fsm_idle    <= 1'b1;
+        fsm_working <= 1'b0;
+        repeat(10) @(posedge clk);
+        spi_read_reg(ADDR_STATUS, rd);
+        check("STATUS while idle [1:0]", rd[1:0], 2'b01);
+
+        //----------------------------------------------------------------------
+        // Test 6: Back-to-back stress
+        //----------------------------------------------------------------------
+        $display("\n[Test 6] Back-to-back stress");
+        for (int i = 0; i < 8; i++) begin
+            logic [7:0] expected, actual;
+            expected = 8'(8'hF0 + i);
+            spi_write_reg(ADDR_ZP_A, expected);
+            spi_read_reg (ADDR_ZP_A, actual);
+            check($sformatf("Back-to-back iter %0d", i), actual, expected);
+        end
+
         repeat(50) @(posedge master_clk);
-
-        //----------------------------------------------------------------------
-        // Test 1: SPI Status
-        //----------------------------------------------------------------------
-        $display("[Test 1] SPI Status Register");
-        axi_read(SPI_REG_STATUS, status32);
-        $display("  STATUS = 0x%02X (READY=%0d)", status32[7:0], status32[0]);
-        if (status32[0]) $display("  [PASS]");
-        else begin $display("  [FAIL]"); errors++; end
-        $display("");
-
-        //----------------------------------------------------------------------
-        // Test 2: Read TPU Status
-        //----------------------------------------------------------------------
-        $display("[Test 2] Read TPU Status");
-        tpu_reg_read(TPU_REG_STATUS, data, ret);
-        if (ret == 0) begin
-            $display("  [PASS] Status = 0x%02X", data);
-        end else begin
-            $display("  [FAIL] NAK"); errors++;
-        end
-        $display("");
-
-        //----------------------------------------------------------------------
-        // Test 3: Write DIM_M = 16
-        //----------------------------------------------------------------------
-        $display("[Test 3] Write DIM_M = 16");
-        tpu_reg_write(TPU_REG_DIM_M, 8'd16, ret);
-        if (ret == 0 && dim_m == 6'd16) begin
-            $display("  [PASS] dim_m = %0d", dim_m);
-        end else begin
-            $display("  [FAIL] ret=%0d dim_m=%0d", ret, dim_m);
-            errors++;
-        end
-        $display("");
-
-        //----------------------------------------------------------------------
-        // Test 4: Read back DIM_M
-        //----------------------------------------------------------------------
-        $display("[Test 4] Read back DIM_M");
-        tpu_reg_read(TPU_REG_DIM_M, data, ret);
-        if (ret == 0 && data == 16) begin
-            $display("  [PASS] DIM_M = %0d", data);
-        end else begin
-            $display("  [FAIL] data=%0d", data);
-            errors++;
-        end
-        $display("");
-
-        //----------------------------------------------------------------------
-        // Test 5: Set All Dimensions
-        //----------------------------------------------------------------------
-        $display("[Test 5] Set M=16, N=8, K=32");
-        tpu_reg_write(TPU_REG_DIM_M, 8'd16, ret);
-        tpu_reg_write(TPU_REG_DIM_N, 8'd8,  ret);
-        tpu_reg_write(TPU_REG_DIM_K, 8'd32, ret);
-        $display("  Hardware: dim_m=%0d, dim_n=%0d, dim_k=%0d", dim_m, dim_n, dim_k);
-        if (dim_m == 16 && dim_n == 8 && dim_k == 32) begin
-            $display("  [PASS]");
-        end else begin
-            $display("  [FAIL]");
-            errors++;
-        end
-        $display("");
-
-        //----------------------------------------------------------------------
-        // Test 6: Write Zero Points
-        //----------------------------------------------------------------------
-        $display("[Test 6] Write Zero Points A=10, B=20, C=30");
-        tpu_reg_write(TPU_REG_ZP_A, 8'd10, ret);
-        tpu_reg_write(TPU_REG_ZP_B, 8'd20, ret);
-        tpu_reg_write(TPU_REG_ZP_C, 8'd30, ret);
-        $display("  Hardware: zp_a=%0d, zp_b=%0d, zp_c=%0d",
-                 zero_point_a, zero_point_b, zero_point_c);
-        if (zero_point_a == 8'd10 && zero_point_b == 8'd20 && zero_point_c == 8'd30) begin
-            $display("  [PASS]");
-        end else begin
-            $display("  [FAIL]");
-            errors++;
-        end
-        $display("");
-
-        //----------------------------------------------------------------------
-        // Test 7: Read back Zero Points
-        //----------------------------------------------------------------------
-        $display("[Test 7] Read back Zero Points");
-        tpu_reg_read(TPU_REG_ZP_A, data, ret);
-        if (ret == 0 && data == 8'd10) $display("  ZP_A = %0d [OK]", data);
-        else begin $display("  ZP_A = %0d [FAIL]", data); errors++; end
-
-        tpu_reg_read(TPU_REG_ZP_B, data, ret);
-        if (ret == 0 && data == 8'd20) $display("  ZP_B = %0d [OK]", data);
-        else begin $display("  ZP_B = %0d [FAIL]", data); errors++; end
-
-        tpu_reg_read(TPU_REG_ZP_C, data, ret);
-        if (ret == 0 && data == 8'd30) $display("  ZP_C = %0d [OK]", data);
-        else begin $display("  ZP_C = %0d [FAIL]", data); errors++; end
-        $display("");
-
-        //----------------------------------------------------------------------
-        // Test 8: Write Scale Factor = 0x1234, Scale Shift = 7
-        //----------------------------------------------------------------------
-        $display("[Test 8] Write Scale Factor=0x1234, Scale Shift=7");
-        tpu_reg_write(TPU_REG_SCALE_LO,    8'h34, ret);   // scale_factor[7:0]
-        tpu_reg_write(TPU_REG_SCALE_HI,    8'h12, ret);   // scale_factor[15:8]
-        tpu_reg_write(TPU_REG_SCALE_SHIFT, 8'd7,  ret);   // scale_shift[4:0]
-        $display("  Hardware: scale_factor=0x%04X, scale_shift=%0d",
-                 scale_factor, scale_shift);
-        if (scale_factor == 16'h1234 && scale_shift == 5'd7) begin
-            $display("  [PASS]");
-        end else begin
-            $display("  [FAIL]");
-            errors++;
-        end
-        $display("");
-
-        //----------------------------------------------------------------------
-        // Test 9: Read back Scale Factor and Shift
-        //----------------------------------------------------------------------
-        $display("[Test 9] Read back Scale Factor and Shift");
-        tpu_reg_read(TPU_REG_SCALE_LO, data, ret);
-        if (ret == 0 && data == 8'h34) $display("  SCALE_LO = 0x%02X [OK]", data);
-        else begin $display("  SCALE_LO = 0x%02X [FAIL]", data); errors++; end
-
-        tpu_reg_read(TPU_REG_SCALE_HI, data, ret);
-        if (ret == 0 && data == 8'h12) $display("  SCALE_HI = 0x%02X [OK]", data);
-        else begin $display("  SCALE_HI = 0x%02X [FAIL]", data); errors++; end
-
-        tpu_reg_read(TPU_REG_SCALE_SHIFT, data, ret);
-        if (ret == 0 && data == 8'd7) $display("  SCALE_SHIFT = %0d [OK]", data);
-        else begin $display("  SCALE_SHIFT = %0d [FAIL]", data); errors++; end
-        $display("");
-
-        //----------------------------------------------------------------------
-        // Test 10: STATUS is read-only (write should NAK)
-        //----------------------------------------------------------------------
-        $display("[Test 10] STATUS register is read-only (expect NAK)");
-        tpu_reg_write(TPU_REG_STATUS, 8'hFF, ret);
-        if (ret == -1) begin
-            $display("  [PASS] NAK received as expected");
-        end else begin
-            $display("  [FAIL] STATUS accepted write (should be read-only)");
-            errors++;
-        end
-        $display("");
-
-        //----------------------------------------------------------------------
-        // Test 11: tpu_start holds HIGH after write, does not auto-clear
-        //----------------------------------------------------------------------
-        $display("[Test 11] tpu_start holds HIGH until tpu_done");
-
-        // Write start=1
-        tpu_reg_write(TPU_REG_CONTROL, 8'h01, ret);
-
-        // Wait several slave cycles - start must NOT auto-clear
-        repeat(20) @(posedge slave_clk);
-
-        if (tpu_start !== 1'b1) begin
-            $display("  [FAIL] tpu_start went low before tpu_done (auto-cleared?)");
-            errors++;
-        end else begin
-            $display("  tpu_start still HIGH after 20 slave cycles [OK]");
-        end
-
-        // Now assert tpu_done for one cycle
-        @(posedge slave_clk);
-        tpu_done = 1'b1;
-        @(posedge slave_clk);
-        tpu_done = 1'b0;
-
-        // Wait a few cycles for clear to propagate
-        repeat(3) @(posedge slave_clk);
-
-        if (tpu_start !== 1'b0) begin
-            $display("  [FAIL] tpu_start did not clear after tpu_done");
-            errors++;
-        end else begin
-            $display("  tpu_start cleared after tpu_done [OK]");
-            $display("  [PASS]");
-        end
-        $display("");
-
-        //----------------------------------------------------------------------
-        // Test 12: tpu_start can be re-asserted after done
-        //----------------------------------------------------------------------
-        $display("[Test 12] tpu_start can be re-asserted after done");
-
-        tpu_reg_write(TPU_REG_CONTROL, 8'h01, ret);
-        repeat(5) @(posedge slave_clk);
-
-        if (tpu_start !== 1'b1) begin
-            $display("  [FAIL] tpu_start did not assert on second start");
-            errors++;
-        end else begin
-            $display("  tpu_start asserted again [OK]");
-        end
-
-        // Clear via tpu_done
-        @(posedge slave_clk);
-        tpu_done = 1'b1;
-        @(posedge slave_clk);
-        tpu_done = 1'b0;
-        repeat(3) @(posedge slave_clk);
-
-        if (tpu_start !== 1'b0) begin
-            $display("  [FAIL] tpu_start did not clear on second done");
-            errors++;
-        end else begin
-            $display("  tpu_start cleared on second done [OK]");
-            $display("  [PASS]");
-        end
-        $display("");
-
-        //----------------------------------------------------------------------
-        // Summary
-        //----------------------------------------------------------------------
-        $display("========================================");
-        if (errors == 0)
-            $display("    ALL TESTS PASSED!");
-        else
-            $display("    FAILED: %0d errors", errors);
-        $display("========================================");
-
+        $display("\n=================================================================");
+        if (errors == 0) $display("  ALL TESTS PASSED!");
+        else             $display("  FAILED: %0d error(s)", errors);
+        $display("=================================================================");
         $finish;
     end
 
-    //=========================================================================
-    // Timeout
-    //=========================================================================
+    initial begin #500_000_000; $display("TIMEOUT"); $finish; end
+
     initial begin
-        #(MASTER_CLK_PERIOD * 5000000);
-        $display("ERROR: Timeout!");
-        $finish;
+        $dumpfile("tb.vcd");
+        $dumpvars(0, tb);
     end
 
 endmodule

@@ -19,32 +19,30 @@ module bus_slave_c #(
     parameter SRAM_AW = 12,
     parameter DW      = 8
 )(
-    input  logic              BUS_CLK,
-    input  logic              BUS_RST_N,
+    input  logic              clk,
+    input  logic              rstn,
 
-    // CPU Interface 
-    input  logic              CHC_START,
-    input  logic              CHC_RD,
-    output logic [DW-1:0]     CHC_RDATA,
+    // CPU Interface
+    input  logic              chc_start,
+    input  logic              chc_rd,
+    output logic [DW-1:0]     chc_rdata,
 
     // SRAM_C Interface (read only)
     output logic               sram_c_re,
     output logic [SRAM_AW-1:0] sram_c_addr,
-    input  logic [DW-1:0]      sram_c_dout,    // combinational from SRAM Q
-
-    output logic [SRAM_AW-1:0] debug_cnt_c
+    input  logic [DW-1:0]      sram_c_dout     // combinational from SRAM Q
 );
 
     logic              chc_rd_s;
-    logic [SRAM_AW-1:0] cnt_c;
+    logic [SRAM_AW:0]  cnt_c;
 
-    always_ff @(negedge BUS_CLK or negedge BUS_RST_N) begin
-        if (!BUS_RST_N) begin
+    always_ff @(negedge clk) begin
+        if (!rstn) begin
             chc_rd_s <= 1'b0;
             cnt_c    <= '0;
         end else begin
-            chc_rd_s <= CHC_RD;
-            if (CHC_START)
+            chc_rd_s <= chc_rd;
+            if (chc_start)
                 cnt_c <= '0;
             else if (chc_rd_s)
                 cnt_c <= cnt_c + 1'b1;
@@ -52,12 +50,11 @@ module bus_slave_c #(
     end
 
     assign sram_c_re   = chc_rd_s;
-    assign sram_c_addr = cnt_c;
+    assign sram_c_addr = cnt_c[SRAM_AW-1:0];
 
-    // CHC_RDATA directly from sram_c_dout (combinational from SRAM Q).
+    // chc_rdata directly from sram_c_dout (combinational from SRAM Q).
     // At C_CAPTURE (posedge P+2), Q is valid from posedge P+1 + 0.01ns.
-    assign CHC_RDATA = sram_c_dout;
-
-    assign debug_cnt_c = cnt_c;
+    assign chc_rdata = sram_c_dout;
 
 endmodule
+
